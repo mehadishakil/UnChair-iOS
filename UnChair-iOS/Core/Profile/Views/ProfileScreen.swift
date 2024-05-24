@@ -14,28 +14,36 @@ enum Language: String, CaseIterable, Identifiable {
     var id: String { self.rawValue}
 }
 
-enum Notification : String, CaseIterable, Identifiable {
-    case Allow = "Allow"
-    case Mute = "Mute"
-    var id : String {self.rawValue}
-}
 
 struct ProfileScreen: View {
 
     @State private var language : Language = .English
-    @State private var notification : Notification = .Allow
+    @State private var isNotificationEnabled = true
+    @State private var isDarkOn = true
     
     var body: some View {
         Form{
             Section(header: Text("Essential")){
+                HStack{
+                    Text("Help & Feedback")
+                    Spacer()
+                    Image("chevron.right")
+                }
+            }
+            
+            Section(header: Text("Personalization")){
+                HStack{
+                    Toggle(isOn: $isNotificationEnabled){
+                        Text("Notification")
+                    }
+                }
+                Toggle(isOn: $isDarkOn){
+                    Text("Dark Mode")
+                }
                 Picker("Language", selection: $language){
                     Text("English").tag(Language.English)
                     Text("Bangla").tag(Language.Bangla)
                     Text("Arabic").tag(Language.Arabic)
-                }
-                Picker("Notification", selection: $notification){
-                    Text("Allow").tag(Notification.Allow)
-                    Text("Mute").tag(Notification.Mute)
                 }
             }
         }
