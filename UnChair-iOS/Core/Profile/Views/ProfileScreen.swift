@@ -23,29 +23,82 @@ struct ProfileScreen: View {
     
     var body: some View {
         Form{
-            Section(header: Text("Essential")){
-                HStack{
-                    Text("Help & Feedback")
-                    Spacer()
-                    Image("chevron.right")
-                }
-            }
-            
             Section(header: Text("Personalization")){
                 HStack{
+                    Image(systemName: "bell")
                     Toggle(isOn: $isNotificationEnabled){
                         Text("Notification")
                     }
                 }
-                Toggle(isOn: $isDarkOn){
-                    Text("Dark Mode")
+                HStack{
+                    Image(systemName: "moon")
+                    Toggle(isOn: $isDarkOn){
+                        Text("Dark Mode")
+                    }
                 }
-                Picker("Language", selection: $language){
-                    Text("English").tag(Language.English)
-                    Text("Bangla").tag(Language.Bangla)
-                    Text("Arabic").tag(Language.Arabic)
+                HStack{
+                    Image(systemName: "globe")
+                    Picker("Language", selection: $language){
+                        Text("English").tag(Language.English)
+                        Text("Bangla").tag(Language.Bangla)
+                        Text("Arabic").tag(Language.Arabic)
+                    }
                 }
             }
+            
+            Section(header: Text("Accessibility & Advanced")){
+                HStack{
+                    Image(systemName: "face.smiling")
+                    Text("Help & Feedback")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+                HStack{
+                    Image(systemName: "checkmark.shield")
+                    Text("Permissions")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+                HStack{
+                    Image(systemName: "questionmark.circle")
+                    Text("About")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+                HStack{
+                    Image(systemName: "doc.plaintext")
+                    Text("Terms & Service")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+                HStack{
+                    Image(systemName: "heart")
+                    Text("Support Us")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+                HStack{
+                    Image(systemName: "info.bubble")
+                    Text("FAQ")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+                HStack{
+                    Image(systemName: "person.fill.questionmark")
+                    Text("Help")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            
         }
     }
 }
