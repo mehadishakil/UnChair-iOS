@@ -23,6 +23,33 @@ struct ProfileScreen: View {
     
     var body: some View {
         Form{
+            
+            
+            Section{
+                HStack{
+                    Image(.mehadiHasan)
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(Circle())
+                        .padding(1)
+                    
+                    VStack(alignment: .leading){
+                        Text("Mehadi Hasan")
+                            .font(.system(.headline))
+                        Text("mehadishakil469@gmail.com")
+                            .font(.system(.caption))
+                            .foregroundColor(Color.black)
+                    }.padding(1)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
+            }
+            
+            
             Section(header: Text("Personalization")){
                 HStack{
                     Image(systemName: "bell")
