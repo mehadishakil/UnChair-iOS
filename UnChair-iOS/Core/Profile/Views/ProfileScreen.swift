@@ -23,8 +23,6 @@ struct ProfileScreen: View {
     
     var body: some View {
         Form{
-            
-            
             Section{
                 HStack{
                     Image(.mehadiHasan)
@@ -48,7 +46,6 @@ struct ProfileScreen: View {
                         .foregroundColor(.gray)
                 }
             }
-            
             
             Section(header: Text("Personalization")){
                 HStack{
@@ -74,6 +71,13 @@ struct ProfileScreen: View {
             }
             
             Section(header: Text("Accessibility & Advanced")){
+                HStack{
+                    Image(systemName: "creditcard")
+                    Text("Restore Purchase")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.gray)
+                }
                 HStack{
                     Image(systemName: "face.smiling")
                     Text("Help & Feedback")
@@ -125,6 +129,12 @@ struct ProfileScreen: View {
                 }
             }
             
+            Button{
+                
+            } label: {
+                Text("Sign Out")
+                    .foregroundColor(.black)
+            }
             
         }
     }
