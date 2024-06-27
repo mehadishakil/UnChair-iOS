@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeScreen: View {
     var body: some View {
         VStack{
+            HCalendarView().padding(.bottom)
             SedentaryTime()
         }
     }
