@@ -9,9 +9,17 @@ import SwiftUI
 
 struct HomeScreen: View {
     var body: some View {
-        VStack{
-            HCalendarView().padding(.bottom)
-            SedentaryTime()
+        NavigationStack{
+            ScrollView{
+                VStack{
+                    HeaderView()
+                    HCalendarView().padding(.bottom)
+                    SedentaryTime()
+                    Spacer()
+                    BreakSectionView()
+                        .padding(.bottom)
+                }
+            }
         }
     }
 }
