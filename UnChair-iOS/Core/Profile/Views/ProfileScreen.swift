@@ -30,7 +30,7 @@ struct ProfileScreen: View {
             Form{
                 // user profile
                 Section{
-                    NavigationLink(destination: UserProfileView()) {
+                    NavigationLink(destination: EditProfile()) {
                         HStack{
                             Image(.mehadiHasan)
                                 .resizable()
