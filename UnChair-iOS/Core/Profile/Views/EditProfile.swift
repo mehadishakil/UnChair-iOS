@@ -16,7 +16,6 @@ struct EditProfile: View {
     @State private var email : String = "jamesbond007@gmail.com"
     @State private var oldPassword : String = ""
     @State private var newPassword : String = ""
-    @State private var phoneNumber: String = "+91 9876543210"
     @State private var isOldPasswordVisible: Bool = false
     @State private var isNewPasswordVisible: Bool = false
     
