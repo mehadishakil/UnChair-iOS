@@ -16,39 +16,12 @@ struct DailyWaterView: View {
     var body: some View {
         VStack(spacing: 20) {
             CircularProgressBar(current: $waterIntake, target: waterTarget, maxIntake: maxIntake, minIntake: minIntake)
-                .frame(width: 200, height: 200)
-            
-            HStack {
-                Button(action: {
-                    if waterIntake - 200 >= minIntake {
-                        waterIntake -= 200
-                    }
-                }) {
-                    Text("-200ml")
-                        .font(.system(size: 18))
-                        .foregroundColor(.white)
-                        .padding(12)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray))
-                }
-                
-                Spacer()
-                
-                Button(action: {
-                    if waterIntake + 200 <= maxIntake {
-                        waterIntake += 200
-                    }
-                }) {
-                    Text("+200ml")
-                        .font(.system(size: 18))
-                        .foregroundColor(.white)
-                        .padding(12)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.gray))
-                }
-                
-            }
-            .padding(.horizontal, 30)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
         .padding()
+        .background(Color.white)
+        .cornerRadius(15)
+        .shadow(radius: 5)
     }
 }
 
@@ -67,7 +40,8 @@ struct CircularProgressBar: View {
             
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color.blue, lineWidth: 10)
+                .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                .foregroundColor(.blue)
                 .rotationEffect(.degrees(-90))
                 .gesture(
                     DragGesture()
@@ -77,15 +51,20 @@ struct CircularProgressBar: View {
                 )
             
             VStack {
+                Image(systemName: "drop.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 25)
+                    .foregroundColor(.blue)
                 Text("Drink Target")
-                    .font(.system(size: 16))
+                    .font(.system(size: 14))
                     .foregroundColor(.gray)
                 HStack {
                     Text("\(current)")
-                        .font(.system(size: 24))
+                        .font(.system(size: 14))
                         .foregroundColor(.blue)
-                    Text("/\(target)ml")
-                        .font(.system(size: 24))
+                    Text("/ \(target)ml")
+                        .font(.system(size: 14))
                         .foregroundColor(.black)
                 }
             }

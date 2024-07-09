@@ -44,9 +44,8 @@ struct SedentaryTime: View {
         }
         .padding()
         .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 25.0))
-        .shadow(radius: 8)
-        .padding()
+        .cornerRadius(15)
+        .shadow(radius: 5)
     }
 }
 

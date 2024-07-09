@@ -14,7 +14,8 @@ struct HomeScreen: View {
                 VStack{
                     HeaderView()
                     HCalendarView().padding(.bottom)
-                    SedentaryTime()
+                    SedentaryTime().padding()
+                    DailyTracking()
                     Spacer()
                     BreakSectionView()
                         .padding(.bottom)

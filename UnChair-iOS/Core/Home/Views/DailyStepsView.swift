@@ -12,7 +12,7 @@ struct DailyStepsView: View {
     var body: some View {
         StepsCardView {
             VStack(spacing: 16) {
-                Image(systemName: "figure.walk") // Use system image or your asset
+                Image(systemName: "figure.walk")
                     .resizable()
                     .scaledToFit()
                     .frame(height: 40)
@@ -23,15 +23,14 @@ struct DailyStepsView: View {
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(.black)
                     Text("Steps")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.black)
                 }
             }
-            .padding(12)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
             .background(Color.white)
-            .cornerRadius(12)
-            .padding(12)
+            .cornerRadius(15)
+            .shadow(radius: 5)
         }
     }
 }
@@ -47,13 +46,6 @@ struct StepsCardView<Content: View>: View {
         content
             .cornerRadius(12)
             .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
-            .padding()
-    }
-}
-
-struct DailyStepsView_Previews: PreviewProvider {
-    static var previews: some View {
-        DailyStepsView(steps: 39945)
     }
 }
 
