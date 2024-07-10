@@ -49,6 +49,7 @@ struct StepsCardView<Content: View>: View {
     }
 }
 
+
 #Preview {
     DailyStepsView(steps: 9982)
 }
