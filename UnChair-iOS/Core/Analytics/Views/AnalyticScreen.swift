@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AnalyticScreen: View {
     var body: some View {
-        Text("Analytics Screen")
+        Home()
     }
 }
 

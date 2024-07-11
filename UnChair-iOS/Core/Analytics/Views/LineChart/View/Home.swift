@@ -8,13 +8,18 @@
 import SwiftUI
 import Charts
 
-
 struct Home: View {
     // MARK: State Chart Data For Animation Changes
     @State var sampleAnalytics: [SiteView] = sample_analytics
 
     // MARK: View Properties
     @State var currentTab: String = "7 Days"
+    
+    // MARK: Gesture Properties
+    @State var currentActiveItem: SiteView?
+    @State var plotWidth: CGFloat = 0
+    
+    @State var isLineGraph: Bool = false
 
     var body: some View {
         NavigationStack{
@@ -52,6 +57,10 @@ struct Home: View {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .fill(.white.shadow(.drop(radius: 2)))
                 }
+                
+                Toggle("Line Graph", isOn: $isLineGraph)
+                    .padding(.top)
+                
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding()
@@ -79,10 +88,51 @@ struct Home: View {
         Chart{
             ForEach(sampleAnalytics){item in
                 // MARK: Bar Graph
-                BarMark(
-                    x: .value("Hour", item.hour,unit: .hour),
-                    y: .value("Views", item.animate ? item.views : 0)
-                )
+                if isLineGraph{
+                    LineMark(
+                        x: .value("Hour", item.hour, unit: .hour),
+                        y: .value("Views", item.animate ? item.views : 0)
+                    )
+                    
+                    .interpolationMethod(.catmullRom)
+                }else{
+                    BarMark(
+                        x: .value("Hour", item.hour, unit: .hour),
+                        y: .value("Views", item.animate ? item.views : 0)
+                    )
+                }
+                
+                if isLineGraph{
+                    AreaMark(
+                        x: .value("Hour", item.hour, unit: .hour),
+                        y: .value("Views", item.animate ? item.views : 0)
+                    )
+                    .foregroundStyle(.blue.opacity(0.1).gradient)
+                    .interpolationMethod(.catmullRom)
+                }
+                
+                // MARK: Rule Mark for Currently Dragging Item
+                if let currentActiveItem, currentActiveItem.id == item.id{
+                    RuleMark(x: .value("Hour", currentActiveItem.hour))
+                        .lineStyle(.init(lineWidth: 2, miterLimit: 2, dash: [2], dashPhase: 5))
+                        .offset(x: (plotWidth / CGFloat(sampleAnalytics.count)) / 2)
+                        .annotation(position: .top){
+                            VStack(alignment: .leading, spacing: 6){
+                                Text("Views")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                                
+                                Text(currentActiveItem.views.stringFormat)
+                                    .font(.caption.bold())
+                            }
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 4)
+                            .background {
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(.white.shadow(.drop(radius: 2)))
+                            }
+                        }
+                }
                 
             }
         }
@@ -103,12 +153,13 @@ struct Home: View {
                                     if let currentItem = sampleAnalytics.first(where: { item in
                                         calendar.component(.hour, from: item.hour) == hour
                                     }){
-                                        print(currentItem.views)
+                                        self.currentActiveItem = currentItem
+                                        self.plotWidth = proxy.plotSize.width
                                     }
                                 }
                                 
                             }.onEnded({ value in
-                                
+                                self.currentActiveItem = nil
                             })
                     )
             }
@@ -120,7 +171,7 @@ struct Home: View {
     }
     
     
-    // animting graph
+    // animating graph
     func animateGraph(fromChange: Bool = false){
         for (index,_) in sampleAnalytics.enumerated(){
             // For Some Reason Delay is Not Working
@@ -156,4 +207,3 @@ extension Double{
 
 
 
-// time : 11:00
