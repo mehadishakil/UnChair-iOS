@@ -28,6 +28,7 @@
 		E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */; };
 		E8BB4E342BFD0AE400C1459C /* AnalyticScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */; };
 		E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */; };
+		E8BDD33E2C42DE0E00EED832 /* ExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BDD33D2C42DE0E00EED832 /* ExerciseView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 		E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticScreen.swift; sourceTree = "<group>"; };
 		E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
+		E8BDD33D2C42DE0E00EED832 /* ExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 		E8783CC12BFD921A0085A899 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				E8BDD33B2C42DDEB00EED832 /* Break */,
 				E8783CCB2BFD931D0085A899 /* Components */,
 				E8783CC82BFD92900085A899 /* Profile */,
 				E8783CC52BFD926C0085A899 /* Analytics */,
@@ -246,6 +249,22 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		E8BDD33B2C42DDEB00EED832 /* Break */ = {
+			isa = PBXGroup;
+			children = (
+				E8BDD33C2C42DDF600EED832 /* Views */,
+			);
+			path = Break;
+			sourceTree = "<group>";
+		};
+		E8BDD33C2C42DDF600EED832 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E8BDD33D2C42DE0E00EED832 /* ExerciseView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -320,6 +339,7 @@
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
 				E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */,
 				E8BB4E342BFD0AE400C1459C /* AnalyticScreen.swift in Sources */,
+				E8BDD33E2C42DE0E00EED832 /* ExerciseView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
