@@ -38,17 +38,6 @@ struct ExerciseView: View {
                 .fontWeight(.bold)
                 .padding(.horizontal)
             
-            // Add to list
-            HStack {
-                Button(action: {
-                    // Add action here
-                }) {
-                    Label("Add to list", systemImage: "bookmark")
-                        .foregroundColor(.gray)
-                }
-                Spacer()
-            }
-            .padding(.horizontal)
             
             // Description
             Text("Activate your underworked glutes and prevent flat butt syndrome.")
@@ -65,8 +54,7 @@ struct ExerciseView: View {
                     Text("approx. \(Int(duration)) mins")
                         .foregroundColor(.purple)
                 }
-                Slider(value: $duration, in: 1...10, step: 1)
-                    .accentColor(.purple)
+                
             }
             .padding(.horizontal)
             
@@ -77,7 +65,7 @@ struct ExerciseView: View {
                         .font(.caption)
                         .fontWeight(.bold)
                     Spacer()
-                    Text("3/12 exercises selected")
+                    Text("4 exercises")
                         .foregroundColor(.purple)
                     Button(action: {
                         // Add shuffle action here

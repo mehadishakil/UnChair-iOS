@@ -14,6 +14,8 @@
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
 		E84992032C3EB37C007F918A /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992022C3EB37C007F918A /* Home.swift */; };
 		E84E08552BFD24BD002D72A9 /* TimeAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E08542BFD24BD002D72A9 /* TimeAlertView.swift */; };
+		E869831D2C441877007A695F /* StartExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E869831C2C441877007A695F /* StartExerciseView.swift */; };
+		E869831F2C441D7B007A695F /* ExerciseTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E869831E2C441D7B007A695F /* ExerciseTest.swift */; };
 		E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */; };
 		E874AA012BFB53A50075644C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874AA002BFB53A50075644C /* ContentView.swift */; };
 		E874AA032BFB53A60075644C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E874AA022BFB53A60075644C /* Assets.xcassets */; };
@@ -39,6 +41,8 @@
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
 		E84992022C3EB37C007F918A /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		E84E08542BFD24BD002D72A9 /* TimeAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeAlertView.swift; sourceTree = "<group>"; };
+		E869831C2C441877007A695F /* StartExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartExerciseView.swift; sourceTree = "<group>"; };
+		E869831E2C441D7B007A695F /* ExerciseTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseTest.swift; sourceTree = "<group>"; };
 		E874A9FB2BFB53A50075644C /* UnChair-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UnChair-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnChair_iOSApp.swift; sourceTree = "<group>"; };
 		E874AA002BFB53A50075644C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -261,6 +265,8 @@
 			isa = PBXGroup;
 			children = (
 				E8BDD33D2C42DE0E00EED832 /* ExerciseView.swift */,
+				E869831C2C441877007A695F /* StartExerciseView.swift */,
+				E869831E2C441D7B007A695F /* ExerciseTest.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -350,7 +356,9 @@
 				E8783CCF2BFD943B0085A899 /* SampleModel.swift in Sources */,
 				E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */,
 				E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */,
+				E869831D2C441877007A695F /* StartExerciseView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
+				E869831F2C441D7B007A695F /* ExerciseTest.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
 				E84992012C3EB232007F918A /* SiteView.swift in Sources */,
 				E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */,
