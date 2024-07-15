@@ -10,6 +10,7 @@ import SwiftUI
 struct BreakScreenView: View {
     @State private var currentExerciseIndex: Int = 0
     @State private var elapsedTime: Int = 0
+    @State private var totalElapsedTime: Int = 0
     @State private var timerRunning: Bool = false
     @State private var buttonText: String = "Start Now"
     
@@ -19,16 +20,21 @@ struct BreakScreenView: View {
         ExerciseTest(name: "Pulse Lunges", duration: 30, description: "Do pulse lunges for 30 seconds per side."),
         ExerciseTest(name: "Power Skips", duration: 45, description: "Do power skips for 45 seconds."),
         ExerciseTest(name: "Single Legged Romanian Deadlifts", duration: 45, description: "Do single legged Romanian deadlifts for 45 seconds."),
-        ExerciseTest(name: "Walk", duration: 60, description: "Walk for 60 seconds.")
+        ExerciseTest(name: "Indoor Walk", duration: 60, description: "Walk for 60 seconds.")
     ]
     
+    // Total duration of all exercises
+    var totalDuration: Int {
+        exercises.reduce(0) { $0 + $1.duration }
+    }
+
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
             Spacer()
             
-            Text(timeString(from: elapsedTime))
+            Text(timeString(from: totalElapsedTime))
                 .font(.system(size: 40, weight: .bold, design: .monospaced))
                 .padding(.top, 20)
             
@@ -38,15 +44,17 @@ struct BreakScreenView: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .padding(.bottom, 10)
+                .multilineTextAlignment(.center)
             
             Text(exercises[currentExerciseIndex].description)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
                 .padding(.bottom, 20)
             
-            Text("\(exercises[currentExerciseIndex].duration) sec")
+            Text("\(remainingTime(for: exercises[currentExerciseIndex])) sec")
                 .font(.subheadline)
                 .padding(.bottom, 20)
+                .bold()
             
             Spacer()
             
@@ -72,23 +80,36 @@ struct BreakScreenView: View {
         .onReceive(timer) { _ in
             guard timerRunning else { return }
             
-            if elapsedTime < exercises[currentExerciseIndex].duration {
-                elapsedTime += 1
-            } else {
-                // Move to the next exercise or finish
-                if currentExerciseIndex < exercises.count - 1 {
-                    currentExerciseIndex += 1
-                    elapsedTime = 0
+            if totalElapsedTime < totalDuration {
+                totalElapsedTime += 1
+                
+                if elapsedTime < exercises[currentExerciseIndex].duration {
+                    elapsedTime += 1
                 } else {
-                    // Timer has finished
-                    timerRunning = false
-                    buttonText = "Start Now"
-                    presentationMode.wrappedValue.dismiss()
+                    // Move to the next exercise or finish
+                    if currentExerciseIndex < exercises.count - 1 {
+                        currentExerciseIndex += 1
+                        elapsedTime = 0
+                    } else {
+                        // Timer has finished
+                        timerRunning = false
+                        buttonText = "Start Now"
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
+            } else {
+                // Total duration has completed
+                timerRunning = false
+                buttonText = "Start Now"
+                presentationMode.wrappedValue.dismiss()
             }
         }
     }
     
+    func remainingTime(for exercise: ExerciseTest) -> Int {
+        return exercise.duration - elapsedTime
+    }
+
     func timeString(from seconds: Int) -> String {
         let minutes = seconds / 60
         let remainingSeconds = seconds % 60
