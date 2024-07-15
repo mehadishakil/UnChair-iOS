@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BreakScreenView: View {
     @State private var currentExerciseIndex: Int = 0
-    @State private var timeRemaining: Int
+    @State private var elapsedTime: Int = 0
     @State private var timerRunning: Bool = false
     @State private var buttonText: String = "Start Now"
     
@@ -22,18 +22,13 @@ struct BreakScreenView: View {
         ExerciseTest(name: "Walk", duration: 60, description: "Walk for 60 seconds.")
     ]
     
-    init() {
-        let totalDuration = exercises.reduce(0) { $0 + $1.duration }
-        _timeRemaining = State(initialValue: totalDuration)
-    }
-    
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
             Spacer()
             
-            Text(timeString(from: timeRemaining))
+            Text(timeString(from: elapsedTime))
                 .font(.system(size: 40, weight: .bold, design: .monospaced))
                 .padding(.top, 20)
             
@@ -77,18 +72,19 @@ struct BreakScreenView: View {
         .onReceive(timer) { _ in
             guard timerRunning else { return }
             
-            if timeRemaining > 0 {
-                timeRemaining -= 1
-                // Check if we need to move to the next exercise
-                let currentExercise = exercises[currentExerciseIndex]
-                if timeRemaining == totalTimeRemaining(for: currentExerciseIndex + 1) {
-                    currentExerciseIndex += 1
-                }
+            if elapsedTime < exercises[currentExerciseIndex].duration {
+                elapsedTime += 1
             } else {
-                // Timer has finished
-                timerRunning = false
-                buttonText = "Start Now"
-                presentationMode.wrappedValue.dismiss()
+                // Move to the next exercise or finish
+                if currentExerciseIndex < exercises.count - 1 {
+                    currentExerciseIndex += 1
+                    elapsedTime = 0
+                } else {
+                    // Timer has finished
+                    timerRunning = false
+                    buttonText = "Start Now"
+                    presentationMode.wrappedValue.dismiss()
+                }
             }
         }
     }
@@ -97,11 +93,6 @@ struct BreakScreenView: View {
         let minutes = seconds / 60
         let remainingSeconds = seconds % 60
         return String(format: "%02d:%02d", minutes, remainingSeconds)
-    }
-    
-    func totalTimeRemaining(for exerciseIndex: Int) -> Int {
-        guard exerciseIndex < exercises.count else { return 0 }
-        return exercises[exerciseIndex...].reduce(0) { $0 + $1.duration }
     }
 }
 
