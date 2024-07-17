@@ -10,6 +10,11 @@ import SwiftUI
 struct AnalyticScreen: View {
     var body: some View {
         Home()
+        
+        Spacer()
+        
+        SleepChartView()
+            .padding(.horizontal)
     }
 }
 
