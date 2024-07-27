@@ -6,30 +6,21 @@
 //
 
 import SwiftUI
-import Charts
 
 struct Home: View {
-    // MARK: State Chart Data For Animation Changes
     @State var sampleAnalytics: [SiteView] = sample_analytics
-
-    // MARK: View Properties
     @State var currentTab: String = "7 Days"
-    
-    // MARK: Gesture Properties
     @State var currentActiveItem: SiteView?
     @State var plotWidth: CGFloat = 0
-    
-    @State var isLineGraph: Bool = false
 
     var body: some View {
-        NavigationStack{
-            VStack{
-                // MARK: New Chart API
-                VStack(alignment: .leading, spacing: 12){
-                    HStack{
+        NavigationStack {
+            VStack {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
                         Text("Views")
                             .fontWeight(.semibold)
-                        
+
                         Picker("", selection: $currentTab) {
                             Text("7 Days")
                                 .tag("7 Days")
@@ -40,30 +31,27 @@ struct Home: View {
                         }
                         .pickerStyle(.segmented)
                         .padding(.leading, 80)
-                        
                     }
-                    
+
                     let totalValue = sampleAnalytics.reduce(0.0) { partialResult, item in
                         item.views + partialResult
                     }
-                    
+
                     Text(totalValue.stringFormat)
-                        .font(.largeTitle.bold())
-                    
-                    AnimatedChart()
+                        .font(.title.bold())
+
+                    // Call the chart components
+                    BarChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                    LineChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
                 }
                 .padding()
-                .background{
+                .background {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(.white.shadow(.drop(radius: 2)))
+                        .fill(.white.shadow(.drop(radius: 8)))
                 }
-                
-                Toggle("Line Graph", isOn: $isLineGraph)
-                    .padding(.top)
-                
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .navigationTitle("Swift Charts")
             .onChange(of: currentTab) { oldValue, newValue in
                 sampleAnalytics = sample_analytics
@@ -72,120 +60,21 @@ struct Home: View {
                         sampleAnalytics[index].views = .random(in: 1500...10000)
                     }
                 }
-                
-                // Re-animating View
                 animateGraph(fromChange: true)
             }
         }
     }
-    
-    @ViewBuilder
-    func AnimatedChart()->some View{
-        let max = sampleAnalytics.max { item1, item2 in
-            return item2.views > item1.views
-        }?.views ?? 0
-        
-        Chart{
-            ForEach(sampleAnalytics){item in
-                // MARK: Bar Graph
-                if isLineGraph{
-                    LineMark(
-                        x: .value("Hour", item.hour, unit: .hour),
-                        y: .value("Views", item.animate ? item.views : 0)
-                    )
-                    
-                    .interpolationMethod(.catmullRom)
-                }else{
-                    BarMark(
-                        x: .value("Hour", item.hour, unit: .hour),
-                        y: .value("Views", item.animate ? item.views : 0)
-                    )
-                }
-                
-                if isLineGraph{
-                    AreaMark(
-                        x: .value("Hour", item.hour, unit: .hour),
-                        y: .value("Views", item.animate ? item.views : 0)
-                    )
-                    .foregroundStyle(.blue.opacity(0.1).gradient)
-                    .interpolationMethod(.catmullRom)
-                }
-                
-                // MARK: Rule Mark for Currently Dragging Item
-                if let currentActiveItem, currentActiveItem.id == item.id{
-                    RuleMark(x: .value("Hour", currentActiveItem.hour))
-                        .lineStyle(.init(lineWidth: 2, miterLimit: 2, dash: [2], dashPhase: 5))
-                        .offset(x: (plotWidth / CGFloat(sampleAnalytics.count)) / 2)
-                        .annotation(position: .top){
-                            VStack(alignment: .leading, spacing: 6){
-                                Text("Views")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                                
-                                Text(currentActiveItem.views.stringFormat)
-                                    .font(.caption.bold())
-                            }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 4)
-                            .background {
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .fill(.white.shadow(.drop(radius: 2)))
-                            }
-                        }
-                }
-                
-            }
-        }
-        // MARK: Customizing Y-Axis Length
-        .chartYScale(domain: 0...(max + 5000))
-        .chartOverlay(content: {proxy in
-            GeometryReader{innerProxy in
-                Rectangle()
-                    .fill(.clear).contentShape(Rectangle())
-                    .gesture(
-                        DragGesture()
-                            .onChanged{value in
-                                let location = value.location
-                                
-                                if let date : Date = proxy.value(atX: location.x){
-                                    let calendar = Calendar.current
-                                    let hour = calendar.component(.hour, from: date)
-                                    if let currentItem = sampleAnalytics.first(where: { item in
-                                        calendar.component(.hour, from: item.hour) == hour
-                                    }){
-                                        self.currentActiveItem = currentItem
-                                        self.plotWidth = proxy.plotSize.width
-                                    }
-                                }
-                                
-                            }.onEnded({ value in
-                                self.currentActiveItem = nil
-                            })
-                    )
-            }
-        })
-        .frame(height: 250)
-        .onAppear {
-            animateGraph()
-        }
-    }
-    
-    
-    // animating graph
-    func animateGraph(fromChange: Bool = false){
-        for (index,_) in sampleAnalytics.enumerated(){
-            // For Some Reason Delay is Not Working
-            // Using Dispatch Queue Delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * ( fromChange ? 0.03 : 0.05)){
-                withAnimation(fromChange ? .easeInOut(duration: 0.8) : .interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
+
+    func animateGraph(fromChange: Bool = false) {
+        for (index, _) in sampleAnalytics.enumerated() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * (fromChange ? 0.03 : 0.05)) {
+                withAnimation(fromChange ? .easeInOut(duration: 0.8) : .interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)) {
                     sampleAnalytics[index].animate = true
                 }
             }
         }
     }
-    
 }
-
 
 #Preview {
     Home()

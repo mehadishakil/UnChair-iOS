@@ -75,9 +75,9 @@ struct HCalendarView: View {
                             Text("\(calendar.component(.day, from: date))")
                         }
                         .frame(width: 30, height: 30)
-                        .padding(5)
-                        .background(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.green : Color.clear)
-                        .cornerRadius(16)
+                        .padding(8)
+                        .background(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.blue : Color.clear)
+                        .cornerRadius(100)
                         .foregroundColor(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .white : .black)
                         .onTapGesture {
                             selectedDate = date

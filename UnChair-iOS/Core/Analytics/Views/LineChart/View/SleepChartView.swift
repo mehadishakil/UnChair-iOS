@@ -35,7 +35,7 @@ struct SleepChartView: View {
                     .cornerRadius(15)
                     .padding(.leading)
                 
-                Text("Sleep")
+                Text("Avg Sleep")
                     .font(.headline)
                     .padding(.horizontal)
                 
@@ -56,7 +56,7 @@ struct SleepChartView: View {
                 }
             }
             .chartYAxis(.hidden)
-            .frame(height: 150)
+            .frame(height: 130)
             .padding(.vertical, 15)
             .onAppear {
                 animateGraph()

@@ -28,6 +28,9 @@
 		E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A84F792C2D39F400900714 /* HCalendarView.swift */; };
 		E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFFFD72C32B3750002815E /* ActiveHour.swift */; };
 		E8B812362C33ECC400698849 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B812352C33ECC400698849 /* EditProfile.swift */; };
+		E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2D82C54A648003127CC /* BarChartView.swift */; };
+		E8B9A2DB2C54A663003127CC /* LineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2DA2C54A663003127CC /* LineChartView.swift */; };
+		E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */; };
 		E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */; };
 		E8BB4E342BFD0AE400C1459C /* AnalyticScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */; };
 		E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */; };
@@ -57,6 +60,9 @@
 		E8A84F792C2D39F400900714 /* HCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCalendarView.swift; sourceTree = "<group>"; };
 		E8AFFFD72C32B3750002815E /* ActiveHour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveHour.swift; sourceTree = "<group>"; };
 		E8B812352C33ECC400698849 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
+		E8B9A2D82C54A648003127CC /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
+		E8B9A2DA2C54A663003127CC /* LineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartView.swift; sourceTree = "<group>"; };
+		E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBreakView.swift; sourceTree = "<group>"; };
 		E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticScreen.swift; sourceTree = "<group>"; };
 		E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
@@ -96,6 +102,8 @@
 			children = (
 				E84992022C3EB37C007F918A /* Home.swift */,
 				E8020F8F2C481C82000C8506 /* SleepChartView.swift */,
+				E8B9A2D82C54A648003127CC /* BarChartView.swift */,
+				E8B9A2DA2C54A663003127CC /* LineChartView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -169,6 +177,7 @@
 		E8783CC42BFD924B0085A899 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E8B9A2E02C54CC91003127CC /* BreakViews */,
 				E844B82A2C108B30006D54E4 /* SedentaryTime.swift */,
 				E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */,
 				E8A84F792C2D39F400900714 /* HCalendarView.swift */,
@@ -254,6 +263,14 @@
 			children = (
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E8B9A2E02C54CC91003127CC /* BreakViews */ = {
+			isa = PBXGroup;
+			children = (
+				E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */,
+			);
+			path = BreakViews;
 			sourceTree = "<group>";
 		};
 		E8BDD33B2C42DDEB00EED832 /* Break */ = {
@@ -347,10 +364,13 @@
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
 				E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */,
+				E8B9A2DB2C54A663003127CC /* LineChartView.swift in Sources */,
 				E8BB4E342BFD0AE400C1459C /* AnalyticScreen.swift in Sources */,
 				E8BDD33E2C42DE0E00EED832 /* ExerciseView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
+				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
+				E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
 				E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */,
 				E84992032C3EB37C007F918A /* Home.swift in Sources */,

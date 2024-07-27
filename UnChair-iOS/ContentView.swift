@@ -22,7 +22,6 @@ struct ContentView: View {
                 }
             
             ProfileScreen()
-                .badge("!")
                 .tabItem {
                     Label("Profile", systemImage: "person")
                 }

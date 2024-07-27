@@ -64,7 +64,7 @@ struct SleepPickerView: View {
 
     var body: some View {
         VStack {
-            Text("Select Sleep Hours")
+            Text("Todays Sleeping Duration (hours)")
                 .font(.headline)
                 .padding()
 

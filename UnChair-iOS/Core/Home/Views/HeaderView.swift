@@ -12,7 +12,7 @@ struct HeaderView: View {
         HStack(spacing : 20) {
             Image(systemName: "person.circle.fill")
                 .resizable()
-                .frame(width: 50, height: 50)
+                .frame(width: 45, height: 45)
                 .foregroundColor(.gray)
                 .padding(.leading, 20)
             

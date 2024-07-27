@@ -9,12 +9,14 @@ import SwiftUI
 
 struct AnalyticScreen: View {
     var body: some View {
-        Home()
-        
-        Spacer()
-        
-        SleepChartView()
-            .padding(.horizontal)
+        VStack{
+            Home()
+            
+            Spacer()
+            
+            SleepChartView()
+                .padding(.horizontal)
+        }
     }
 }
 
