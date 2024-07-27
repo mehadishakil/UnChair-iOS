@@ -16,50 +16,58 @@ struct BreakSectionView: View {
                     .fontWeight(.semibold)
                     .padding(5)
                 
-                ForEach(breaks) { breakInfo in
-                    NavigationLink(destination: breakInfo.destinationView) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(breakInfo.title)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                Text(breakInfo.description)
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+                ForEach(breakList) { index in
+//                        ForEach(breaksByType[breakType] ?? []) { breakItem in
+                    NavigationLink(destination: DetailsBreakView(breakItem: index)) {
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 5) {
+                                        Text(index.title)
+                                            .font(.headline)
+                                            .fontWeight(.bold)
+                                        Text(index.description)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                            .multilineTextAlignment(.leading)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                    }
+                                    Spacer()
+                                    Text("\(index.duration) sec")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(10)
+                                .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
                             }
-                            Spacer()
-                            Text(breakInfo.duration)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
                         }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(10)
-                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 5)
-                    }
+                    
                 }
-            }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(15)
+                .padding()
+                .background(Color.white)
+                .cornerRadius(15)
         }
-    }
+}
 
-    struct BreakInfo: Identifiable {
-        let id = UUID()
-        let title: String
-        let description: String
-        let duration: String
-        let destinationView: AnyView // Destination view for NavigationLink
-    }
-
-    let breaks = [
-        BreakInfo(title: "Quick Break", description: "2 min straight basic warm-up exercises", duration: "2 min", destinationView: AnyView(QuickBreakView())),
-        BreakInfo(title: "Short Break", description: "3 minutes exercise, 2 min indoor walk", duration: "5 min", destinationView: AnyView(ShortBreakView())),
-        BreakInfo(title: "Medium Break", description: "3 min exercise, 2 min indoor walk, 5 min rest", duration: "10 min", destinationView: AnyView(MediumBreakView())),
-        BreakInfo(title: "Long Break", description: "10 min exercise, 10 min outdoor walk, 10 min rest", duration: "30 min", destinationView: AnyView(LongBreakView()))
-    ]
+    
 
 #Preview {
     BreakSectionView()
 }
+
+
+//
+//struct BreakInfo: Identifiable {
+//    let id = UUID()
+//    let title: String
+//    let description: String
+//    let duration: String
+//    let destinationView: AnyView
+//}
+//
+//let breaks = [
+//    BreakInfo(title: "Quick Break", description: "2 min straight basic warm-up exercises", duration: "2 min", destinationView: AnyView(QuickBreakView())),
+//    BreakInfo(title: "Short Break", description: "3 minutes exercise, 2 min indoor walk", duration: "5 min", destinationView: AnyView(ShortBreakView())),
+//    BreakInfo(title: "Medium Break", description: "3 min exercise, 2 min indoor walk, 5 min rest", duration: "10 min", destinationView: AnyView(MediumBreakView())),
+//    BreakInfo(title: "Long Break", description: "10 min exercise, 10 min outdoor walk, 10 min rest", duration: "30 min", destinationView: AnyView(LongBreakView()))
+//]
