@@ -7,21 +7,15 @@
 
 import SwiftUI
 
-struct BreakScreenView: View {
+struct StartExerciseView: View {
     @State private var currentExerciseIndex: Int = 0
     @State private var elapsedTime: Int = 0
     @State private var totalElapsedTime: Int = 0
     @State private var timerRunning: Bool = false
     @State private var buttonText: String = "Start Now"
     
+    let exercises: [Exercise]
     @Environment(\.presentationMode) var presentationMode
-
-    let exercises: [ExerciseTest] = [
-        ExerciseTest(name: "Pulse Lunges", duration: 30, description: "Do pulse lunges for 30 seconds per side."),
-        ExerciseTest(name: "Power Skips", duration: 45, description: "Do power skips for 45 seconds."),
-        ExerciseTest(name: "Single Legged Romanian Deadlifts", duration: 45, description: "Do single legged Romanian deadlifts for 45 seconds."),
-        ExerciseTest(name: "Indoor Walk", duration: 60, description: "Walk for 60 seconds.")
-    ]
     
     // Total duration of all exercises
     var totalDuration: Int {
@@ -31,6 +25,7 @@ struct BreakScreenView: View {
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
+        
         VStack {
             Spacer()
             
@@ -76,7 +71,6 @@ struct BreakScreenView: View {
             }
             .padding(.bottom, 40)
         }
-        .ignoresSafeArea()
         .onReceive(timer) { _ in
             guard timerRunning else { return }
             
@@ -106,7 +100,7 @@ struct BreakScreenView: View {
         }
     }
     
-    func remainingTime(for exercise: ExerciseTest) -> Int {
+    func remainingTime(for exercise: Exercise) -> Int {
         return exercise.duration - elapsedTime
     }
 
@@ -118,7 +112,14 @@ struct BreakScreenView: View {
 }
 
 struct BreakScreenView_Previews: PreviewProvider {
+        
     static var previews: some View {
-        BreakScreenView()
+        let sets: [Exercise] = [
+            // quick exercise
+            Exercise(name: "Neck Rolls", description: "Gently roll your neck in a circular motion.", duration: 15),
+            Exercise(name: "Shoulder Shrugs", description: "Raise your shoulders towards your ears, then lower them.", duration: 15)
+            ]
+        
+        StartExerciseView(exercises: sets)
     }
 }

@@ -14,17 +14,6 @@ struct DetailsBreakView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // Close button
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "xmark")
-                            .foregroundColor(.gray)
-                            .padding()
-                    }
-                }
 
                 // Title
                 Text(breakItem.title)
@@ -81,31 +70,25 @@ struct DetailsBreakView: View {
                 }
                 .padding(.horizontal)
 
-                Spacer()
+                Spacer(minLength: 0)
 
-                // Start button
-                Button(action: {
-                    // Add start action here
-                }) {
+                NavigationLink(destination: StartExerciseView(exercises: breakItem.exercises)) {
                     Text("Start")
                         .font(.headline)
                         .foregroundColor(.white)
-                        .padding()
+                        .padding(.vertical)
                         .frame(maxWidth: .infinity)
                         .background(Color.black)
                         .cornerRadius(10)
                 }
-                .padding()
+                .padding(.vertical, 50)
+                .padding(.horizontal)
             }
+            .frame(maxWidth: .infinity)
         }
     }
 }
 
-struct BreakSectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        BreakSectionView()
-    }
-}
 
 struct DetailsBreakView_Previews: PreviewProvider {
     static var previews: some View {
