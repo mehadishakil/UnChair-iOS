@@ -86,10 +86,10 @@ struct ProfileScreen: View {
                             Spacer()
                         }
                     }
-                    NavigationLink(destination: HelpFeedbackView()) {
+                    NavigationLink(destination: FeedbackView()) {
                         HStack {
                             Image(systemName: "face.smiling")
-                            Text("Help & Feedback")
+                            Text("Feedback")
                             Spacer()
                         }
                     }
@@ -173,12 +173,7 @@ struct RestorePurchaseView: View {
     }
 }
 
-struct HelpFeedbackView: View {
-    var body: some View {
-        Text("Help & Feedback")
-            .navigationTitle("Help & Feedback")
-    }
-}
+
 
 struct PermissionsView: View {
     var body: some View {

@@ -36,6 +36,7 @@
 		E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */; };
 		E8BB4E342BFD0AE400C1459C /* AnalyticScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */; };
 		E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */; };
+		E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +70,7 @@
 		E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticScreen.swift; sourceTree = "<group>"; };
 		E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
+		E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +235,7 @@
 				E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */,
 				E8AFFFD72C32B3750002815E /* ActiveHour.swift */,
 				E8B812352C33ECC400698849 /* EditProfile.swift */,
+				E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -377,6 +380,7 @@
 				E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */,
 				E869831D2C441877007A695F /* StartExerciseView.swift in Sources */,
 				E8020F902C481C82000C8506 /* SleepChartView.swift in Sources */,
+				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
