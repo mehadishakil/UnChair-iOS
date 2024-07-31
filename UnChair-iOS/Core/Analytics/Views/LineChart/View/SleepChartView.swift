@@ -65,6 +65,7 @@ struct SleepChartView: View {
         .background(Color.white)
         .cornerRadius(16)
         .shadow(radius: 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
     
     func animateGraph() {

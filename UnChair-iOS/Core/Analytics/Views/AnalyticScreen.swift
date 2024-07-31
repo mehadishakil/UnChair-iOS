@@ -9,13 +9,24 @@ import SwiftUI
 
 struct AnalyticScreen: View {
     var body: some View {
-        VStack{
-            Home()
-            
-            Spacer()
-            
-            SleepChartView()
-                .padding(.horizontal)
+        ScrollView{
+            VStack{
+                
+                MultiLineChart()
+                    .padding()
+                
+                Spacer()
+                
+                WeeklyChartView()
+                    .padding()
+                
+                Spacer()
+                
+                SleepChartView()
+                    .padding()
+                
+                
+            }
         }
     }
 }

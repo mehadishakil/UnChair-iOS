@@ -86,10 +86,17 @@ struct ProfileScreen: View {
                             Spacer()
                         }
                     }
-                    NavigationLink(destination: FeedbackView()) {
+                    NavigationLink(destination: TermsServiceView()) {
                         HStack {
-                            Image(systemName: "face.smiling")
-                            Text("Feedback")
+                            Image(systemName: "doc.plaintext")
+                            Text("Terms of Use")
+                            Spacer()
+                        }
+                    }
+                    NavigationLink(destination: ContactUsView()) {
+                        HStack {
+                            Image(systemName: "lock.shield")
+                            Text("Privacy Policy")
                             Spacer()
                         }
                     }
@@ -100,24 +107,31 @@ struct ProfileScreen: View {
                             Spacer()
                         }
                     }
-                    NavigationLink(destination: AboutView()) {
-                        HStack {
-                            Image(systemName: "questionmark.circle")
-                            Text("About")
-                            Spacer()
-                        }
-                    }
-                    NavigationLink(destination: TermsServiceView()) {
-                        HStack {
-                            Image(systemName: "doc.plaintext")
-                            Text("Terms & Service")
-                            Spacer()
-                        }
-                    }
                     NavigationLink(destination: SupportUsView()) {
                         HStack {
                             Image(systemName: "heart")
                             Text("Support Us")
+                            Spacer()
+                        }
+                    }
+                    NavigationLink(destination: ContactUsView()) {
+                        HStack {
+                            Image(systemName: "phone")
+                            Text("Contact Us")
+                            Spacer()
+                        }
+                    }
+                    NavigationLink(destination: FeedbackView()) {
+                        HStack {
+                            Image(systemName: "face.smiling")
+                            Text("Feedback")
+                            Spacer()
+                        }
+                    }
+                    NavigationLink(destination: AboutView()) {
+                        HStack {
+                            Image(systemName: "questionmark.circle")
+                            Text("About")
                             Spacer()
                         }
                     }
@@ -135,6 +149,7 @@ struct ProfileScreen: View {
                             Spacer()
                         }
                     }
+                    
                 }
                 
                 Button{

@@ -49,7 +49,7 @@ struct FeedbackView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.green)
+                    .background(Color.black)
                     .cornerRadius(8)
             }
         }
