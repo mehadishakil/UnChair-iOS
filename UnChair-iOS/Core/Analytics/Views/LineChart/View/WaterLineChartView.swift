@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct WeeklyChartView: View {
+struct WaterLineChartView: View {
     @State var sampleAnalytics: [SiteView] = sample_analytics
     @State var currentActiveItem: SiteView?
     @State var plotWidth: CGFloat = 0
+    @Binding var isBar: Bool
     
     var body: some View {
         VStack {
@@ -21,11 +22,13 @@ struct WeeklyChartView: View {
                 let totalValue = sampleAnalytics.reduce(0.0) { $0 + $1.views }
                 
                 Text(totalValue.stringFormat)
-                    .font(.title.bold())
+                    .font(.headline)
                 
-                //LineChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
-                
-                BarChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                if isBar {
+                    BarChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                } else{
+                    LineChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                }
             }
             .padding()
             .background(Color.white)
@@ -49,7 +52,7 @@ struct WeeklyChartView: View {
 }
 
 #Preview {
-    WeeklyChartView()
+    WaterLineChartView(isBar: .constant(true))
 }
 
 

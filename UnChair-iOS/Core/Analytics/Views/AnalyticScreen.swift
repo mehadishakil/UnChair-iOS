@@ -12,19 +12,21 @@ struct AnalyticScreen: View {
         ScrollView{
             VStack{
                 
-                MultiLineChart()
+                BreakMultiLineChartView()
                     .padding()
                 
                 Spacer()
                 
-                WeeklyChartView()
+                WaterLineChartView(isBar: .constant(true))
                     .padding()
                 
                 Spacer()
                 
-                SleepChartView()
+                SleepBarChartView()
                     .padding()
                 
+                WaterLineChartView(isBar: .constant(false))
+                    .padding()
                 
             }
         }

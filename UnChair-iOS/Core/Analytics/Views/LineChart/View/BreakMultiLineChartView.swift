@@ -8,14 +8,14 @@
 import SwiftUI
 import Charts
 
-struct MultiLineChart: View {
+struct BreakMultiLineChartView: View {
     @State private var selectedCity = 0
     
     var body: some View {
         VStack {
             HStack {
-                Text("Rainfall data")
-                    .font(.largeTitle)
+                Text("Exercise Stats")
+                    .fontWeight(.semibold)
                 Spacer()
                 citySelectionMenu
             }
@@ -80,5 +80,5 @@ struct ChartContentView: View {
 }
 
 #Preview {
-    MultiLineChart()
+    BreakMultiLineChartView()
 }

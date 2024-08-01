@@ -15,7 +15,7 @@ struct SleepData: Identifiable {
     var animate: Bool = false
 }
 
-struct SleepChartView: View {
+struct SleepBarChartView: View {
     @State private var sleepData: [SleepData] = [
         SleepData(day: "Sat", hours: 6.0),
         SleepData(day: "Sun", hours: 7.5),
@@ -29,19 +29,17 @@ struct SleepChartView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 12) {
+                
+                Text("Avg Sleep")
+                    .fontWeight(.semibold)
+                    .padding(.horizontal)
                 Image("sleepy_emoji")
                     .resizable()
                     .frame(width: 30, height: 30)
                     .cornerRadius(15)
                     .padding(.leading)
-                
-                Text("Avg Sleep")
-                    .font(.headline)
-                    .padding(.horizontal)
-                
                 Text("8h 2m")
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    .font(.headline)
                     .padding(.horizontal)
             }
             
@@ -81,6 +79,6 @@ struct SleepChartView: View {
 
 struct SleepChartView_Previews: PreviewProvider {
     static var previews: some View {
-        SleepChartView()
+        SleepBarChartView()
     }
 }

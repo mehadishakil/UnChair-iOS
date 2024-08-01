@@ -22,6 +22,7 @@ struct LineChartView: View {
                     x: .value("Day", item.date, unit: .day),
                     y: .value("Views", item.animate ? item.views : 0)
                 )
+                .foregroundStyle(Color.blue)
                 .interpolationMethod(.catmullRom)
                 
                 AreaMark(
@@ -44,7 +45,7 @@ struct LineChartView: View {
                                 Text(currentActiveItem.views.stringFormat)
                                     .font(.caption.bold())
                             }
-                            .padding(.horizontal, 10)
+                            .padding(.horizontal, 4)
                             .padding(.vertical, 4)
                             .background {
                                 RoundedRectangle(cornerRadius: 6, style: .continuous)
