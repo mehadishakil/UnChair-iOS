@@ -9,10 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var tabBarVisible = true
+    @State private var selectedDuration = TimeDuration(hours: 0, minutes: 1)
     
     var body: some View {
         TabView{
-                HomeScreen()
+                HomeScreen(selectedDuration: $selectedDuration)
                     .badge(2)
                     .tabItem {
                         Label("Home", systemImage: "house")
@@ -21,11 +22,10 @@ struct ContentView: View {
                     .tabItem {
                         Label("Analytics", systemImage: "chart.bar.xaxis")
                     }
-                ProfileScreen()
+                ProfileScreen(selectedDuration: $selectedDuration)
                     .tabItem {
                         Label("Profile", systemImage: "person")
                     }
-
         }
         
     }

@@ -17,6 +17,7 @@ enum Language: String, CaseIterable, Identifiable {
 
 struct ProfileScreen: View {
     
+    @Binding var selectedDuration: TimeDuration
     @State private var language : Language = .English
     @State private var isNotificationEnabled = true
     @State private var isDarkOn = true
@@ -75,6 +76,9 @@ struct ProfileScreen: View {
                     }
                     
                     ActiveHour()
+                    
+                    
+                    BreakTime(selectedDuration: $selectedDuration)
                     
                 }
                 
@@ -167,7 +171,7 @@ struct ProfileScreen: View {
 
 
 #Preview {
-    ProfileScreen()
+    ProfileScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
 }
 
 
