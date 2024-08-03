@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeScreen: View {
     
     @Binding var selectedDuration: TimeDuration
+    @State private var notificationPermissionGranted = false
     
     var body: some View {
         NavigationStack{
@@ -17,7 +18,7 @@ struct HomeScreen: View {
                 VStack{
                     HeaderView()
                     HCalendarView().padding(.bottom)
-                    SedentaryTime(selectedDuration: $selectedDuration).padding()
+                    SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted ,selectedDuration: $selectedDuration).padding()
                     DailyTracking()
                     Spacer()
                     BreakSectionView()
@@ -41,12 +42,15 @@ struct HomeScreen: View {
     }
     
     
-    func requestNotificationPermission(){
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]){ success, error in
-            if success{
-                print("Granted")
-            } else if let error {
-                print(error.localizedDescription)
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
+            DispatchQueue.main.async {
+                self.notificationPermissionGranted = success
+                if success {
+                    print("Notification permission granted")
+                } else if let error = error {
+                    print("Error requesting notification permission: \(error.localizedDescription)")
+                }
             }
         }
     }

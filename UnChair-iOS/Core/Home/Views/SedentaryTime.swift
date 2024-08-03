@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SedentaryTime: View {
     
+    @State private var notificationScheduled = false
+    @Binding var notificationPermissionGranted: Bool
     @Binding var selectedDuration: TimeDuration
     @State var startTime = Date.now
     @State var timeElapsed : Int = 0
@@ -27,7 +29,7 @@ struct SedentaryTime: View {
             VStack(alignment : .center){
                 Text("Sedentary Time")
                     .font(.headline)
-
+                
                 Text("\(formattedTime(timeElapsed))")
                     .font(.title3)
                     .onReceive(timer){ firedDate in
@@ -43,7 +45,9 @@ struct SedentaryTime: View {
         }
         .onReceive(timer) { firedDate in
             timeElapsed = Int(firedDate.timeIntervalSince(startTime))
-            performScheduleNotification()
+            if notificationPermissionGranted {
+                performScheduleNotification()
+            }
         }
         .padding()
         .background(Color.white)
@@ -53,22 +57,48 @@ struct SedentaryTime: View {
     
     func performScheduleNotification() {
         let timerMin = timeElapsed / 60
-        
-        if timerMin == selectedDuration.totalMinutes {
-            scheduleNotification()
+        if timerMin >= selectedDuration.totalMinutes {
+            if !notificationScheduled {
+                scheduleNotification()
+                notificationScheduled = true
+            }
         }
     }
     
-    func scheduleNotification(){
+    func scheduleNotification() {
         let content = UNMutableNotificationContent()
-        content.title = "This is the title"
-        content.subtitle = "This is the subtitle"
-        content.sound = UNNotificationSound.default
-        // Trigger after 10 sec
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+        content.title = "Time to Move!"
+        content.subtitle = "You've been sedentary for \(selectedDuration.totalMinutes) minutes"
+        content.body = "Stand up and stretch for a few minutes."
+        content.sound = UNNotificationSound.defaultCritical
+        content.badge = 1
+
+        // Trigger after 15 seconds
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 15, repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        // add notification request
-        UNUserNotificationCenter.current().add(request)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error.localizedDescription)")
+            } else {
+                print("Notification scheduled successfully for \(Date().addingTimeInterval(15))")
+                
+                // Check pending notifications
+                UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+                    print("Pending notifications: \(requests.count)")
+                }
+                
+                // Check delivered notifications after a delay
+                DispatchQueue.main.asyncAfter(deadline: .now() + 16) {
+                    UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
+                        print("Delivered notifications: \(notifications.count)")
+                        for notification in notifications {
+                            print(notification.request.content.title)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -86,5 +116,5 @@ func formattedTime(_ totalSeconds: Int) -> String {
 
 
 #Preview {
-    SedentaryTime(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
+    SedentaryTime(notificationPermissionGranted: .constant(false) ,selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
 }

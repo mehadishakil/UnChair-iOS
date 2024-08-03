@@ -11,24 +11,32 @@ struct WaterLineChartView: View {
     @State var sampleAnalytics: [SiteView] = sample_analytics
     @State var currentActiveItem: SiteView?
     @State var plotWidth: CGFloat = 0
-    @Binding var isBar: Bool
+
     
     var body: some View {
         VStack {
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Weekly Views")
-                    .fontWeight(.semibold)
+            VStack(alignment: .leading) {
                 
-                let totalValue = sampleAnalytics.reduce(0.0) { $0 + $1.views }
-                
-                Text(totalValue.stringFormat)
-                    .font(.headline)
-                
-                if isBar {
-                    BarChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
-                } else{
-                    LineChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                HStack{
+                    Image(systemName: "mug.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 20)
+                        .foregroundColor(.blue)
+                    Text("Water")
+                        .fontWeight(.semibold)
+                        .foregroundColor(.blue)
                 }
+                    
+  
+                    let totalValue = sampleAnalytics.reduce(0.0) { $0 + $1.views }
+                    
+                    Text("Avg \(totalValue.stringFormat) ml")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+
+                    LineChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                
             }
             .padding()
             .background(Color.white)
@@ -52,7 +60,7 @@ struct WaterLineChartView: View {
 }
 
 #Preview {
-    WaterLineChartView(isBar: .constant(true))
+    WaterLineChartView()
 }
 
 
