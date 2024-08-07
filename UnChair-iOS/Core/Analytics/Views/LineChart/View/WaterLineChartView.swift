@@ -11,7 +11,7 @@ struct WaterLineChartView: View {
     @State var sampleAnalytics: [SiteView] = sample_analytics
     @State var currentActiveItem: SiteView?
     @State var plotWidth: CGFloat = 0
-
+    
     
     var body: some View {
         VStack {
@@ -27,15 +27,15 @@ struct WaterLineChartView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.blue)
                 }
-                    
-  
-                    let totalValue = sampleAnalytics.reduce(0.0) { $0 + $1.views }
-                    
-                    Text("Avg \(totalValue.stringFormat) ml")
+                
+                
+                let totalValue = sampleAnalytics.reduce(0.0) { $0 + $1.views }
+                
+                Text("Avg \(totalValue.stringFormat) ml")
                     .font(.caption2)
                     .foregroundColor(.gray)
-
-                    LineChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                
+                LineChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
                 
             }
             .padding()
