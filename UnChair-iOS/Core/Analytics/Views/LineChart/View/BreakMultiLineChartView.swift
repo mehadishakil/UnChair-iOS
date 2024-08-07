@@ -57,7 +57,7 @@ struct ChartContentView: View {
                     )
                     .interpolationMethod(.catmullRom)
                     .lineStyle(StrokeStyle(lineWidth: city.city == tappedCity ? 4.0 : 2.0))
-                    
+
                     PointMark(
                         x: .value("Month", weather.month),
                         y: .value("Rainfall", weather.value)
@@ -74,10 +74,10 @@ struct ChartContentView: View {
             CityWeatherData.citydata[3].0 : CityWeatherData.citydata[3].2,
         ])
         .chartSymbolScale([
-            "New York": Circle().strokeBorder(lineWidth: 2),
-            "Amsterdam": Circle().strokeBorder(lineWidth: 2),
-            "London": Circle().strokeBorder(lineWidth: 2),
-            "Toronto": Circle().strokeBorder(lineWidth: 2),
+            "New York": Circle().strokeBorder(lineWidth: tappedCity == "New York" ? 4 : 2),
+            "Amsterdam": Circle().strokeBorder(lineWidth: tappedCity == "Amsterdam" ? 4 : 2),
+            "London": Circle().strokeBorder(lineWidth: tappedCity == "London" ? 4 : 2),
+            "Toronto": Circle().strokeBorder(lineWidth: tappedCity == "Toronto" ? 4 : 2),
         ])
         .chartOverlay { proxy in
             GeometryReader { geo in
@@ -89,9 +89,9 @@ struct ChartContentView: View {
     func chartOverlay(proxy: ChartProxy, geo: GeometryProxy) -> some View {
         Rectangle().fill(.clear).contentShape(Rectangle())
             .simultaneousGesture(
-                DragGesture(minimumDistance: 0) // Capture taps by setting minimumDistance to 0
+                DragGesture(minimumDistance: 0)
                     .onEnded { value in
-                        let location = value.location // Get the tap location
+                        let location = value.location
                         
                         var closestCity: String?
                         var minDistance: CGFloat = .infinity
