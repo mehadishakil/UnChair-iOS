@@ -14,7 +14,7 @@ struct StepsBarChartView: View {
     
     var body: some View {
         VStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 
                 HStack{
                     Image(systemName: "figure.walk")
@@ -26,20 +26,14 @@ struct StepsBarChartView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.blue)
                 }
-                    
-                    
-                    
-                    let totalValue = sampleAnalytics.reduce(0.0) { $0 + $1.views }
-                    
-                    Text("Avg \(totalValue.stringFormat) steps")
+
+                let totalValue = sampleAnalytics.reduce(0.0) { $0 + $1.views }
+                
+                Text("Avg \(totalValue.stringFormat) steps")
                     .font(.caption2)
                     .foregroundColor(.gray)
                 
-                
-                
-                
-                
-                    BarChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
+                BarChartView(sampleAnalytics: sampleAnalytics, currentActiveItem: $currentActiveItem, plotWidth: $plotWidth)
                 
             }
             .padding()

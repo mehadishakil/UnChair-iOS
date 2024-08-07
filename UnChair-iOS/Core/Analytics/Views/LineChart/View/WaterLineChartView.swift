@@ -15,7 +15,7 @@ struct WaterLineChartView: View {
     
     var body: some View {
         VStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 
                 HStack{
                     Image(systemName: "mug.fill")

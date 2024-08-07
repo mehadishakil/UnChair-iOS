@@ -9,8 +9,15 @@ import SwiftUI
 
 struct SiteView: Identifiable {
     var id = UUID().uuidString
-    var date: Date
+    var day: String
     var views: Double
+    var animate: Bool = false
+}
+
+struct SleepData: Identifiable {
+    let id = UUID()
+    let day: String
+    var hours: Double
     var animate: Bool = false
 }
 
@@ -23,12 +30,12 @@ extension Date {
 }
 
 // Updated sample data with weekly data
-let sample_analytics: [SiteView] = [
-    SiteView(date: Date().addingTimeInterval(-6 * 24 * 3600), views: 20988),
-    SiteView(date: Date().addingTimeInterval(-5 * 24 * 3600), views: 25500),
-    SiteView(date: Date().addingTimeInterval(-4 * 24 * 3600), views: 22625),
-    SiteView(date: Date().addingTimeInterval(-3 * 24 * 3600), views: 27500),
-    SiteView(date: Date().addingTimeInterval(-2 * 24 * 3600), views: 23688),
-    SiteView(date: Date().addingTimeInterval(-1 * 24 * 3600), views: 29988),
-    SiteView(date: Date(), views: 31500),
+var sample_analytics: [SiteView] = [
+    SiteView(day: "Sun", views: 20988),
+    SiteView(day: "Mon", views: 25500),
+    SiteView(day: "Tue", views: 22625),
+    SiteView(day: "Wed", views: 27500),
+    SiteView(day: "Thu", views: 23688),
+    SiteView(day: "Fri", views: 29988),
+    SiteView(day: "Sat", views: 31500),
 ]

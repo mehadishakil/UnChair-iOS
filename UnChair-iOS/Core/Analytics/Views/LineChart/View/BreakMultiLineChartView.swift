@@ -21,7 +21,7 @@ struct BreakMultiLineChartView: View {
             }
             .padding()
             
-            ChartContentView(selectedCity: selectedCity)
+            ChartContentView(selectedCity: $selectedCity)
                 .padding()
         }
         .background(Color.white)
@@ -43,7 +43,7 @@ struct BreakMultiLineChartView: View {
 }
 
 struct ChartContentView: View {
-    let selectedCity: Int
+    @Binding var selectedCity: Int
     
     var body: some View {
         Chart {
@@ -76,7 +76,40 @@ struct ChartContentView: View {
             "London": Circle().strokeBorder(lineWidth: 2),
             "Toronto": Circle().strokeBorder(lineWidth: 2),
         ])
+        .chartOverlay { proxy in
+            GeometryReader { geo in
+                chartOverlay(proxy: proxy, geo: geo)
+            }
+        }
+        
     }
+    
+    @ViewBuilder
+    private func chartOverlay(proxy: ChartProxy, geo: GeometryProxy) -> some View {
+        GeometryReader { geo in
+            Rectangle()
+                .fill(Color.clear)
+                .contentShape(Rectangle())
+                .gesture(
+                    TapGesture()
+                        .onEnded { value in
+//                            let location = value.location
+//                            if let city = CityWeatherData.cityRain.first(where: { city in
+//                                city.data.contains(where: { weather in
+//                                    let pointLocation = proxy.plotLocation(for: .value("Month", weather.month), .value("Rainfall", weather.value))
+//                                    return geo.frame(in: .global).contains(pointLocation)
+//                                })
+//                            })?.city {
+//                                withAnimation {
+//                                    self.selectedCity = city
+//                                }
+//                            }
+                            
+                        }
+                )
+        }
+    }
+    
 }
 
 #Preview {
