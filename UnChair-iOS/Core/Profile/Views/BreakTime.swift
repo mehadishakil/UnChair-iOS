@@ -13,7 +13,7 @@ struct BreakTime: View {
     
     var body: some View {
         HStack {
-            Image(systemName: "clock.arrow.2.circlepath")
+            Image(systemName: "timer")
             
             Text("Break Time")
             
@@ -26,6 +26,8 @@ struct BreakTime: View {
                     .padding(6)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(5)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
             }
             .sheet(isPresented: $isTimePickerPresented) {
                 CustomTimePicker(selectedDuration: $selectedDuration)

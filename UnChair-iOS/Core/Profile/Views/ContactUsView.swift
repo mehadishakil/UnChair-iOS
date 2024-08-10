@@ -10,13 +10,6 @@ import SwiftUI
 struct ContactUsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            // Header
-            HStack {
-                Text("Contact Us")
-                    .font(.headline)
-            }
-            .padding(.bottom)
-            
             // Description
             Text("You can get in touch with us through below platforms. Our Team will reach out to you as soon as it would be possible")
                 .font(.subheadline)
@@ -95,6 +88,7 @@ struct ContactUsView: View {
             Spacer()
         }
         .padding()
+        .navigationTitle("Contact Us")
     }
 }
 
