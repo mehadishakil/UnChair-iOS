@@ -12,6 +12,8 @@
 		E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80268402C31846A00F026F1 /* BreakSectionView.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
 		E829DA1C2C5AB67700DE69BA /* StepsBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */; };
+		E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF02C68DFBC00709773 /* CalmCorner.swift */; };
+		E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF22C68E35F00709773 /* Meditation.swift */; };
 		E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844B82A2C108B30006D54E4 /* SedentaryTime.swift */; };
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
 		E84992032C3EB37C007F918A /* WaterLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992022C3EB37C007F918A /* WaterLineChartView.swift */; };
@@ -52,6 +54,8 @@
 		E80268402C31846A00F026F1 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
 		E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsBarChartView.swift; sourceTree = "<group>"; };
+		E83A7EF02C68DFBC00709773 /* CalmCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmCorner.swift; sourceTree = "<group>"; };
+		E83A7EF22C68E35F00709773 /* Meditation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meditation.swift; sourceTree = "<group>"; };
 		E844B82A2C108B30006D54E4 /* SedentaryTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedentaryTime.swift; sourceTree = "<group>"; };
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
 		E84992022C3EB37C007F918A /* WaterLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterLineChartView.swift; sourceTree = "<group>"; };
@@ -209,6 +213,8 @@
 				E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */,
 				E826D5F42C3D70FD00B00579 /* DailyTracking.swift */,
 				E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */,
+				E83A7EF02C68DFBC00709773 /* CalmCorner.swift */,
+				E83A7EF22C68E35F00709773 /* Meditation.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -381,11 +387,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */,
+				E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */,
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
 				E829DA1C2C5AB67700DE69BA /* StepsBarChartView.swift in Sources */,
 				E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */,
 				E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */,
+				E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */,
 				E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */,
 				E8B9A2DB2C54A663003127CC /* LineChartView.swift in Sources */,
 				E8BB4E342BFD0AE400C1459C /* AnalyticScreen.swift in Sources */,

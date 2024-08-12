@@ -24,14 +24,17 @@ struct HomeScreen: View {
                     BreakSectionView()
                         .padding(.bottom)
                     
+                    CalmCorner()
+                        .padding(.bottom)
                     
-                        NavigationLink(destination: LocalNotification()) {
-                            HStack {
-                                Image(systemName: "creditcard")
-                                Text("Restore Purchase")
-                                Spacer()
-                            }
-                        }
+//                    NavigationLink(destination: LocalNotification()) {
+//                        HStack {
+//                            Image(systemName: "creditcard")
+//                            Text("Restore Purchase")
+//                            Spacer()
+//                        }
+//                    }
+                    
                     
                 }
                 .onAppear{
