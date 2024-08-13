@@ -9,25 +9,26 @@ import SwiftUI
 
 struct CalmCorner: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
+        VStack(alignment: .leading) {
             Text("Calm Corner")
                 .font(.title2)
                 .fontWeight(.semibold)
-                .padding(5)
             
-            NavigationLink(destination: Meditation()) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("Meditate")
-                            .font(.headline)
-                            .fontWeight(.bold)
-                        Text("Center your mind with calming meditation sessions")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+            
+            NavigationLink(destination: Meditation()){
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Meditate")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                    
+                    Text("Balance your thoughts and bring peace to your soul with a gentle meditation session.")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .minimumScaleFactor(0.9)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.leading)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .background(Color.white)
                 .cornerRadius(10)
@@ -41,3 +42,4 @@ struct CalmCorner: View {
 #Preview {
     CalmCorner()
 }
+

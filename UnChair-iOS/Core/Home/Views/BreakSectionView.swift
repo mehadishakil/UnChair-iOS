@@ -14,7 +14,6 @@ struct BreakSectionView: View {
             Text("Take a Break")
                 .font(.title2)
                 .fontWeight(.semibold)
-                .padding(5)
             
             ForEach(breakList) { index in
                 NavigationLink(destination: DetailsBreakView(breakItem: index)) {
@@ -23,21 +22,21 @@ struct BreakSectionView: View {
                             Text(index.title)
                                 .font(.headline)
                                 .fontWeight(.bold)
-                            Text(index.description)
+                            Text(index.overview)
                                 .font(.subheadline)
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.leading)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer()
-                        Text("\(index.duration) sec")
+                        Text("\(index.duration/60) min")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
-                    .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
+                    .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)                    
                 }
             }
             

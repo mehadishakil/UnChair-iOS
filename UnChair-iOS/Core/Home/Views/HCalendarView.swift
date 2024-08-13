@@ -19,6 +19,7 @@ struct HCalendarView: View {
             
             ZStack {
                 dayView
+                    .padding(.vertical, 5)
                 blurView
             }
             .frame(height: 30)

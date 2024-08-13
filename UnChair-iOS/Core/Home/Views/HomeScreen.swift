@@ -25,7 +25,8 @@ struct HomeScreen: View {
                         .padding(.bottom)
                     
                     CalmCorner()
-                        .padding(.bottom)
+                        
+                        
                     
 //                    NavigationLink(destination: LocalNotification()) {
 //                        HStack {

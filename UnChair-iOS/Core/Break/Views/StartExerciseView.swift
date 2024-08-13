@@ -8,25 +8,33 @@
 import SwiftUI
 import AVFoundation
 
-// Class to manage sound playback
-class SoundManager: ObservableObject {
-    var beepSound: AVAudioPlayer?
+class SoundManager {
+    static let instance = SoundManager()
+    var player : AVAudioPlayer?
     
-    init() {
-        setupBeepSound()
-    }
-    
-    private func setupBeepSound() {
-        if let path = Bundle.main.path(forResource: "beep", ofType: "wav") {
-            let url = URL(fileURLWithPath: path)
-            beepSound = try? AVAudioPlayer(contentsOf: url)
-            beepSound?.prepareToPlay()
+    func nextExerciseBeep() {
+        guard let url = Bundle.main.url(forResource: "single_beep", withExtension: ".mp3")
+        else {
+            return
+        }
+        do{
+            player = try AVAudioPlayer(contentsOf: url)
+            player?.play()
+        } catch let error {
+            print("Error playing sound. \(error.localizedDescription)")
         }
     }
     
-    func playBeepSound(times: Int) {
-        for _ in 0..<times {
-            beepSound?.play()
+    func allExerciseFinishBeep() {
+        guard let url = Bundle.main.url(forResource: "count_down", withExtension: ".mp3")
+        else {
+            return
+        }
+        do{
+            player = try AVAudioPlayer(contentsOf: url)
+            player?.play()
+        } catch let error {
+            print("Error playing sound. \(error.localizedDescription)")
         }
     }
 }
@@ -40,7 +48,6 @@ struct StartExerciseView: View {
     
     let exercises: [Exercise]
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var soundManager = SoundManager() // SoundManager as an observable object
     
     // Total duration of all exercises
     var totalDuration: Int {
@@ -108,18 +115,12 @@ struct StartExerciseView: View {
                     if currentExerciseIndex < exercises.count - 1 {
                         currentExerciseIndex += 1
                         elapsedTime = 0
-                        soundManager.playBeepSound(times: 1) // Single beep when each exercise ends
-                    } else {
-                        // Timer has finished
-                        soundManager.playBeepSound(times: 2) // Double beep when all exercises are complete
-                        timerRunning = false
-                        buttonText = "Start Now"
-                        presentationMode.wrappedValue.dismiss()
+                        SoundManager.instance.nextExerciseBeep() // Single beep when each exercise ends
                     }
                 }
             } else {
                 // Total duration has completed
-                soundManager.playBeepSound(times: 2) // Double beep when all exercises are complete
+                SoundManager.instance.allExerciseFinishBeep() // Double beep when all exercises are complete
                 timerRunning = false
                 buttonText = "Start Now"
                 presentationMode.wrappedValue.dismiss()
