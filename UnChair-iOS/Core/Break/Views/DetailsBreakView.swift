@@ -76,7 +76,7 @@ struct DetailsBreakView: View {
                     
                     ForEach(breakItem.exercises) { exercise in
                         HStack {
-                            Image(systemName: "figure.walk")
+                            Image(exercise.image)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 50, height: 50)

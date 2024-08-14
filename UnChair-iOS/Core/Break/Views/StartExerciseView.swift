@@ -143,8 +143,8 @@ struct BreakScreenView_Previews: PreviewProvider {
     static var previews: some View {
         let sets: [Exercise] = [
             // quick exercise
-            Exercise(name: "Neck Rolls", description: "Gently roll your neck in a circular motion.", duration: 15),
-            Exercise(name: "Shoulder Shrugs", description: "Raise your shoulders towards your ears, then lower them.", duration: 15)
+            Exercise(image:"neck_rools" ,name: "Neck Rolls", description: "Gently roll your neck in a circular motion.", duration: 15),
+            Exercise(image: "neck_rools", name: "Shoulder Shrugs", description: "Raise your shoulders towards your ears, then lower them.", duration: 15)
         ]
         
         StartExerciseView(exercises: sets)
