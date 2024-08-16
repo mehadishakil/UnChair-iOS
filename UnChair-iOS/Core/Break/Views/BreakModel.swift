@@ -34,22 +34,22 @@ let exercises: [Exercise] = [
     Exercise(image: "deep_breathing", name: "Deep Breathing", description: "Take 3 deep breaths, inhaling through your nose and exhaling through your mouth.", duration: 30),
 
     // Short Break Exercises
-    Exercise(image: "neck_rools", name: "Wrist Stretches", description: "Extend your arms and rotate your wrists.", duration: 30),
-    Exercise(image: "neck_rools", name: "Standing Backbend", description: "Stand up and gently bend backwards, supporting your lower back.", duration: 30),
-    Exercise(image: "neck_rools", name: "Seated Leg Extensions", description: "Sit straight, extend one leg at a time, and hold for a few seconds.", duration: 60),
-    Exercise(image: "neck_rools", name: "Eye Rest", description: "Close your eyes and cover them with your palms for 20 seconds.", duration: 60),
-    Exercise(image: "neck_rools", name: "Shoulder Blade Squeeze", description: "Sit or stand, pull your shoulder blades together and hold.", duration: 60),
-    Exercise(image: "neck_rools", name: "Seated Marching", description: "While seated, lift your knees one at a time in a marching motion.", duration: 60),
+    Exercise(image: "wrist_stretches", name: "Wrist Stretches", description: "Extend your arms and rotate your wrists.", duration: 30),
+    Exercise(image: "standing_backbend", name: "Standing Backbend", description: "Stand up and gently bend backwards, supporting your lower back.", duration: 30),
+    Exercise(image: "seated_leg_extensions", name: "Seated Leg Extensions", description: "Sit straight, extend one leg at a time, and hold for a few seconds.", duration: 60),
+    Exercise(image: "eye_rest", name: "Eye Rest", description: "Close your eyes and cover them with your palms for 20 seconds.", duration: 60),
+    Exercise(image: "shoulder_blade_squeeze", name: "Shoulder Blade Squeeze", description: "Sit or stand, pull your shoulder blades together and hold.", duration: 60),
+    Exercise(image: "seated_marching", name: "Seated Marching", description: "While seated, lift your knees one at a time in a marching motion.", duration: 60),
 
     // Medium Break Exercises
-    Exercise(image: "neck_rools", name: "Leg Stretches", description: "Stretch your legs while seated or standing.", duration: 60),
-    Exercise(image: "neck_rools", name: "Standing Hamstring Stretch", description: "Stand, bend forward at the hips, and reach for your toes.", duration: 60),
-    Exercise(image: "neck_rools", name: "Wall Push-Ups", description: "Stand facing a wall, place your hands on it, and perform push-ups.", duration: 60),
-    Exercise(image: "neck_rools", name: "Seated Forward Bend", description: "Sit straight, extend your legs, and bend forward to touch your toes.", duration: 60),
-    Exercise(image: "neck_rools", name: "Calf Raises", description: "Stand on your toes and lower yourself slowly.", duration: 60),
-    Exercise(image: "neck_rools", name: "Seated Shoulder Stretch", description: "Cross one arm over your chest and gently pull it with the other.", duration: 60),
-    Exercise(image: "neck_rools", name: "Seated Side Stretch", description: "Sit and stretch your arms overhead, leaning to each side.", duration: 60),
-    Exercise(image: "neck_rools", name: "Deep Breathing", description: "Take 5 deep breaths, inhaling through your nose and exhaling through your mouth.", duration: 60),
+    Exercise(image: "leg_stretches", name: "Leg Stretches", description: "Stretch your legs while seated or standing.", duration: 60),
+    Exercise(image: "standing_hamstring_stretch", name: "Standing Hamstring Stretch", description: "Stand, bend forward at the hips, and reach for your toes.", duration: 60),
+    Exercise(image: "wall_push_ups", name: "Wall Push-Ups", description: "Stand facing a wall, place your hands on it, and perform push-ups.", duration: 60),
+    Exercise(image: "seated_forward_bend", name: "Seated Forward Bend", description: "Sit straight, extend your legs, and bend forward to touch your toes.", duration: 60),
+    Exercise(image: "calf_raises", name: "Calf Raises", description: "Stand on your toes and lower yourself slowly.", duration: 60),
+    Exercise(image: "seated_shoulder_stretch", name: "Seated Shoulder Stretch", description: "Cross one arm over your chest and gently pull it with the other.", duration: 60),
+    Exercise(image: "seated_side_stretch", name: "Seated Side Stretch", description: "Sit and stretch your arms overhead, leaning to each side.", duration: 60),
+    Exercise(image: "deep_breathing", name: "Deep Breathing", description: "Take 5 deep breaths, inhaling through your nose and exhaling through your mouth.", duration: 60),
 
     // Long Break Exercises
     Exercise(image: "neck_rools", name: "Walk Around", description: "Take a short walk around your room or office.", duration: 300),
