@@ -27,7 +27,8 @@ struct Break: Identifiable {
 
 let exercises: [Exercise] = [
     // Quick Break Exercises
-    Exercise(image: "neck_rools", name: "Neck Rolls", description: "Gently roll your neck in a circular motion.", duration: 15),
+    
+    Exercise(image: "neck_stretch", name: "Neck Stretch", description: "Tilt your head towards your shoulder, holding gently.", duration: 15),
     Exercise(image: "shoulder_shrugs", name: "Shoulder Shrugs", description: "Raise your shoulders towards your ears, then lower them.", duration: 15),
     Exercise(image: "seated_torso_twist", name: "Seated Torso Twist", description: "Sit straight, place your hand on the opposite knee, and twist your torso gently to each side.", duration: 30),
     Exercise(image: "ankle_circles", name: "Ankle Circles", description: "Rotate your ankles in a circular motion, both clockwise and counterclockwise.", duration: 30),
@@ -52,16 +53,16 @@ let exercises: [Exercise] = [
     Exercise(image: "deep_breathing", name: "Deep Breathing", description: "Take 5 deep breaths, inhaling through your nose and exhaling through your mouth.", duration: 60),
 
     // Long Break Exercises
-    Exercise(image: "neck_rools", name: "Walk Around", description: "Take a short walk around your room or office.", duration: 300),
-    Exercise(image: "neck_rools", name: "Desk Push-ups", description: "Do 10 push-ups against your desk.", duration: 60),
-    Exercise(image: "neck_rools", name: "Chair Squats", description: "Stand up and sit down 10 times without fully sitting.", duration: 60),
-    Exercise(image: "neck_rools", name: "Seated Figure-Four Stretch", description: "Sit and place one ankle on the opposite knee, leaning forward.", duration: 60),
-    Exercise(image: "neck_rools", name: "Standing Quadriceps Stretch", description: "Stand, pull one foot towards your buttocks, and hold.", duration: 60),
-    Exercise(image: "neck_rools", name: "Seated Neck Stretch", description: "Sit and tilt your head towards your shoulder, holding gently.", duration: 60),
-    Exercise(image: "neck_rools", name: "Arm Circles", description: "Extend your arms and make circular motions, both forward and backward.", duration: 60),
-    Exercise(image: "neck_rools", name: "Standing Side Bend", description: "Stand, place one hand on your hip, and reach over your head to the opposite side.", duration: 60),
-    Exercise(image: "neck_rools", name: "Calf Stretch", description: "Place your hands on a wall, step one foot back, and press your heel down.", duration: 60),
-    Exercise(image: "neck_rools", name: "Meditation", description: "Sit comfortably, close your eyes, and focus on your breathing.", duration: 180)
+    Exercise(image: "walk_around", name: "Walk Around", description: "Take a short walk around your room or office.", duration: 300),
+    Exercise(image: "push_ups", name: "Push-ups", description: "Do 10 push-ups on the floor. If it seems harder than you can try knee push ups.", duration: 60),
+    Exercise(image: "chair_squats", name: "Chair Squats", description: "Stand up and sit down 10 times without fully sitting.", duration: 60),
+    Exercise(image: "seated_figure_four_stretch", name: "Seated Figure-Four Stretch", description: "Sit and place one ankle on the opposite knee, leaning forward.", duration: 60),
+    Exercise(image: "standing_quadriceps_stretch", name: "Standing Quadriceps Stretch", description: "Stand, pull one foot towards your buttocks, and hold.", duration: 60),
+    Exercise(image: "neck_rools", name: "Neck Rolls", description: "Slowly roll your neck in a circular motion in both direction", duration: 60),
+    Exercise(image: "arm_circles", name: "Arm Circles", description: "Extend your arms and make circular motions, both forward and backward.", duration: 60),
+    Exercise(image: "standing_side_bend", name: "Standing Side Bend", description: "Stand, place one hand on your hip, and reach over your head to the opposite side.", duration: 60),
+    Exercise(image: "calf_stretch", name: "Calf Stretch", description: "Place your hands on a wall, step one foot back, and press your heel down.", duration: 60),
+    Exercise(image: "meditation", name: "Meditation", description: "Sit comfortably, close your eyes, and focus on your breathing.", duration: 180)
 ]
 
 
