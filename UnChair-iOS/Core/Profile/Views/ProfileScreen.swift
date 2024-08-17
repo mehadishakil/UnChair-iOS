@@ -111,13 +111,6 @@ struct ProfileScreen: View {
                             Spacer()
                         }
                     }
-                    NavigationLink(destination: SupportUsView()) {
-                        HStack {
-                            Image(systemName: "heart")
-                            Text("Support Us")
-                            Spacer()
-                        }
-                    }
                     NavigationLink(destination: ContactUsView()) {
                         HStack {
                             Image(systemName: "phone")
@@ -214,14 +207,6 @@ struct TermsServiceView: View {
             .navigationTitle("Terms & Service")
     }
 }
-
-struct SupportUsView: View {
-    var body: some View {
-        Text("Support Us")
-            .navigationTitle("Support Us")
-    }
-}
-
 struct FAQView: View {
     var body: some View {
         Text("FAQ")
