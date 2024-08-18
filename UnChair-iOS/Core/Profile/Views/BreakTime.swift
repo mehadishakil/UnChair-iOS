@@ -31,6 +31,7 @@ struct BreakTime: View {
             }
             .sheet(isPresented: $isTimePickerPresented) {
                 CustomTimePicker(selectedDuration: $selectedDuration)
+                    .presentationDetents([.fraction(0.5), .medium])
             }
         }
     }
@@ -49,6 +50,7 @@ struct CustomTimePicker: View {
             Text("How often do you want to take break?")
                 .font(.headline)
                 .padding()
+                .padding(.top, 20)
             
             HStack {
                 Picker("Hours", selection: $selectedDuration.hours) {

@@ -28,6 +28,8 @@ struct DailyWaterView: View {
         }
         .sheet(isPresented: $showWaterPicker) {
             WaterPickerView(water: $waterIntake, waterTarget: waterTarget, maxIntake: maxIntake, minIntake: minIntake)
+                .presentationDetents([.fraction(0.8), .large])
+                .presentationDragIndicator(.visible)
         }
     }
 }
@@ -112,6 +114,7 @@ struct WaterPickerView: View {
             
             CircularProgressBar(current: tempWater, target: waterTarget, maxIntake: maxIntake, minIntake: minIntake)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
                 .gesture(
                     DragGesture()
                         .onChanged { value in
@@ -119,10 +122,11 @@ struct WaterPickerView: View {
                         }
                 )
             
+            
             HStack(spacing: 20) {
                 Button(action: { addWater(amount: 100) }) {
                     Text("+100ml")
-                        .padding()
+                        .padding(10)
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
@@ -130,7 +134,7 @@ struct WaterPickerView: View {
 
                 Button(action: { addWater(amount: 250) }) {
                     Text("+250ml")
-                        .padding()
+                        .padding(10)
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
@@ -138,7 +142,7 @@ struct WaterPickerView: View {
 
                 Button(action: { addWater(amount: 500) }) {
                     Text("+500ml")
-                        .padding()
+                        .padding(10)
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)

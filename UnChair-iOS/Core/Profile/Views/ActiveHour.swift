@@ -58,6 +58,8 @@ struct ActiveHour: View {
                     startTime = tempStartTime
                     endTime = tempEndTime
                 })
+                .presentationDetents([.fraction(0.7), .large])
+                .presentationDragIndicator(.visible)
             }
         }
     }
@@ -95,6 +97,7 @@ struct TimePickerView: View {
                 Text("How long?")
                     .font(.caption)
                     .fontWeight(.bold)
+                    .padding(.top, 12)
                 
                 HStack {
                     Image(systemName: "clock")
@@ -111,7 +114,7 @@ struct TimePickerView: View {
                                 .stroke(Color.purple, lineWidth: 1)
                         )
                 }
-                .padding(.bottom, 28)
+                .padding(.bottom, 24)
                 
                 Text("When?")
                     .font(.caption)
@@ -124,7 +127,7 @@ struct TimePickerView: View {
                     Text("At time")
                         .font(.subheadline)
                 }
-                .padding(.bottom, 28)
+                .padding(.bottom, 20)
                 
                 HStack {
                     Button(action: {
