@@ -1,5 +1,5 @@
 # UnChair
-The aim of this android application is to implement comprehensive solution aimed at mitigating the rising prevalence of sendentary lifestyles, promoting physical activity through remindar and challeges, and fostering a coluture of overall health and well-being
+The aim of this app is to implement comprehensive solution aimed at mitigating the rising prevalence of sendentary lifestyles, promoting physical activity through remindar and challeges, and fostering a coluture of overall health and well-being
 
 ## What is a Sedentary lifestyle?
 A person living a sedentary lifestyle is often sitting or lying down while engaged in an activity like socializing, watching TV, playing video games, reading or using a mobile phone or computer for much of the day.
