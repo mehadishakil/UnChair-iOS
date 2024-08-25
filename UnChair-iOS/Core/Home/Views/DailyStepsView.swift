@@ -6,7 +6,9 @@
 //
 import SwiftUI
 
+
 struct DailyStepsView: View {
+    @EnvironmentObject var manager: HealthManager
     var steps: Int
 
     var body: some View {

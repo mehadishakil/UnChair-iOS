@@ -29,6 +29,7 @@ struct SedentaryTime: View {
             VStack(alignment : .center){
                 Text("Sedentary Time")
                     .font(.headline)
+                    .foregroundColor(.primary)
                 
                 Text("\(formattedTime(timeElapsed))")
                     .font(.title3)

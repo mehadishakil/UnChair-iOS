@@ -11,6 +11,7 @@ struct HomeScreen: View {
     
     @Binding var selectedDuration: TimeDuration
     @State private var notificationPermissionGranted = false
+    @StateObject var manager = HealthManager()
     
     var body: some View {
         NavigationStack{
@@ -20,6 +21,8 @@ struct HomeScreen: View {
                     HCalendarView().padding(.bottom)
                     SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted ,selectedDuration: $selectedDuration).padding()
                     DailyTracking()
+                        .environmentObject(manager)
+                    
                     Spacer()
                     BreakSectionView()
                         .padding(.bottom)
@@ -40,6 +43,7 @@ struct HomeScreen: View {
                 }
                 .onAppear{
                     requestNotificationPermission()
+                    manager.fetchTodaySteps()
                 }
             }
         }

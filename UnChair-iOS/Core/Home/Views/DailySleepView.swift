@@ -45,7 +45,8 @@ struct DailySleepView: View {
             }
             .sheet(isPresented: $showSleepPicker) {
                 SleepPickerView(sleep: $sleep)
-                    .presentationDetents([.medium])
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }

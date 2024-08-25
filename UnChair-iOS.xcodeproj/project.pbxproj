@@ -31,6 +31,7 @@
 		E899A41B2C6BEBBF0042C5CC /* single_beep.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E899A41A2C6BEBBF0042C5CC /* single_beep.mp3 */; };
 		E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A84F792C2D39F400900714 /* HCalendarView.swift */; };
 		E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFFFD72C32B3750002815E /* ActiveHour.swift */; };
+		E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */; };
 		E8B3FDB22C5A49DA008F2B2C /* BreakMultiLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B3FDB12C5A49DA008F2B2C /* BreakMultiLineChartView.swift */; };
 		E8B812362C33ECC400698849 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B812352C33ECC400698849 /* EditProfile.swift */; };
 		E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2D82C54A648003127CC /* BarChartView.swift */; };
@@ -70,10 +71,13 @@
 		E8829A4A2C3AAD8900B197DD /* DailySleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySleepView.swift; sourceTree = "<group>"; };
 		E8829A4C2C3AAE8800B197DD /* DailyStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStepsView.swift; sourceTree = "<group>"; };
 		E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWaterView.swift; sourceTree = "<group>"; };
+		E884D3212C726A4C0075A323 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E899A4182C6BE73E0042C5CC /* count_down.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = count_down.mp3; sourceTree = "<group>"; };
 		E899A41A2C6BEBBF0042C5CC /* single_beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = single_beep.mp3; sourceTree = "<group>"; };
 		E8A84F792C2D39F400900714 /* HCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCalendarView.swift; sourceTree = "<group>"; };
 		E8AFFFD72C32B3750002815E /* ActiveHour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveHour.swift; sourceTree = "<group>"; };
+		E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthManager.swift; sourceTree = "<group>"; };
+		E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "UnChair-iOS.entitlements"; sourceTree = "<group>"; };
 		E8B3FDB12C5A49DA008F2B2C /* BreakMultiLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakMultiLineChartView.swift; sourceTree = "<group>"; };
 		E8B812352C33ECC400698849 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
 		E8B9A2D82C54A648003127CC /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
@@ -152,6 +156,8 @@
 		E874A9FD2BFB53A50075644C /* UnChair-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */,
+				E884D3212C726A4C0075A323 /* Info.plist */,
 				E8783CC12BFD921A0085A899 /* Core */,
 				E899A4172C6BE7030042C5CC /* Sounds */,
 				E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */,
@@ -213,6 +219,7 @@
 				E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */,
 				E83A7EF02C68DFBC00709773 /* CalmCorner.swift */,
 				E83A7EF22C68E35F00709773 /* Meditation.swift */,
+				E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -391,6 +398,7 @@
 				E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */,
 				E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
+				E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */,
 				E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */,
 				E8B3FDB22C5A49DA008F2B2C /* BreakMultiLineChartView.swift in Sources */,
 				E84992032C3EB37C007F918A /* WaterLineChartView.swift in Sources */,
@@ -537,12 +545,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "UnChair-iOS/UnChair-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UnChair-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = XU5YG8Z2VX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "UnChair-iOS/Info.plist";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Pleasse allow access to enjoy all the features of our application";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -566,12 +577,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "UnChair-iOS/UnChair-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UnChair-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = XU5YG8Z2VX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "UnChair-iOS/Info.plist";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Pleasse allow access to enjoy all the features of our application";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
