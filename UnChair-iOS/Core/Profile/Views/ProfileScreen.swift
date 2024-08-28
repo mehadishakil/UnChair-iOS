@@ -25,6 +25,8 @@ struct ProfileScreen: View {
         .current.date(bySettingHour: 8, minute: 0, second: 0, of: Date())!
     @State private var endTime = Calendar
         .current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
+    @State private var changeTheme: Bool = false
+    @AppStorage("user_theme") private var userTheme: Theme = .systemDefault
     
     var body: some View {
         NavigationView{
@@ -60,12 +62,31 @@ struct ProfileScreen: View {
                             Text("Notification")
                         }
                     }
+                    
                     HStack{
-                        Image(systemName: "moon")
-                        Toggle(isOn: $isDarkOn){
-                            Text("Dark Mode")
+                        Button(action: {
+                            changeTheme.toggle()
+                        }) {
+                            HStack {
+                                Image(systemName: "circle.lefthalf.filled")
+                                    .foregroundColor(.primary)
+                                Text("Appearance")
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(.gray)
+                            }
                         }
                     }
+                    .sheet(isPresented: $changeTheme, content: {
+                        ThemeChangeView()
+                            .presentationDetents([.height(410)])
+                            // .presentationBackground(.clear)
+                    })
+                    
+                    
+
+                    
                     HStack{
                         Image(systemName: "globe")
                         Picker("Language", selection: $language){

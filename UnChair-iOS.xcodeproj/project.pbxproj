@@ -32,6 +32,7 @@
 		E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A84F792C2D39F400900714 /* HCalendarView.swift */; };
 		E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFFFD72C32B3750002815E /* ActiveHour.swift */; };
 		E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */; };
+		E8B368652C7F28F4003F2741 /* ThemeChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */; };
 		E8B3FDB22C5A49DA008F2B2C /* BreakMultiLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B3FDB12C5A49DA008F2B2C /* BreakMultiLineChartView.swift */; };
 		E8B812362C33ECC400698849 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B812352C33ECC400698849 /* EditProfile.swift */; };
 		E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2D82C54A648003127CC /* BarChartView.swift */; };
@@ -78,6 +79,7 @@
 		E8AFFFD72C32B3750002815E /* ActiveHour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveHour.swift; sourceTree = "<group>"; };
 		E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthManager.swift; sourceTree = "<group>"; };
 		E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "UnChair-iOS.entitlements"; sourceTree = "<group>"; };
+		E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeChangeView.swift; sourceTree = "<group>"; };
 		E8B3FDB12C5A49DA008F2B2C /* BreakMultiLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakMultiLineChartView.swift; sourceTree = "<group>"; };
 		E8B812352C33ECC400698849 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
 		E8B9A2D82C54A648003127CC /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 		E8783CC12BFD921A0085A899 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				E8B368612C7F0C56003F2741 /* Theme */,
 				E8BDD33B2C42DDEB00EED832 /* Break */,
 				E8783CC82BFD92900085A899 /* Profile */,
 				E8783CC52BFD926C0085A899 /* Analytics */,
@@ -288,6 +291,14 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		E8B368612C7F0C56003F2741 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
 		E8BDD33B2C42DDEB00EED832 /* Break */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,6 +404,7 @@
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
+				E8B368652C7F28F4003F2741 /* ThemeChangeView.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */,
 				E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */,

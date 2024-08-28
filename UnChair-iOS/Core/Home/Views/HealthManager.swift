@@ -15,17 +15,22 @@ extension Date{
 }
 
 class HealthManager: ObservableObject {
-    let healthStore = HKHealthStore()
+    var healthStore : HKHealthStore?
     
     init(){
         let steps = HKQuantityType(.stepCount)
         let healthTypes: Set = [steps]
         
         Task{
-            do{
-                try await healthStore.requestAuthorization(toShare: [], read: healthTypes)
-            }catch{
-                print("Erroring fetching health data")
+            if HKHealthStore.isHealthDataAvailable() {
+                healthStore = HKHealthStore()
+                do{
+                    try await healthStore!.requestAuthorization(toShare: [], read: healthTypes)
+                }catch{
+                    print("Erroring fetching health data")
+                }
+            } else{
+                print("your device does not support healh services")
             }
         }
     }
@@ -41,5 +46,6 @@ class HealthManager: ObservableObject {
             let stepCount = quantity.doubleValue(for: .count())
             print(stepCount)
         }
+        healthStore!.execute(query)
     }
 }
