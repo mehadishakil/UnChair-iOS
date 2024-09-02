@@ -27,6 +27,7 @@
 		E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4A2C3AAD8900B197DD /* DailySleepView.swift */; };
 		E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4C2C3AAE8800B197DD /* DailyStepsView.swift */; };
 		E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */; };
+		E895079F2C862E6B002FDAA4 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E895079E2C862E6B002FDAA4 /* SplashScreen.swift */; };
 		E899A4192C6BE73E0042C5CC /* count_down.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E899A4182C6BE73E0042C5CC /* count_down.mp3 */; };
 		E899A41B2C6BEBBF0042C5CC /* single_beep.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E899A41A2C6BEBBF0042C5CC /* single_beep.mp3 */; };
 		E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A84F792C2D39F400900714 /* HCalendarView.swift */; };
@@ -74,6 +75,7 @@
 		E8829A4C2C3AAE8800B197DD /* DailyStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStepsView.swift; sourceTree = "<group>"; };
 		E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWaterView.swift; sourceTree = "<group>"; };
 		E884D3212C726A4C0075A323 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E895079E2C862E6B002FDAA4 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		E899A4182C6BE73E0042C5CC /* count_down.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = count_down.mp3; sourceTree = "<group>"; };
 		E899A41A2C6BEBBF0042C5CC /* single_beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = single_beep.mp3; sourceTree = "<group>"; };
 		E8A84F792C2D39F400900714 /* HCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCalendarView.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 		E8783CC12BFD921A0085A899 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				E895079D2C862E50002FDAA4 /* StartUp */,
 				E8D2BA792C84895200BEEAAF /* Authentication */,
 				E8B368612C7F0C56003F2741 /* Theme */,
 				E8BDD33B2C42DDEB00EED832 /* Break */,
@@ -283,6 +286,14 @@
 			children = (
 			);
 			path = ViewGroups;
+			sourceTree = "<group>";
+		};
+		E895079D2C862E50002FDAA4 /* StartUp */ = {
+			isa = PBXGroup;
+			children = (
+				E895079E2C862E6B002FDAA4 /* SplashScreen.swift */,
+			);
+			path = StartUp;
 			sourceTree = "<group>";
 		};
 		E899A4172C6BE7030042C5CC /* Sounds */ = {
@@ -434,6 +445,7 @@
 				E8020F902C481C82000C8506 /* SleepBarChartView.swift in Sources */,
 				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
+				E895079F2C862E6B002FDAA4 /* SplashScreen.swift in Sources */,
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
 				E84992012C3EB232007F918A /* SiteView.swift in Sources */,
