@@ -8,43 +8,47 @@
 import Foundation
 import HealthKit
 
-extension Date{
+extension Date {
     static var startOfDay: Date {
         Calendar.current.startOfDay(for: Date())
     }
 }
 
 class HealthManager: ObservableObject {
-    var healthStore : HKHealthStore?
-    
-    init(){
+    var healthStore: HKHealthStore?
+    @Published var todayStepCount: Int = 0
+
+    init() {
         let steps = HKQuantityType(.stepCount)
         let healthTypes: Set = [steps]
-        
-        Task{
+
+        Task {
             if HKHealthStore.isHealthDataAvailable() {
                 healthStore = HKHealthStore()
-                do{
+                do {
                     try await healthStore!.requestAuthorization(toShare: [], read: healthTypes)
-                }catch{
-                    print("Erroring fetching health data")
+                    fetchTodaySteps() // Fetch steps after getting authorization
+                } catch {
+                    print("Error fetching health data")
                 }
-            } else{
-                print("your device does not support healh services")
+            } else {
+                print("Your device does not support health services")
             }
         }
     }
-    
+
     func fetchTodaySteps() {
         let steps = HKQuantityType(.stepCount)
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
-        let query = HKStatisticsQuery(quantityType: steps, quantitySamplePredicate: predicate) { _, result, error in
+        let query = HKStatisticsQuery(quantityType: steps, quantitySamplePredicate: predicate) { [weak self] _, result, error in
             guard let quantity = result?.sumQuantity(), error == nil else {
-                print("Error fetching todays step data")
+                print("Error fetching today's step data")
                 return
             }
             let stepCount = quantity.doubleValue(for: .count())
-            print(stepCount)
+            DispatchQueue.main.async {
+                self?.todayStepCount = Int(stepCount)
+            }
         }
         healthStore!.execute(query)
     }

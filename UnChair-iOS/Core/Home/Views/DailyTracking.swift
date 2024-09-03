@@ -16,7 +16,8 @@ struct DailyTracking: View {
                 .padding(5)
             
             HStack(spacing: 15) {
-                DailyStepsView(steps: 1223)
+                DailyStepsView()
+                    .environmentObject(HealthManager())
                 DailyWaterView()
             }
             .frame(maxWidth: .infinity)

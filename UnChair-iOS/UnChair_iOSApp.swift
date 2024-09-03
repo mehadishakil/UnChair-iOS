@@ -10,9 +10,16 @@ import UserNotifications
 
 @main
 struct UnChair_iOSApp: App {
+    @AppStorage("isOnboarding") var isOnboarding: Bool = true
     
     var body: some Scene {
         WindowGroup {
+//            if isOnboarding {
+//                OnBoarding()
+//            } else {
+//                ContentView()
+//            }
+            
             ContentView()
         }
     }

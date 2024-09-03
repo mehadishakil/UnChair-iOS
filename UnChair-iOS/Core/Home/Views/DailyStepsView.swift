@@ -4,12 +4,11 @@
 //
 //  Created by Mehadi Hasan on 7/7/24.
 //
-import SwiftUI
 
+import SwiftUI
 
 struct DailyStepsView: View {
     @EnvironmentObject var manager: HealthManager
-    var steps: Int
 
     var body: some View {
         StepsCardView {
@@ -21,7 +20,7 @@ struct DailyStepsView: View {
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
                 VStack(spacing: 8) {
-                    Text("\(steps)")
+                    Text("\(manager.todayStepCount)")
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(.black)
                     Text("Steps")
@@ -51,7 +50,7 @@ struct StepsCardView<Content: View>: View {
     }
 }
 
-
 #Preview {
-    DailyStepsView(steps: 9982)
+    DailyStepsView()
+        .environmentObject(HealthManager())
 }

@@ -10,6 +10,7 @@
 		E8020F902C481C82000C8506 /* SleepBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8020F8F2C481C82000C8506 /* SleepBarChartView.swift */; };
 		E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E802683E2C317E0900F026F1 /* HeaderView.swift */; };
 		E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80268402C31846A00F026F1 /* BreakSectionView.swift */; };
+		E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
 		E829DA1C2C5AB67700DE69BA /* StepsBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */; };
 		E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF02C68DFBC00709773 /* CalmCorner.swift */; };
@@ -27,7 +28,7 @@
 		E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4A2C3AAD8900B197DD /* DailySleepView.swift */; };
 		E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4C2C3AAE8800B197DD /* DailyStepsView.swift */; };
 		E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */; };
-		E895079F2C862E6B002FDAA4 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E895079E2C862E6B002FDAA4 /* SplashScreen.swift */; };
+		E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = E89507A32C865842002FDAA4 /* OnBoarding.swift */; };
 		E899A4192C6BE73E0042C5CC /* count_down.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E899A4182C6BE73E0042C5CC /* count_down.mp3 */; };
 		E899A41B2C6BEBBF0042C5CC /* single_beep.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E899A41A2C6BEBBF0042C5CC /* single_beep.mp3 */; };
 		E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A84F792C2D39F400900714 /* HCalendarView.swift */; };
@@ -56,6 +57,7 @@
 		E8020F8F2C481C82000C8506 /* SleepBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepBarChartView.swift; sourceTree = "<group>"; };
 		E802683E2C317E0900F026F1 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		E80268402C31846A00F026F1 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
+		E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onBoardingPage.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
 		E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsBarChartView.swift; sourceTree = "<group>"; };
 		E83A7EF02C68DFBC00709773 /* CalmCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmCorner.swift; sourceTree = "<group>"; };
@@ -75,7 +77,7 @@
 		E8829A4C2C3AAE8800B197DD /* DailyStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStepsView.swift; sourceTree = "<group>"; };
 		E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWaterView.swift; sourceTree = "<group>"; };
 		E884D3212C726A4C0075A323 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		E895079E2C862E6B002FDAA4 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		E89507A32C865842002FDAA4 /* OnBoarding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnBoarding.swift; sourceTree = "<group>"; };
 		E899A4182C6BE73E0042C5CC /* count_down.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = count_down.mp3; sourceTree = "<group>"; };
 		E899A41A2C6BEBBF0042C5CC /* single_beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = single_beep.mp3; sourceTree = "<group>"; };
 		E8A84F792C2D39F400900714 /* HCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCalendarView.swift; sourceTree = "<group>"; };
@@ -185,7 +187,7 @@
 		E8783CC12BFD921A0085A899 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				E895079D2C862E50002FDAA4 /* StartUp */,
+				E89507A02C863279002FDAA4 /* OnBoarding */,
 				E8D2BA792C84895200BEEAAF /* Authentication */,
 				E8B368612C7F0C56003F2741 /* Theme */,
 				E8BDD33B2C42DDEB00EED832 /* Break */,
@@ -288,12 +290,13 @@
 			path = ViewGroups;
 			sourceTree = "<group>";
 		};
-		E895079D2C862E50002FDAA4 /* StartUp */ = {
+		E89507A02C863279002FDAA4 /* OnBoarding */ = {
 			isa = PBXGroup;
 			children = (
-				E895079E2C862E6B002FDAA4 /* SplashScreen.swift */,
+				E89507A32C865842002FDAA4 /* OnBoarding.swift */,
+				E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */,
 			);
-			path = StartUp;
+			path = OnBoarding;
 			sourceTree = "<group>";
 		};
 		E899A4172C6BE7030042C5CC /* Sounds */ = {
@@ -431,9 +434,11 @@
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */,
 				E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */,
+				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
 				E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
 				E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */,
+				E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */,
 				E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */,
 				E8B3FDB22C5A49DA008F2B2C /* BreakMultiLineChartView.swift in Sources */,
 				E84992032C3EB37C007F918A /* WaterLineChartView.swift in Sources */,
@@ -445,7 +450,6 @@
 				E8020F902C481C82000C8506 /* SleepBarChartView.swift in Sources */,
 				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
-				E895079F2C862E6B002FDAA4 /* SplashScreen.swift in Sources */,
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
 				E84992012C3EB232007F918A /* SiteView.swift in Sources */,
@@ -592,7 +596,6 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Pleasse allow access to enjoy all the features of our application";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -624,7 +627,6 @@
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Pleasse allow access to enjoy all the features of our application";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
