@@ -21,6 +21,8 @@ struct DailySleepView: View {
                     .frame(height: 30)
                     .padding(4)
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.black)
+                
                 VStack(spacing: 4) {
                     HStack(alignment: .center, spacing: 8) {
                         Text(String(format: "%.1f", sleep))

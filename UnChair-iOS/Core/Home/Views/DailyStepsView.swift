@@ -19,6 +19,8 @@ struct DailyStepsView: View {
                     .frame(height: 40)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.black)
+                
                 VStack(spacing: 8) {
                     Text("\(manager.todayStepCount)")
                         .font(.system(size: 24, weight: .bold))

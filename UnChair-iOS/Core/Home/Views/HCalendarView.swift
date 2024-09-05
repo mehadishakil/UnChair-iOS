@@ -79,7 +79,7 @@ struct HCalendarView: View {
                         .padding(8)
                         .background(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.blue : Color.clear)
                         .cornerRadius(100)
-                        .foregroundColor(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .white : .black)
+                        .foregroundColor(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .primary : .primary)
                         .onTapGesture {
                             selectedDate = date
                         }
@@ -103,14 +103,14 @@ struct HCalendarView: View {
             LinearGradient(
                 gradient: Gradient(
                     colors: [
-                        Color.white.opacity(1),
-                        Color.white.opacity(0)
+                        .themeBG.opacity(1),
+                        .themeBG.opacity(0)
                     ]
                 ),
                 startPoint: .leading,
                 endPoint: .trailing
             )
-            .frame(width: 20)
+            .frame(width: 25)
             .edgesIgnoringSafeArea(.leading)
             
             Spacer()
@@ -118,14 +118,14 @@ struct HCalendarView: View {
             LinearGradient(
                 gradient: Gradient(
                     colors: [
-                        Color.white.opacity(1),
-                        Color.white.opacity(0)
+                        .themeBG.opacity(1),
+                        .themeBG.opacity(0)
                     ]
                 ),
                 startPoint: .trailing,
                 endPoint: .leading
             )
-            .frame(width: 20)
+            .frame(width: 25)
             .edgesIgnoringSafeArea(.leading)
         }
     }

@@ -10,23 +10,39 @@ import Charts
     
 struct BreakMultiLineChartView: View {
     @State private var selectedCity = 0
+    @State var currentTab: String = "Week"
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack{
             HStack{
-                Image(systemName: "figure.mixed.cardio")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 20)
-                    .foregroundColor(.blue)
-                Text("Breaks")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.blue)
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack{
+                        Image(systemName: "figure.mixed.cardio")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 20)
+                            .foregroundColor(.blue)
+                        Text("Breaks")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.blue)
+                    }
+                    Text("Avg 45 min")
+                        .font(.caption2)
+                        .foregroundColor(.gray)
+                }
+                
+                Spacer(minLength: 80)
+                
+                Picker("", selection: $currentTab){
+                    Text("Week")
+                        .tag("Week")
+                    Text("Month")
+                        .tag("Month")
+                    Text("Year")
+                        .tag("Year")
+                }
+                .pickerStyle(.segmented)
             }
-            
-            Text("Avg 45 min")
-                .font(.caption2)
-                .foregroundColor(.gray)
             
             ChartContentView(selectedCity: $selectedCity)
                 .padding()
@@ -36,6 +52,8 @@ struct BreakMultiLineChartView: View {
         .background(Color.white)
         .cornerRadius(16)
         .shadow(radius: 8)
+        
+        
         
         
     }

@@ -192,7 +192,6 @@
 				E8B368612C7F0C56003F2741 /* Theme */,
 				E8BDD33B2C42DDEB00EED832 /* Break */,
 				E8783CC82BFD92900085A899 /* Profile */,
-				E8783CC52BFD926C0085A899 /* Analytics */,
 				E8783CC22BFD92320085A899 /* Home */,
 			);
 			path = Core;
@@ -210,6 +209,7 @@
 		E8783CC32BFD923D0085A899 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */,
 				E8B9A2E52C555B87003127CC /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
@@ -230,7 +230,6 @@
 				E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */,
 				E83A7EF02C68DFBC00709773 /* CalmCorner.swift */,
 				E83A7EF22C68E35F00709773 /* Meditation.swift */,
-				E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -286,6 +285,7 @@
 		E8783CCA2BFD92A10085A899 /* ViewGroups */ = {
 			isa = PBXGroup;
 			children = (
+				E8783CC52BFD926C0085A899 /* Analytics */,
 			);
 			path = ViewGroups;
 			sourceTree = "<group>";

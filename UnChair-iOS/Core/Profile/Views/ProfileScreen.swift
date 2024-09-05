@@ -174,7 +174,7 @@ struct ProfileScreen: View {
                     
                 } label: {
                     Text("Sign Out")
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                 }
                 
             }

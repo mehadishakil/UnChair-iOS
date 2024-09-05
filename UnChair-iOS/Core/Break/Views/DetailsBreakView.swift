@@ -97,12 +97,13 @@ struct DetailsBreakView: View {
                 Spacer(minLength: 0)
                 
                 NavigationLink(destination: StartExerciseView(exercises: breakItem.exercises)) {
-                    Text("Start")
-                        .font(.headline)
-                        .foregroundColor(.white)
+                    Text("Next")
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(.black)
                         .padding(.vertical)
                         .frame(maxWidth: .infinity)
-                        .background(Color.black)
+                        .background(.primary)
                         .cornerRadius(10)
                 }
                 .padding(.vertical, 50)

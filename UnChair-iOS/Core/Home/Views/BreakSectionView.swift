@@ -14,6 +14,7 @@ struct BreakSectionView: View {
             Text("Take a Break")
                 .font(.title2)
                 .fontWeight(.semibold)
+                .foregroundColor(.primary)
             
             ForEach(breakList) { index in
                 NavigationLink(destination: DetailsBreakView(breakItem: index)) {
@@ -42,7 +43,6 @@ struct BreakSectionView: View {
             
         }
         .padding()
-        .background(Color.white)
         .cornerRadius(15)
     }
 }
