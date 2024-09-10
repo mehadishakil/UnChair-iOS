@@ -114,15 +114,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E84991FB2C3EAC07007F918A /* LineChart */ = {
-			isa = PBXGroup;
-			children = (
-				E84991FD2C3EAC2F007F918A /* View */,
-				E84991FC2C3EAC1F007F918A /* Model */,
-			);
-			path = LineChart;
-			sourceTree = "<group>";
-		};
 		E84991FC2C3EAC1F007F918A /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -191,6 +182,7 @@
 				E8D2BA792C84895200BEEAAF /* Authentication */,
 				E8B368612C7F0C56003F2741 /* Theme */,
 				E8BDD33B2C42DDEB00EED832 /* Break */,
+				E8783CC52BFD926C0085A899 /* Analytics */,
 				E8783CC82BFD92900085A899 /* Profile */,
 				E8783CC22BFD92320085A899 /* Home */,
 			);
@@ -237,26 +229,12 @@
 		E8783CC52BFD926C0085A899 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				E8783CC72BFD92840085A899 /* ViewGroups */,
-				E8783CC62BFD927C0085A899 /* Views */,
-			);
-			path = Analytics;
-			sourceTree = "<group>";
-		};
-		E8783CC62BFD927C0085A899 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				E84991FB2C3EAC07007F918A /* LineChart */,
+				E84991FD2C3EAC2F007F918A /* View */,
+				E84991FC2C3EAC1F007F918A /* Model */,
 				E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */,
 			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		E8783CC72BFD92840085A899 /* ViewGroups */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewGroups;
+			name = Analytics;
+			path = Profile/ViewGroups/Analytics;
 			sourceTree = "<group>";
 		};
 		E8783CC82BFD92900085A899 /* Profile */ = {
@@ -285,7 +263,6 @@
 		E8783CCA2BFD92A10085A899 /* ViewGroups */ = {
 			isa = PBXGroup;
 			children = (
-				E8783CC52BFD926C0085A899 /* Analytics */,
 			);
 			path = ViewGroups;
 			sourceTree = "<group>";
