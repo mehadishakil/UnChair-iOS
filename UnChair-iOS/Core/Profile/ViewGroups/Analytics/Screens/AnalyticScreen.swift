@@ -11,21 +11,21 @@ struct AnalyticScreen: View {
     var body: some View {
         ScrollView{
             VStack{
-                BreakMultiLineChartView()
-                    .padding()
-                
-                Spacer()
-                
-                StepsBarChartView()
-                    .padding()
-                
-                Spacer()
+//                BreakMultiLineChartView()
+//                    .padding()
+//                
+//                Spacer()
+//                
+//                StepsBarChartView()
+//                    .padding()
+//                
+//                Spacer()
                 
                 WaterLineChartView()
                     .padding()
                 
-                SleepBarChartView()
-                    .padding()
+//                SleepBarChartView()
+//                    .padding()
             }
         }
     }

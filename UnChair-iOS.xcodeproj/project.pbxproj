@@ -49,6 +49,8 @@
 		E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D200692C5D3F67002EB719 /* BreakTime.swift */; };
 		E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */; };
 		E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2BA7A2C84897400BEEAAF /* Authentication.swift */; };
+		E8E5B3602C9337180021F76A /* WaterChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E5B35F2C9337180021F76A /* WaterChartModel.swift */; };
+		E8E5B3622C9337240021F76A /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E5B3612C9337240021F76A /* DataFetcher.swift */; };
 		E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */; };
 		E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */; };
 /* End PBXBuildFile section */
@@ -99,6 +101,8 @@
 		E8D200692C5D3F67002EB719 /* BreakTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTime.swift; sourceTree = "<group>"; };
 		E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTimeModel.swift; sourceTree = "<group>"; };
 		E8D2BA7A2C84897400BEEAAF /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
+		E8E5B35F2C9337180021F76A /* WaterChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterChartModel.swift; sourceTree = "<group>"; };
+		E8E5B3612C9337240021F76A /* DataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetcher.swift; sourceTree = "<group>"; };
 		E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,15 +118,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E84991FC2C3EAC1F007F918A /* Model */ = {
+		E84991FC2C3EAC1F007F918A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E8E5B35F2C9337180021F76A /* WaterChartModel.swift */,
 				E84992002C3EB232007F918A /* SiteView.swift */,
 			);
-			path = Model;
+			path = Models;
 			sourceTree = "<group>";
 		};
-		E84991FD2C3EAC2F007F918A /* View */ = {
+		E84991FD2C3EAC2F007F918A /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				E84992022C3EB37C007F918A /* WaterLineChartView.swift */,
@@ -133,7 +138,7 @@
 				E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */,
 				E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */,
 			);
-			path = View;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		E874A9F22BFB53A50075644C = {
@@ -229,9 +234,10 @@
 		E8783CC52BFD926C0085A899 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				E84991FD2C3EAC2F007F918A /* View */,
-				E84991FC2C3EAC1F007F918A /* Model */,
-				E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */,
+				E8E5B35E2C9336A80021F76A /* Screens */,
+				E8E5B35D2C93369D0021F76A /* ViewModels */,
+				E84991FD2C3EAC2F007F918A /* Views */,
+				E84991FC2C3EAC1F007F918A /* Models */,
 			);
 			name = Analytics;
 			path = Profile/ViewGroups/Analytics;
@@ -320,6 +326,22 @@
 			path = Authentication;
 			sourceTree = "<group>";
 		};
+		E8E5B35D2C93369D0021F76A /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E8E5B3612C9337240021F76A /* DataFetcher.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E8E5B35E2C9336A80021F76A /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				E8BB4E332BFD0AE400C1459C /* AnalyticScreen.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -399,6 +421,7 @@
 				E829DA1C2C5AB67700DE69BA /* StepsBarChartView.swift in Sources */,
 				E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */,
 				E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */,
+				E8E5B3602C9337180021F76A /* WaterChartModel.swift in Sources */,
 				E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */,
 				E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */,
 				E8B9A2DB2C54A663003127CC /* LineChartView.swift in Sources */,
@@ -406,6 +429,7 @@
 				E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */,
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
+				E8E5B3622C9337240021F76A /* DataFetcher.swift in Sources */,
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
 				E8B368652C7F28F4003F2741 /* ThemeChangeView.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
