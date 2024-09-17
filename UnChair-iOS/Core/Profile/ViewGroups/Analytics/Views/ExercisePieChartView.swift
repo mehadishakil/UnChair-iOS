@@ -1,18 +1,17 @@
 //
-//  StepsBarChartView.swift
-//  UnChair-iOS
+//  ExerciseLineChartView.swift
+//  ModuleDraft
 //
-//  Created by Mehadi Hasan on 1/8/24.
+//  Created by Mehadi Hasan on 16/9/24.
 //
 
 import SwiftUI
-
-struct StepsBarChartView: View {
-    
+ 
+struct ExercisePieChartView: View {
     @Environment(\.modelContext) var modelContext
     @State private var currentTab: String = "Week"
-    @State private var stepsData: [StepsChartModel] = []
-    @State private var currentActiveItem: StepsChartModel?
+    @State private var exerciseData: ExerciseChartModel?
+    @State private var currentActiveItem: ExerciseChartModel?
     @State private var plotWidth: CGFloat = 0
     
     var body: some View {
@@ -20,24 +19,15 @@ struct StepsBarChartView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "figure.walk")
+                        Image(systemName: "figure.mixed.cardio")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
                             .foregroundColor(.blue)
-                        Text("Steps")
+                        Text("Exercise")
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
                     }
-                    
-                    let totalValue = stepsData.reduce(into: 0.0) { (result, entry) in
-                        result += Double(entry.steps)
-                    }
-                    
-                    
-                    Text("Avg \(totalValue.stringFormat) steps")
-                        .font(.caption2)
-                        .foregroundColor(.gray)
                 }
                 
                 Spacer(minLength: 80)
@@ -52,52 +42,61 @@ struct StepsBarChartView: View {
                     fetchData(for: newValue)
                 }
             }
-            
-            StepsBarChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, stepsData: stepsData, currentTab: $currentTab)
-                .padding()
+            if let exerciseData = exerciseData {
+                ExercisePieChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, exerciseData: exerciseData, currentTab: $currentTab)
+                    .padding()
+            } else {
+                Text("No data available")
+            }
         }
         .padding()
         .background(Color.white)
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            addSamples()
+            //addSamples()
             fetchData(for: currentTab)
+            
+            print("Fetched Exercise Data: \(String(describing: exerciseData))")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .navigationTitle("Water Chart")
-        
-        
+        .navigationTitle("Exercise Chart")
     }
     
     
     private func addSamples() {
-        var sampleStepsData: [StepsChartModel] = []
+        var sampleData: [ExerciseChartModel] = []
         
         // Loop over the past 30 days
         for dayOffset in 0..<365 {
             // Generate a random water consumption between 1000ml and 3000ml
-            let randomSteps = Int.random(in: 1000...2000)
-            
+            let randomQuickBreak = Double.random(in: 3000...4000)
+            let randomShortBreak = Double.random(in: 2000...3000)
+            let randomMediumBreak = Double.random(in: 1000...2000)
+            let randomLongBreak = Double.random(in: 500...1000)
+            let breaks = Breaks(quickBreak: randomQuickBreak,
+                                       shortBreak: randomShortBreak,
+                                       mediumBreak: randomMediumBreak,
+                                       longBreak: randomLongBreak)
             // Calculate the date by subtracting the offset from the current date
             let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
             
             // Create a new WaterChartModel object
-            let sample = StepsChartModel(id: UUID().uuidString,
-                                         date: date,
-                                         steps: randomSteps,
-                                         lastUpdated: Date(),
-                                         isSynced: false)
+            let sample = ExerciseChartModel(id: UUID().uuidString,
+                                        date: date,
+                                        breaks: breaks,
+                                        lastUpdated: Date(),
+                                        isSynced: false)
             
             // Append the sample to an array before inserting
-            sampleStepsData.append(sample)
+            sampleData.append(sample)
         }
         
         // Sort the sampleData by date in ascending order (oldest to newest)
-        sampleStepsData.sort { $0.date < $1.date }
+        sampleData.sort { $0.date < $1.date }
         
         // Insert sorted samples into the model context
-        for sample in sampleStepsData {
+        for sample in sampleData {
             modelContext.insert(sample)
         }
         
@@ -114,17 +113,17 @@ struct StepsBarChartView: View {
         let dataFetcher = DataFetcher(modelContext: modelContext)
         switch period {
         case "Week":
-            stepsData = dataFetcher.fetchLast7DaysStepsData()
+            exerciseData = dataFetcher.fetchLast7DaysAverageExerciseData()
         case "Month":
-            stepsData = dataFetcher.fetchLastMonthStepsData()
+            exerciseData = dataFetcher.fetchLastMonthExerciseData()
         case "Year":
-            stepsData = dataFetcher.fetchLastYearStepsData()
+            exerciseData = dataFetcher.fetchLastYearExerciseData()
         default:
-            stepsData = dataFetcher.fetchAllTimeStepsData()
+            exerciseData = dataFetcher.fetchLast7DaysAverageExerciseData()
         }
     }
 }
 
-#Preview {
-    StepsBarChartView()
-}
+//#Preview {
+//    ExercisePieChartView()
+//}

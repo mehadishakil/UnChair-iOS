@@ -1,41 +1,41 @@
 //
-//  StepsBarChartView.swift
-//  UnChair-iOS
+//  SleepCapsuleChartView.swift
+//  ModuleDraft
 //
-//  Created by Mehadi Hasan on 1/8/24.
+//  Created by Mehadi Hasan on 15/9/24.
 //
+
 
 import SwiftUI
+import SwiftData
 
-struct StepsBarChartView: View {
+struct SleepCapsuleChartView: View {
     
     @Environment(\.modelContext) var modelContext
     @State private var currentTab: String = "Week"
-    @State private var stepsData: [StepsChartModel] = []
-    @State private var currentActiveItem: StepsChartModel?
+    @State private var sleepData: [SleepChartModel] = []
+    @State private var currentActiveItem: SleepChartModel?
     @State private var plotWidth: CGFloat = 0
+
     
     var body: some View {
         VStack {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "figure.walk")
+                        Image(systemName: "moon.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
                             .foregroundColor(.blue)
-                        Text("Steps")
+                        Text("Sleep")
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
                     }
+                    let totalValue = sleepData.reduce(0.0) { $0 + $1.sleep }
+                    let average = totalValue / Double(sleepData.count)
                     
-                    let totalValue = stepsData.reduce(into: 0.0) { (result, entry) in
-                        result += Double(entry.steps)
-                    }
-                    
-                    
-                    Text("Avg \(totalValue.stringFormat) steps")
+                    Text("Avg \(average.stringFormat) hrs")
                         .font(.caption2)
                         .foregroundColor(.gray)
                 }
@@ -52,8 +52,8 @@ struct StepsBarChartView: View {
                     fetchData(for: newValue)
                 }
             }
-            
-            StepsBarChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, stepsData: stepsData, currentTab: $currentTab)
+            SleepCapsuleChart(sleepData: sleepData, currentTab: $currentTab)
+                .frame(minHeight: 180)
                 .padding()
         }
         .padding()
@@ -61,43 +61,41 @@ struct StepsBarChartView: View {
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            addSamples()
+            //addSamples()
             fetchData(for: currentTab)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .navigationTitle("Water Chart")
-        
-        
     }
     
     
     private func addSamples() {
-        var sampleStepsData: [StepsChartModel] = []
+        var sampleData: [SleepChartModel] = []
         
         // Loop over the past 30 days
         for dayOffset in 0..<365 {
             // Generate a random water consumption between 1000ml and 3000ml
-            let randomSteps = Int.random(in: 1000...2000)
+            let randomSleep = Double.random(in: 0...12)
             
             // Calculate the date by subtracting the offset from the current date
             let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
             
             // Create a new WaterChartModel object
-            let sample = StepsChartModel(id: UUID().uuidString,
+            let sample = SleepChartModel(id: UUID().uuidString,
                                          date: date,
-                                         steps: randomSteps,
+                                         sleep: randomSleep,
                                          lastUpdated: Date(),
                                          isSynced: false)
             
             // Append the sample to an array before inserting
-            sampleStepsData.append(sample)
+            sampleData.append(sample)
         }
         
         // Sort the sampleData by date in ascending order (oldest to newest)
-        sampleStepsData.sort { $0.date < $1.date }
+        sampleData.sort { $0.date < $1.date }
         
         // Insert sorted samples into the model context
-        for sample in sampleStepsData {
+        for sample in sampleData {
             modelContext.insert(sample)
         }
         
@@ -114,17 +112,32 @@ struct StepsBarChartView: View {
         let dataFetcher = DataFetcher(modelContext: modelContext)
         switch period {
         case "Week":
-            stepsData = dataFetcher.fetchLast7DaysStepsData()
+            sleepData = dataFetcher.fetchLast7DaysSleepData()
         case "Month":
-            stepsData = dataFetcher.fetchLastMonthStepsData()
+            sleepData = dataFetcher.fetchLastMonthSleepData()
         case "Year":
-            stepsData = dataFetcher.fetchLastYearStepsData()
+            sleepData = dataFetcher.fetchLastYearSleepData()
         default:
-            stepsData = dataFetcher.fetchAllTimeStepsData()
+            sleepData = dataFetcher.fetchAllTimeSleepData()
         }
+    }
+
+}
+
+
+extension Double {
+    var stringFormat: String {
+        if self >= 10000 && self < 999999 {
+            return String(format: "%.1fK", self / 1000).replacingOccurrences(of: ".0", with: "")
+        }
+        if self > 999999 {
+            return String(format: "%.1fM", self / 1000000).replacingOccurrences(of: ".0", with: "")
+        }
+        return String(format: "%.0f", self)
     }
 }
 
+
 #Preview {
-    StepsBarChartView()
+    SleepCapsuleChartView()
 }

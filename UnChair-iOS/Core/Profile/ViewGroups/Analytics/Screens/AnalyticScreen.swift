@@ -13,19 +13,19 @@ struct AnalyticScreen: View {
             VStack{
 //                BreakMultiLineChartView()
 //                    .padding()
-//                
-//                Spacer()
-//                
-//                StepsBarChartView()
-//                    .padding()
-//                
-//                Spacer()
+                
+                Spacer()
+                
+                StepsBarChartView()
+                    .padding()
+                
+                Spacer()
                 
                 WaterLineChartView()
                     .padding()
                 
-//                SleepBarChartView()
-//                    .padding()
+                SleepCapsuleChartView()
+                    .padding()
             }
         }
     }

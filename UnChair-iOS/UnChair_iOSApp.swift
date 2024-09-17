@@ -22,5 +22,6 @@ struct UnChair_iOSApp: App {
             
             ContentView()
         }
+        .modelContainer(for: [WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])
     }
 }

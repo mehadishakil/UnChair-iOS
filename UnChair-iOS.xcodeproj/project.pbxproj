@@ -7,17 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E8020F902C481C82000C8506 /* SleepBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8020F8F2C481C82000C8506 /* SleepBarChartView.swift */; };
 		E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E802683E2C317E0900F026F1 /* HeaderView.swift */; };
 		E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80268402C31846A00F026F1 /* BreakSectionView.swift */; };
 		E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
-		E829DA1C2C5AB67700DE69BA /* StepsBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */; };
 		E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF02C68DFBC00709773 /* CalmCorner.swift */; };
 		E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF22C68E35F00709773 /* Meditation.swift */; };
 		E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844B82A2C108B30006D54E4 /* SedentaryTime.swift */; };
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
-		E84992032C3EB37C007F918A /* WaterLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992022C3EB37C007F918A /* WaterLineChartView.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
 		E868E3342C5CCE87005DFFE0 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */; };
 		E869831D2C441877007A695F /* StartExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E869831C2C441877007A695F /* StartExerciseView.swift */; };
@@ -35,10 +32,7 @@
 		E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFFFD72C32B3750002815E /* ActiveHour.swift */; };
 		E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */; };
 		E8B368652C7F28F4003F2741 /* ThemeChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */; };
-		E8B3FDB22C5A49DA008F2B2C /* BreakMultiLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B3FDB12C5A49DA008F2B2C /* BreakMultiLineChartView.swift */; };
 		E8B812362C33ECC400698849 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B812352C33ECC400698849 /* EditProfile.swift */; };
-		E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2D82C54A648003127CC /* BarChartView.swift */; };
-		E8B9A2DB2C54A663003127CC /* LineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2DA2C54A663003127CC /* LineChartView.swift */; };
 		E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */; };
 		E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E32C555728003127CC /* BreakModel.swift */; };
 		E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E52C555B87003127CC /* HomeViewModel.swift */; };
@@ -49,24 +43,32 @@
 		E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D200692C5D3F67002EB719 /* BreakTime.swift */; };
 		E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */; };
 		E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2BA7A2C84897400BEEAAF /* Authentication.swift */; };
-		E8E5B3602C9337180021F76A /* WaterChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E5B35F2C9337180021F76A /* WaterChartModel.swift */; };
-		E8E5B3622C9337240021F76A /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E5B3612C9337240021F76A /* DataFetcher.swift */; };
+		E8D787022C9941CC00BA83A0 /* ExerciseChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D786FE2C9941CC00BA83A0 /* ExerciseChartModel.swift */; };
+		E8D787032C9941CC00BA83A0 /* WaterChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D786FF2C9941CC00BA83A0 /* WaterChartModel.swift */; };
+		E8D787042C9941CC00BA83A0 /* StepsChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787002C9941CC00BA83A0 /* StepsChartModel.swift */; };
+		E8D787052C9941CC00BA83A0 /* SleepChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787012C9941CC00BA83A0 /* SleepChartModel.swift */; };
+		E8D7871A2C99425D00BA83A0 /* ExercisePieChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787122C99425C00BA83A0 /* ExercisePieChart.swift */; };
+		E8D7871B2C99425D00BA83A0 /* ExercisePieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787132C99425C00BA83A0 /* ExercisePieChartView.swift */; };
+		E8D7871C2C99425D00BA83A0 /* StepsBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787142C99425C00BA83A0 /* StepsBarChart.swift */; };
+		E8D7871D2C99425D00BA83A0 /* StepsBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787152C99425C00BA83A0 /* StepsBarChartView.swift */; };
+		E8D7871E2C99425D00BA83A0 /* SleepCapsuleChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787162C99425C00BA83A0 /* SleepCapsuleChart.swift */; };
+		E8D7871F2C99425D00BA83A0 /* SleepCapsuleChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787172C99425C00BA83A0 /* SleepCapsuleChartView.swift */; };
+		E8D787202C99425D00BA83A0 /* WaterLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787182C99425C00BA83A0 /* WaterLineChart.swift */; };
+		E8D787212C99425D00BA83A0 /* WaterLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787192C99425D00BA83A0 /* WaterLineChartView.swift */; };
+		E8D787232C9942EC00BA83A0 /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787222C9942EC00BA83A0 /* DataFetcher.swift */; };
 		E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */; };
 		E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E8020F8F2C481C82000C8506 /* SleepBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepBarChartView.swift; sourceTree = "<group>"; };
 		E802683E2C317E0900F026F1 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		E80268402C31846A00F026F1 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
 		E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onBoardingPage.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
-		E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsBarChartView.swift; sourceTree = "<group>"; };
 		E83A7EF02C68DFBC00709773 /* CalmCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmCorner.swift; sourceTree = "<group>"; };
 		E83A7EF22C68E35F00709773 /* Meditation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meditation.swift; sourceTree = "<group>"; };
 		E844B82A2C108B30006D54E4 /* SedentaryTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedentaryTime.swift; sourceTree = "<group>"; };
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
-		E84992022C3EB37C007F918A /* WaterLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterLineChartView.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
 		E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		E869831C2C441877007A695F /* StartExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartExerciseView.swift; sourceTree = "<group>"; };
@@ -87,10 +89,7 @@
 		E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthManager.swift; sourceTree = "<group>"; };
 		E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "UnChair-iOS.entitlements"; sourceTree = "<group>"; };
 		E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeChangeView.swift; sourceTree = "<group>"; };
-		E8B3FDB12C5A49DA008F2B2C /* BreakMultiLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakMultiLineChartView.swift; sourceTree = "<group>"; };
 		E8B812352C33ECC400698849 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
-		E8B9A2D82C54A648003127CC /* BarChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartView.swift; sourceTree = "<group>"; };
-		E8B9A2DA2C54A663003127CC /* LineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartView.swift; sourceTree = "<group>"; };
 		E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBreakView.swift; sourceTree = "<group>"; };
 		E8B9A2E32C555728003127CC /* BreakModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakModel.swift; sourceTree = "<group>"; };
 		E8B9A2E52C555B87003127CC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -101,8 +100,19 @@
 		E8D200692C5D3F67002EB719 /* BreakTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTime.swift; sourceTree = "<group>"; };
 		E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTimeModel.swift; sourceTree = "<group>"; };
 		E8D2BA7A2C84897400BEEAAF /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
-		E8E5B35F2C9337180021F76A /* WaterChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterChartModel.swift; sourceTree = "<group>"; };
-		E8E5B3612C9337240021F76A /* DataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetcher.swift; sourceTree = "<group>"; };
+		E8D786FE2C9941CC00BA83A0 /* ExerciseChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseChartModel.swift; sourceTree = "<group>"; };
+		E8D786FF2C9941CC00BA83A0 /* WaterChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WaterChartModel.swift; path = ../../../../../../../ModuleDraft/ModuleDraft/Code/Features/Chart/Models/WaterChartModel.swift; sourceTree = "<group>"; };
+		E8D787002C9941CC00BA83A0 /* StepsChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsChartModel.swift; sourceTree = "<group>"; };
+		E8D787012C9941CC00BA83A0 /* SleepChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepChartModel.swift; sourceTree = "<group>"; };
+		E8D787122C99425C00BA83A0 /* ExercisePieChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercisePieChart.swift; sourceTree = "<group>"; };
+		E8D787132C99425C00BA83A0 /* ExercisePieChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExercisePieChartView.swift; sourceTree = "<group>"; };
+		E8D787142C99425C00BA83A0 /* StepsBarChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsBarChart.swift; sourceTree = "<group>"; };
+		E8D787152C99425C00BA83A0 /* StepsBarChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsBarChartView.swift; sourceTree = "<group>"; };
+		E8D787162C99425C00BA83A0 /* SleepCapsuleChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepCapsuleChart.swift; sourceTree = "<group>"; };
+		E8D787172C99425C00BA83A0 /* SleepCapsuleChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepCapsuleChartView.swift; sourceTree = "<group>"; };
+		E8D787182C99425C00BA83A0 /* WaterLineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterLineChart.swift; sourceTree = "<group>"; };
+		E8D787192C99425D00BA83A0 /* WaterLineChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterLineChartView.swift; sourceTree = "<group>"; };
+		E8D787222C9942EC00BA83A0 /* DataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetcher.swift; sourceTree = "<group>"; };
 		E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -121,7 +131,11 @@
 		E84991FC2C3EAC1F007F918A /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				E8E5B35F2C9337180021F76A /* WaterChartModel.swift */,
+				E8D787012C9941CC00BA83A0 /* SleepChartModel.swift */,
+				E8D787002C9941CC00BA83A0 /* StepsChartModel.swift */,
+				E8D786FE2C9941CC00BA83A0 /* ExerciseChartModel.swift */,
+				E8D786FF2C9941CC00BA83A0 /* WaterChartModel.swift */,
+				E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */,
 				E84992002C3EB232007F918A /* SiteView.swift */,
 			);
 			path = Models;
@@ -130,13 +144,14 @@
 		E84991FD2C3EAC2F007F918A /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E84992022C3EB37C007F918A /* WaterLineChartView.swift */,
-				E8020F8F2C481C82000C8506 /* SleepBarChartView.swift */,
-				E8B9A2D82C54A648003127CC /* BarChartView.swift */,
-				E8B9A2DA2C54A663003127CC /* LineChartView.swift */,
-				E8B3FDB12C5A49DA008F2B2C /* BreakMultiLineChartView.swift */,
-				E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */,
-				E829DA1B2C5AB67700DE69BA /* StepsBarChartView.swift */,
+				E8D787122C99425C00BA83A0 /* ExercisePieChart.swift */,
+				E8D787132C99425C00BA83A0 /* ExercisePieChartView.swift */,
+				E8D787162C99425C00BA83A0 /* SleepCapsuleChart.swift */,
+				E8D787172C99425C00BA83A0 /* SleepCapsuleChartView.swift */,
+				E8D787142C99425C00BA83A0 /* StepsBarChart.swift */,
+				E8D787152C99425C00BA83A0 /* StepsBarChartView.swift */,
+				E8D787182C99425C00BA83A0 /* WaterLineChart.swift */,
+				E8D787192C99425D00BA83A0 /* WaterLineChartView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -234,10 +249,10 @@
 		E8783CC52BFD926C0085A899 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				E8E5B35E2C9336A80021F76A /* Screens */,
-				E8E5B35D2C93369D0021F76A /* ViewModels */,
-				E84991FD2C3EAC2F007F918A /* Views */,
 				E84991FC2C3EAC1F007F918A /* Models */,
+				E84991FD2C3EAC2F007F918A /* Views */,
+				E8E5B35D2C93369D0021F76A /* ViewModels */,
+				E8E5B35E2C9336A80021F76A /* Screens */,
 			);
 			name = Analytics;
 			path = Profile/ViewGroups/Analytics;
@@ -329,7 +344,7 @@
 		E8E5B35D2C93369D0021F76A /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				E8E5B3612C9337240021F76A /* DataFetcher.swift */,
+				E8D787222C9942EC00BA83A0 /* DataFetcher.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -416,44 +431,49 @@
 			files = (
 				E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */,
 				E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */,
+				E8D787202C99425D00BA83A0 /* WaterLineChart.swift in Sources */,
+				E8D7871C2C99425D00BA83A0 /* StepsBarChart.swift in Sources */,
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
-				E829DA1C2C5AB67700DE69BA /* StepsBarChartView.swift in Sources */,
 				E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */,
+				E8D787212C99425D00BA83A0 /* WaterLineChartView.swift in Sources */,
 				E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */,
-				E8E5B3602C9337180021F76A /* WaterChartModel.swift in Sources */,
 				E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */,
 				E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */,
-				E8B9A2DB2C54A663003127CC /* LineChartView.swift in Sources */,
+				E8D7871B2C99425D00BA83A0 /* ExercisePieChartView.swift in Sources */,
+				E8D787042C9941CC00BA83A0 /* StepsChartModel.swift in Sources */,
 				E8BB4E342BFD0AE400C1459C /* AnalyticScreen.swift in Sources */,
 				E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */,
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
-				E8E5B3622C9337240021F76A /* DataFetcher.swift in Sources */,
+				E8D787022C9941CC00BA83A0 /* ExerciseChartModel.swift in Sources */,
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
 				E8B368652C7F28F4003F2741 /* ThemeChangeView.swift in Sources */,
+				E8D7871A2C99425D00BA83A0 /* ExercisePieChart.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */,
-				E8B9A2D92C54A648003127CC /* BarChartView.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
 				E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
+				E8D787232C9942EC00BA83A0 /* DataFetcher.swift in Sources */,
 				E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */,
+				E8D787032C9941CC00BA83A0 /* WaterChartModel.swift in Sources */,
 				E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */,
 				E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */,
-				E8B3FDB22C5A49DA008F2B2C /* BreakMultiLineChartView.swift in Sources */,
-				E84992032C3EB37C007F918A /* WaterLineChartView.swift in Sources */,
 				E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */,
+				E8D7871E2C99425D00BA83A0 /* SleepCapsuleChart.swift in Sources */,
+				E8D7871D2C99425D00BA83A0 /* StepsBarChartView.swift in Sources */,
 				E868E3342C5CCE87005DFFE0 /* LocalNotification.swift in Sources */,
 				E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */,
 				E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */,
 				E869831D2C441877007A695F /* StartExerciseView.swift in Sources */,
-				E8020F902C481C82000C8506 /* SleepBarChartView.swift in Sources */,
 				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
+				E8D787052C9941CC00BA83A0 /* SleepChartModel.swift in Sources */,
 				E84992012C3EB232007F918A /* SiteView.swift in Sources */,
+				E8D7871F2C99425D00BA83A0 /* SleepCapsuleChartView.swift in Sources */,
 				E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */,
 				E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */,
 			);
