@@ -27,11 +27,9 @@ struct StepsBarChart: View {
         Chart(stepsData) {
             BarMark(
                 x: .value("Date", $0.date),
-                y: .value("Steps", $0.steps),
-                width: 10
+                y: .value("Steps", $0.steps)
             )
             .foregroundStyle(Color.blue)
-            .cornerRadius(6)
 
             
             if let currentActiveItem, currentActiveItem.id == $0.id {
@@ -58,7 +56,7 @@ struct StepsBarChart: View {
                 AxisMarks(preset: .aligned, values: stepsData.map { $0.date }) { value in
                     if let date = value.as(Date.self) {
                         AxisValueLabel {
-                            Text(formatDate(date, format: "d"))
+                            Text(formatDate(date, format: "dd MMM"))
                                 .font(.caption2)
                         }
                     }
@@ -89,35 +87,9 @@ struct StepsBarChart: View {
                 AxisValueLabel(horizontalSpacing: 20)
             }
         }
-        .chartYScale(domain: 0...(maxSteps + 500))
+        //.chartYScale(domain: 0...(maxSteps + 500))
     }
     
-    private func strideDates(from endDate: Date, by component: Calendar.Component, value: Int) -> [Date] {
-        var dates: [Date] = []
-        var currentDate = endDate
-        
-        for _ in 0..<abs(value) {
-            dates.append(currentDate)
-            currentDate = Calendar.current.date(byAdding: component, value: -1, to: currentDate) ?? endDate
-        }
-        
-        return dates.reversed()
-    }
-    
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        switch currentTab {
-        case "Week":
-            formatter.dateFormat = "E" // Display day of the week
-        case "Month":
-            formatter.dateFormat = "d" // Display day of the month
-        case "Year":
-            formatter.dateFormat = "MMM" // Display month abbreviation
-        default:
-            formatter.dateFormat = "MMM yy" // Display month and year
-        }
-        return formatter.string(from: date)
-    }
     
     private func formatDate(_ date: Date, format: String) -> String {
         let formatter = DateFormatter()
@@ -147,8 +119,8 @@ struct StepsBarChart: View {
     }
     
     private func annotationView(for item: StepsChartModel) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(formatDate(item.date))
+        VStack(alignment: .center, spacing: 2) {
+            Text("Steps")
                 .font(.caption2)
                 .foregroundColor(.secondary)
             Text("\(item.steps)")

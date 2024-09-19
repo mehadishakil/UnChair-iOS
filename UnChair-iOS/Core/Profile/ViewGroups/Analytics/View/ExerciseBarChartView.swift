@@ -1,43 +1,33 @@
 //
-//  SleepCapsuleChartView.swift
+//  ExerciseLineChartView.swift
 //  ModuleDraft
 //
-//  Created by Mehadi Hasan on 15/9/24.
+//  Created by Mehadi Hasan on 16/9/24.
 //
 
-
 import SwiftUI
-import SwiftData
-
-struct SleepCapsuleChartView: View {
-    
+ 
+struct ExerciseBarChartView: View {
     @Environment(\.modelContext) var modelContext
     @State private var currentTab: String = "Week"
-    @State private var sleepData: [SleepChartModel] = []
-    @State private var currentActiveItem: SleepChartModel?
+    @State private var exerciseData: [ExerciseChartModel] = []
+    @State private var currentActiveItem: ExerciseChartModel?
     @State private var plotWidth: CGFloat = 0
-
     
     var body: some View {
         VStack {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "moon.fill")
+                        Image(systemName: "figure.mixed.cardio")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
                             .foregroundColor(.blue)
-                        Text("Sleep")
+                        Text("Exercise")
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
                     }
-                    let totalValue = sleepData.reduce(0.0) { $0 + $1.sleep }
-                    let average = totalValue / Double(sleepData.count)
-                    
-                    Text("Avg \(average.stringFormat) hrs")
-                        .font(.caption2)
-                        .foregroundColor(.gray)
                 }
                 
                 Spacer(minLength: 80)
@@ -52,42 +42,54 @@ struct SleepCapsuleChartView: View {
                     fetchData(for: newValue)
                 }
             }
-            SleepCapsuleChart(sleepData: sleepData, currentTab: $currentTab)
-                .frame(minHeight: 180)
-                .padding()
+                ExerciseBarChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, exerciseData: exerciseData, currentTab: $currentTab)
+                    .padding()
         }
         .padding()
         .background(Color.white)
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            //addSamples()
+            // addSamples()
             fetchData(for: currentTab)
+            
+            print("Fetched Exercise Data: \(String(describing: exerciseData))")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .navigationTitle("Water Chart")
+        .navigationTitle("Exercise Chart")
     }
     
     
     private func addSamples() {
-        var sampleData: [SleepChartModel] = []
+        var sampleData: [ExerciseChartModel] = []
         
-        // Loop over the past 30 days
+        // Loop over the past 365 days
         for dayOffset in 0..<365 {
-            // Generate a random water consumption between 1000ml and 3000ml
-            let randomSleep = Double.random(in: 0...12)
+            // Generate random values for each break type
+            let randomQuickBreak = Double.random(in: 3000...4000)
+            let randomShortBreak = Double.random(in: 2000...3000)
+            let randomMediumBreak = Double.random(in: 1000...2000)
+            let randomLongBreak = Double.random(in: 500...1000)
+            
+            // Create an array of BreakEntry instances
+            let breakEntries = [
+                BreakEntry(breakType: "Quick Break", breakValue: randomQuickBreak),
+                BreakEntry(breakType: "Short Break", breakValue: randomShortBreak),
+                BreakEntry(breakType: "Medium Break", breakValue: randomMediumBreak),
+                BreakEntry(breakType: "Long Break", breakValue: randomLongBreak)
+            ]
             
             // Calculate the date by subtracting the offset from the current date
             let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
             
-            // Create a new WaterChartModel object
-            let sample = SleepChartModel(id: UUID().uuidString,
-                                         date: date,
-                                         sleep: randomSleep,
-                                         lastUpdated: Date(),
-                                         isSynced: false)
+            // Create a new ExerciseChartModel object
+            let sample = ExerciseChartModel(id: UUID().uuidString,
+                                            date: date,
+                                            breakEntries: breakEntries,
+                                            lastUpdated: Date(),
+                                            isSynced: false)
             
-            // Append the sample to an array before inserting
+            // Append the sample to the array
             sampleData.append(sample)
         }
         
@@ -102,7 +104,7 @@ struct SleepCapsuleChartView: View {
         do {
             // Save the context after inserting all the samples
             try modelContext.save()
-            print("Samples for the last 30 days added and sorted by date successfully.")
+            print("Samples for the last 365 days added and sorted by date successfully.")
         } catch {
             print("Error saving samples: \(error)")
         }
@@ -112,32 +114,17 @@ struct SleepCapsuleChartView: View {
         let dataFetcher = DataFetcher(modelContext: modelContext)
         switch period {
         case "Week":
-            sleepData = dataFetcher.fetchLast7DaysSleepData()
+            exerciseData = dataFetcher.fetchLast7DaysBreakData()
         case "Month":
-            sleepData = dataFetcher.fetchLastMonthSleepData()
+            exerciseData = dataFetcher.fetchLastMonthBreakData()
         case "Year":
-            sleepData = dataFetcher.fetchLastYearSleepData()
+            exerciseData = dataFetcher.fetchLastYearBreakData()
         default:
-            sleepData = dataFetcher.fetchAllTimeSleepData()
+            exerciseData = dataFetcher.fetchLast7DaysBreakData()
         }
     }
-
 }
 
-
-extension Double {
-    var stringFormat: String {
-        if self >= 10000 && self < 999999 {
-            return String(format: "%.1fK", self / 1000).replacingOccurrences(of: ".0", with: "")
-        }
-        if self > 999999 {
-            return String(format: "%.1fM", self / 1000000).replacingOccurrences(of: ".0", with: "")
-        }
-        return String(format: "%.0f", self)
-    }
-}
-
-
-#Preview {
-    SleepCapsuleChartView()
-}
+//#Preview {
+//    ExerciseBarChartView()
+//}

@@ -1,8 +1,8 @@
 //
 //  AnalyticScreen.swift
-//  UnChair-iOS
+//  ModuleDraft
 //
-//  Created by Mehadi Hasan on 21/5/24.
+//  Created by Mehadi Hasan on 10/9/24.
 //
 
 import SwiftUI
@@ -11,20 +11,16 @@ struct AnalyticScreen: View {
     var body: some View {
         ScrollView{
             VStack{
-//                BreakMultiLineChartView()
-//                    .padding()
-                
-                Spacer()
+                WaterLineChartView()
+                    .padding()
                 
                 StepsBarChartView()
                     .padding()
                 
-                Spacer()
-                
-                WaterLineChartView()
+                SleepCapsuleChartView()
                     .padding()
                 
-                SleepCapsuleChartView()
+                ExerciseBarChartView()
                     .padding()
             }
         }

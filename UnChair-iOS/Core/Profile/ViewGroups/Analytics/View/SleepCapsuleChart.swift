@@ -66,12 +66,13 @@ struct SleepCapsuleChart: View {
                 if let activeItem = currentActiveItem {
                     let annotationOffset = self.annotationOffset(for: activeItem, in: geo.size)
                     VStack {
-                        Text("\(formatDate(activeItem.date, format: "E")) \(activeItem.sleep, specifier: "%.2f") hrs")
+                        Text("Sleep\n\(activeItem.sleep, specifier: "%.2f") hrs")
                             .font(.caption)
                             .padding(4)
                             .background(Color.white)
                             .cornerRadius(5)
                             .shadow(radius: 5)
+                            .multilineTextAlignment(.center)
                         Spacer()
                     }
                     .frame(width: geo.size.width, height: geo.size.height)
@@ -87,7 +88,7 @@ struct SleepCapsuleChart: View {
         case "Week":
             formatter.dateFormat = "E"
         case "Month":
-            formatter.dateFormat = "d"
+            formatter.dateFormat = "dd MMM"
         case "Year":
             formatter.dateFormat = "MMM"
         default:

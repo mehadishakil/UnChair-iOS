@@ -332,199 +332,177 @@ class DataFetcher: ObservableObject {
     }
         
     
-//    func fetchLast7DaysExerciseData() -> [ExerciseChartModel] {
-//    // Use precomputed date in the predicate
-//    let predicate = #Predicate { (entry: ExerciseChartModel) in
-//        entry.date >= sevenDaysAgo && entry.date <= yesterday
-//    }
-//    
-//    let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
-//    do {
-//        let results = try modelContext.fetch(request)
-//        
-//        // Aggregate data by day
-//        let aggregatedData = Dictionary(grouping: results) { result in
-//            Calendar.current.startOfDay(for: result.date) ?? Date()
-//        }.map { (date, entries) in
-//            let quickBreak = entries.reduce(0) { $0 + $1.breaks.quickBreak }
-//            let shortBreak = entries.reduce(0) { $0 + $1.breaks.shortBreak }
-//            let mediumBreak = entries.reduce(0) { $0 + $1.breaks.mediumBreak }
-//            let longBreak = entries.reduce(0) { $0 + $1.breaks.longBreak }
-//            
-//            let averageQuickBreak = quickBreak / Double(entries.count)
-//            let averageShortBreak = shortBreak / Double(entries.count)
-//            let averageMediumBreak = mediumBreak / Double(entries.count)
-//            let averageLongBreak = longBreak / Double(entries.count)
-//            
-//            return ExerciseChartModel(id: UUID().uuidString, date: date, breaks: Breaks(quickBreak: averageQuickBreak, shortBreak: averageShortBreak, mediumBreak: averageMediumBreak, longBreak: averageLongBreak), lastUpdated: date)
-//        }.sorted { $0.date < $1.date }
-//        
-//        return aggregatedData
-//    } catch {
-//        print("Error fetching last 7 days exercise data: \(error)")
-//        return []
-//    }
-//}
+    //    func fetchLast7DaysExerciseData() -> [ExerciseChartModel] {
+    //    // Use precomputed date in the predicate
+    //    let predicate = #Predicate { (entry: ExerciseChartModel) in
+    //        entry.date >= sevenDaysAgo && entry.date <= yesterday
+    //    }
+    //    
+    //    let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
+    //    do {
+    //        let results = try modelContext.fetch(request)
+    //        
+    //        // Aggregate data by day
+    //        let aggregatedData = Dictionary(grouping: results) { result in
+    //            Calendar.current.startOfDay(for: result.date) ?? Date()
+    //        }.map { (date, entries) in
+    //            let quickBreak = entries.reduce(0) { $0 + $1.breaks.quickBreak }
+    //            let shortBreak = entries.reduce(0) { $0 + $1.breaks.shortBreak }
+    //            let mediumBreak = entries.reduce(0) { $0 + $1.breaks.mediumBreak }
+    //            let longBreak = entries.reduce(0) { $0 + $1.breaks.longBreak }
+    //            
+    //            let averageQuickBreak = quickBreak / Double(entries.count)
+    //            let averageShortBreak = shortBreak / Double(entries.count)
+    //            let averageMediumBreak = mediumBreak / Double(entries.count)
+    //            let averageLongBreak = longBreak / Double(entries.count)
+    //            
+    //            return ExerciseChartModel(id: UUID().uuidString, date: date, breaks: Breaks(quickBreak: averageQuickBreak, shortBreak: averageShortBreak, mediumBreak: averageMediumBreak, longBreak: averageLongBreak), lastUpdated: date)
+    //        }.sorted { $0.date < $1.date }
+    //        
+    //        return aggregatedData
+    //    } catch {
+    //        print("Error fetching last 7 days exercise data: \(error)")
+    //        return []
+    //    }
+    //}
+
     
-    
-    func fetchLast7DaysAverageExerciseData() -> ExerciseChartModel {
+    func fetchLast7DaysBreakData() -> [ExerciseChartModel] {
         let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
         
-        let predicate = #Predicate { (entry: ExerciseChartModel) in
+        let predicate = #Predicate<ExerciseChartModel> { entry in
             entry.date >= sevenDaysAgo && entry.date <= yesterday
         }
         
         let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
         do {
-            let results = try modelContext.fetch(request)
-            
-            // Calculate total values
-            let totalQuickBreak = results.reduce(0) { $0 + $1.breaks.quickBreak }
-            let totalShortBreak = results.reduce(0) { $0 + $1.breaks.shortBreak }
-            let totalMediumBreak = results.reduce(0) { $0 + $1.breaks.mediumBreak }
-            let totalLongBreak = results.reduce(0) { $0 + $1.breaks.longBreak }
-            
-            // Calculate averages
-            let count = Double(results.count)
-            let averageQuickBreak = totalQuickBreak / count
-            let averageShortBreak = totalShortBreak / count
-            let averageMediumBreak = totalMediumBreak / count
-            let averageLongBreak = totalLongBreak / count
-            
-            // Create and return a single ExerciseChartModel with average data
-            return ExerciseChartModel(
-                id: UUID().uuidString,
-                date: Date(), // You might want to use the middle date of the 7-day period
-                breaks: Breaks(
-                    quickBreak: averageQuickBreak,
-                    shortBreak: averageShortBreak,
-                    mediumBreak: averageMediumBreak,
-                    longBreak: averageLongBreak
-                ),
-                lastUpdated: Date()
-            )
-        } catch {
-            print("Error fetching last 7 days average exercise data: \(error)")
-            return ExerciseChartModel(
-                id: "Error",
-                date: Date(),
-                breaks: Breaks(quickBreak: 0, shortBreak: 0, mediumBreak: 0, longBreak: 0),
-                lastUpdated: Date()
-            )
-        }
+                // Fetch the data from the model context
+                let results = try modelContext.fetch(request)
+                
+                // Return the raw data entries
+                return results
+            } catch {
+                // Handle any errors that occur during fetching
+                print("Error fetching last 7 days exercise data: \(error)")
+                return []
+            }
     }
-    
-    func fetchLastMonthExerciseData() -> ExerciseChartModel {
         
-        // Use precomputed date in the predicate
-        let predicate = #Predicate { (entry: ExerciseChartModel) in
+    
+    func fetchLastMonthBreakData() -> [ExerciseChartModel] {
+        // Define the date range for the last month
+        let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+        
+        // Create a predicate to filter entries within the last month up to yesterday
+        let predicate = #Predicate<ExerciseChartModel> { entry in
             entry.date >= oneMonthAgo && entry.date <= yesterday
         }
         
+        // Create a fetch request with the predicate
         let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
+        
         do {
+            // Fetch the data from the model context
             let results = try modelContext.fetch(request)
             
-            // Calculate total values
-            let totalQuickBreak = results.reduce(0) { $0 + $1.breaks.quickBreak }
-            let totalShortBreak = results.reduce(0) { $0 + $1.breaks.shortBreak }
-            let totalMediumBreak = results.reduce(0) { $0 + $1.breaks.mediumBreak }
-            let totalLongBreak = results.reduce(0) { $0 + $1.breaks.longBreak }
+            // Aggregate data by week
+            let aggregatedData = Dictionary(grouping: results) { result in
+                Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: result.date)) ?? Date()
+            }.map { (date, entries) in
+                // Collect all break entries for the week
+                let allBreakEntries = entries.flatMap { $0.breakEntries }
+                
+                // Compute weekly average of break values per entry type
+                let breakEntriesByType = Dictionary(grouping: allBreakEntries) { $0.breakType }
+                let weeklyAverageBreakEntries = breakEntriesByType.map { (breakType, entries) in
+                    let averageValue = entries.reduce(0) { $0 + $1.breakValue } / Double(entries.count)
+                    return BreakEntry(breakType: breakType, breakValue: averageValue)
+                }
+                
+                return ExerciseChartModel(
+                    id: UUID().uuidString,
+                    date: date,
+                    breakEntries: weeklyAverageBreakEntries,
+                    lastUpdated: date
+                )
+            }.sorted { $0.date < $1.date }
             
-            // Calculate averages
-            let count = Double(results.count)
-            let averageQuickBreak = totalQuickBreak / count
-            let averageShortBreak = totalShortBreak / count
-            let averageMediumBreak = totalMediumBreak / count
-            let averageLongBreak = totalLongBreak / count
-            
-            // Create and return a single ExerciseChartModel with average data
-            return ExerciseChartModel(
-                id: UUID().uuidString,
-                date: Date(), // You might want to use the middle date of the 7-day period
-                breaks: Breaks(
-                    quickBreak: averageQuickBreak,
-                    shortBreak: averageShortBreak,
-                    mediumBreak: averageMediumBreak,
-                    longBreak: averageLongBreak
-                ),
-                lastUpdated: Date()
-            )
+            return aggregatedData
         } catch {
-            print("Error fetching last 7 days average exercise data: \(error)")
-            return ExerciseChartModel(
-                id: "Error",
-                date: Date(),
-                breaks: Breaks(quickBreak: 0, shortBreak: 0, mediumBreak: 0, longBreak: 0),
-                lastUpdated: Date()
-            )
-        }
-    }
-    
-    func fetchLastYearExerciseData() -> ExerciseChartModel {
-        
-        let predicate = #Predicate { (entry: ExerciseChartModel) in
-            entry.date >= oneYearAgo && entry.date <= yesterday
-        }
-        
-        let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
-        do {
-            let results = try modelContext.fetch(request)
-            
-            // Calculate total values
-            let totalQuickBreak = results.reduce(0) { $0 + $1.breaks.quickBreak }
-            let totalShortBreak = results.reduce(0) { $0 + $1.breaks.shortBreak }
-            let totalMediumBreak = results.reduce(0) { $0 + $1.breaks.mediumBreak }
-            let totalLongBreak = results.reduce(0) { $0 + $1.breaks.longBreak }
-            
-            // Calculate averages
-            let count = Double(results.count)
-            let averageQuickBreak = totalQuickBreak / count
-            let averageShortBreak = totalShortBreak / count
-            let averageMediumBreak = totalMediumBreak / count
-            let averageLongBreak = totalLongBreak / count
-            
-            // Create and return a single ExerciseChartModel with average data
-            return ExerciseChartModel(
-                id: UUID().uuidString,
-                date: Date(), // You might want to use the middle date of the 7-day period
-                breaks: Breaks(
-                    quickBreak: averageQuickBreak,
-                    shortBreak: averageShortBreak,
-                    mediumBreak: averageMediumBreak,
-                    longBreak: averageLongBreak
-                ),
-                lastUpdated: Date()
-            )
-        } catch {
-            print("Error fetching last 7 days average exercise data: \(error)")
-            return ExerciseChartModel(
-                id: "Error",
-                date: Date(),
-                breaks: Breaks(quickBreak: 0, shortBreak: 0, mediumBreak: 0, longBreak: 0),
-                lastUpdated: Date()
-            )
-        }
-    }
-    
-    func fetchAllTimeExerciseData() -> [ExerciseChartModel] {
-        
-        // Use precomputed date in the predicate
-        let predicate = #Predicate { (entry: ExerciseChartModel) in
-            entry.date <= yesterday
-        }
-        
-        let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
-        do {
-            let results = try modelContext.fetch(request)
-            return results
-        } catch {
-            print("Error fetching all-time exercise data: \(error)")
+            // Handle any errors that occur during fetching
+            print("Error fetching last month's exercise data: \(error)")
             return []
         }
     }
+        
     
+    func fetchLastYearBreakData() -> [ExerciseChartModel] {
+        // Define the date range for the last year
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date()) ?? Date()
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+        
+        // Create a predicate to filter entries within the last year up to yesterday
+        let predicate = #Predicate<ExerciseChartModel> { entry in
+            entry.date >= oneYearAgo && entry.date <= yesterday
+        }
+        
+        // Create a fetch request with the predicate
+        let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
+        
+        do {
+            // Fetch the data from the model context
+            let results = try modelContext.fetch(request)
+            
+            // Aggregate data by month
+            let aggregatedData = Dictionary(grouping: results) { result in
+                Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: result.date)) ?? Date()
+            }.map { (date, entries) in
+                // Collect all break entries for the month
+                let allBreakEntries = entries.flatMap { $0.breakEntries }
+                
+                // Compute monthly average of break values per entry type
+                let breakEntriesByType = Dictionary(grouping: allBreakEntries) { $0.breakType }
+                let monthlyAverageBreakEntries = breakEntriesByType.map { (breakType, entries) in
+                    let averageValue = entries.reduce(0) { $0 + $1.breakValue } / Double(entries.count)
+                    return BreakEntry(breakType: breakType, breakValue: averageValue)
+                }
+                
+                return ExerciseChartModel(
+                    id: UUID().uuidString,
+                    date: date,
+                    breakEntries: monthlyAverageBreakEntries,
+                    lastUpdated: date
+                )
+            }.sorted { $0.date < $1.date }
+            
+            return aggregatedData
+        } catch {
+            // Handle any errors that occur during fetching
+            print("Error fetching last year's exercise data: \(error)")
+            return []
+        }
+    }
+        
+    
+    func fetchAllTimeBreakData() -> [ExerciseChartModel] {
+            let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+            
+            let predicate = #Predicate<ExerciseChartModel> { entry in
+                entry.date <= yesterday
+            }
+            
+            let request = FetchDescriptor<ExerciseChartModel>(predicate: predicate)
+            do {
+                let results = try modelContext.fetch(request)
+                return results.sorted { $0.date < $1.date }
+            } catch {
+                print("Error fetching all-time exercise data: \(error)")
+                return []
+            }
+        }
+
 }
 
 

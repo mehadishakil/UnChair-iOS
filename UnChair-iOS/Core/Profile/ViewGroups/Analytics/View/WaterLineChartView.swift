@@ -1,33 +1,42 @@
 //
-//  ExerciseLineChartView.swift
-//  ModuleDraft
+//  ContentView.swift
+//  UnChair-iOS
 //
-//  Created by Mehadi Hasan on 16/9/24.
+//  Created by Mehadi Hasan on 10/7/24.
 //
 
 import SwiftUI
- 
-struct ExercisePieChartView: View {
+import SwiftData
+
+struct WaterLineChartView: View {
+    
     @Environment(\.modelContext) var modelContext
     @State private var currentTab: String = "Week"
-    @State private var exerciseData: ExerciseChartModel?
-    @State private var currentActiveItem: ExerciseChartModel?
+    @State private var waterData: [WaterChartModel] = []
+    @State private var currentActiveItem: WaterChartModel?
     @State private var plotWidth: CGFloat = 0
+
     
     var body: some View {
         VStack {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "figure.mixed.cardio")
+                        Image(systemName: "mug.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
                             .foregroundColor(.blue)
-                        Text("Exercise")
+                        Text("Water")
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
                     }
+                    let totalValue = waterData.reduce(0.0) { $0 + $1.consumption }
+                    let average = totalValue / Double(waterData.count)
+                    
+                    Text("Avg \(average.stringFormat) ml")
+                        .font(.caption2)
+                        .foregroundColor(.gray)
                 }
                 
                 Spacer(minLength: 80)
@@ -42,51 +51,39 @@ struct ExercisePieChartView: View {
                     fetchData(for: newValue)
                 }
             }
-            if let exerciseData = exerciseData {
-                ExercisePieChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, exerciseData: exerciseData, currentTab: $currentTab)
-                    .padding()
-            } else {
-                Text("No data available")
-            }
+            WaterLineChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, waterData: waterData, currentTab: $currentTab)
+                .padding()
         }
         .padding()
         .background(Color.white)
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            //addSamples()
+            // addSamples()
             fetchData(for: currentTab)
-            
-            print("Fetched Exercise Data: \(String(describing: exerciseData))")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .navigationTitle("Exercise Chart")
+        .navigationTitle("Water Chart")
     }
     
     
     private func addSamples() {
-        var sampleData: [ExerciseChartModel] = []
+        var sampleData: [WaterChartModel] = []
         
         // Loop over the past 30 days
         for dayOffset in 0..<365 {
             // Generate a random water consumption between 1000ml and 3000ml
-            let randomQuickBreak = Double.random(in: 3000...4000)
-            let randomShortBreak = Double.random(in: 2000...3000)
-            let randomMediumBreak = Double.random(in: 1000...2000)
-            let randomLongBreak = Double.random(in: 500...1000)
-            let breaks = Breaks(quickBreak: randomQuickBreak,
-                                       shortBreak: randomShortBreak,
-                                       mediumBreak: randomMediumBreak,
-                                       longBreak: randomLongBreak)
+            let randomConsumption = Double.random(in: 1000...2000)
+            
             // Calculate the date by subtracting the offset from the current date
             let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
             
             // Create a new WaterChartModel object
-            let sample = ExerciseChartModel(id: UUID().uuidString,
-                                        date: date,
-                                        breaks: breaks,
-                                        lastUpdated: Date(),
-                                        isSynced: false)
+            let sample = WaterChartModel(id: UUID().uuidString,
+                                         date: date,
+                                         consumption: randomConsumption,
+                                         lastUpdated: Date(),
+                                         isSynced: false)
             
             // Append the sample to an array before inserting
             sampleData.append(sample)
@@ -113,17 +110,27 @@ struct ExercisePieChartView: View {
         let dataFetcher = DataFetcher(modelContext: modelContext)
         switch period {
         case "Week":
-            exerciseData = dataFetcher.fetchLast7DaysAverageExerciseData()
+            waterData = dataFetcher.fetchLast7DaysWaterData()
         case "Month":
-            exerciseData = dataFetcher.fetchLastMonthExerciseData()
+            waterData = dataFetcher.fetchLastMonthWaterData()
         case "Year":
-            exerciseData = dataFetcher.fetchLastYearExerciseData()
+            waterData = dataFetcher.fetchLastYearWaterData()
         default:
-            exerciseData = dataFetcher.fetchLast7DaysAverageExerciseData()
+            waterData = dataFetcher.fetchAllTimeWaterData()
         }
     }
+
 }
 
-//#Preview {
-//    ExercisePieChartView()
+
+//extension Double {
+//    var stringFormat: String {
+//        if self >= 10000 && self < 999999 {
+//            return String(format: "%.1fK", self / 1000).replacingOccurrences(of: ".0", with: "")
+//        }
+//        if self > 999999 {
+//            return String(format: "%.1fM", self / 1000000).replacingOccurrences(of: ".0", with: "")
+//        }
+//        return String(format: "%.0f", self)
+//    }
 //}

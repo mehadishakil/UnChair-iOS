@@ -59,7 +59,7 @@ struct WaterLineChart: View {
                 AxisMarks(preset: .aligned, values: waterData.map { $0.date }) { value in
                     if let date = value.as(Date.self) {
                         AxisValueLabel {
-                            Text(formatDate(date, format: "d"))
+                            Text(formatDate(date, format: "dd MMM"))
                                 .font(.caption2)
                         }
                     }
@@ -153,11 +153,11 @@ struct WaterLineChart: View {
     }
     
     private func annotationView(for item: WaterChartModel) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(formatDate(item.date))
+        VStack(alignment: .center, spacing: 2) {
+            Text("Consume")
                 .font(.caption2)
                 .foregroundColor(.secondary)
-            Text(item.consumption.stringFormat)
+            Text("\(item.consumption , specifier: "%.0f") ml")
                 .font(.caption)
                 .fontWeight(.heavy)
                 .foregroundColor(Color(red: 44/255, green: 102/255, blue: 246/255))

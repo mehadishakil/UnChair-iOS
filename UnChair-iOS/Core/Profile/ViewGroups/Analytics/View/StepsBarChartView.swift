@@ -61,7 +61,7 @@ struct StepsBarChartView: View {
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            addSamples()
+            // addSamples()
             fetchData(for: currentTab)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

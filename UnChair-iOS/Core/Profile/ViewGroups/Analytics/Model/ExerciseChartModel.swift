@@ -8,28 +8,24 @@
 import Foundation
 import SwiftData
 
-
 @Model
 class ExerciseChartModel {
     @Attribute(.unique) var id: String
     var date: Date
-    var breaks: Breaks
+    var breakEntries: [BreakEntry]
     var lastUpdated: Date
     var isSynced: Bool
     
-    init(id: String, date: Date = .now, breaks: Breaks, lastUpdated: Date, isSynced: Bool = false) {
+    init(id: String, date: Date = .now, breakEntries: [BreakEntry], lastUpdated: Date, isSynced: Bool = false) {
         self.id = id
         self.date = date
-        self.breaks = breaks
+        self.breakEntries = breakEntries
         self.lastUpdated = lastUpdated
         self.isSynced = isSynced
     }
 }
 
-
-struct Breaks: Codable {
-    var quickBreak: Double
-    var shortBreak: Double
-    var mediumBreak: Double
-    var longBreak: Double
+struct BreakEntry: Codable {
+    var breakType: String // e.g., "Quick Break", "Short Break"
+    var breakValue: Double
 }
