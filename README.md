@@ -12,7 +12,8 @@ Low risk: Sitting for less than 4 hours per day. Medium risk: Sitting for 4-8 ho
 High risk: Sitting for 8-11 hours per day.
 Very high risk: Sitting for more than 11 hours per day.
 
-## wireframe
-![wireframe](https://github.com/mehadishakil/Amplify/assets/112794443/25a1f553-7226-41bd-a5c5-494286efbc40)
+## 
+![Group 43](https://github.com/user-attachments/assets/c8692959-123b-4d74-8953-dce4fa17102c)
+
 
 here, checkout the android version of this project: https://github.com/mehadishakil/UnChair-Android
