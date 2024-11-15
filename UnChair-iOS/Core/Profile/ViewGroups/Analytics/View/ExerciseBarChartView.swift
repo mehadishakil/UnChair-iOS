@@ -46,7 +46,7 @@ struct ExerciseBarChartView: View {
                     .padding()
         }
         .padding()
-        .background(Color.white)
+        .background(.ultraThinMaterial)
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {

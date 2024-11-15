@@ -14,6 +14,7 @@ struct WaterLineChart: View {
     @Binding var plotWidth: CGFloat
     var waterData: [WaterChartModel]
     @Binding var currentTab: String
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         let maxConsumption = waterData.max { $0.consumption < $1.consumption }?.consumption ?? 0
@@ -165,8 +166,8 @@ struct WaterLineChart: View {
         .padding(.horizontal, 6)
         .padding(.vertical, 2)
         .background(
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .fill(.white.shadow(.drop(radius: 1)))
+            RoundedRectangle(cornerRadius: 4)
+            .fill(colorScheme == .dark ? Color.darkGray.shadow(.drop(radius: 1)) : Color.gray3.shadow(.drop(radius: 1)))
         )
     }
 }

@@ -28,10 +28,12 @@ struct ContentView: View {
                     Image(systemName: "person")
                 }
         }
+        .edgesIgnoringSafeArea(.all)
         .tint(.primary)
         
         
     }
+    
 }
 
 #Preview {

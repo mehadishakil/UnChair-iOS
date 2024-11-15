@@ -11,6 +11,7 @@ struct SleepCapsuleChart: View {
     @State private var currentActiveItem: SleepChartModel?
     var sleepData: [SleepChartModel]
     @Binding var currentTab: String
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         GeometryReader { geo in
@@ -69,7 +70,10 @@ struct SleepCapsuleChart: View {
                         Text("Sleep\n\(activeItem.sleep, specifier: "%.2f") hrs")
                             .font(.caption)
                             .padding(4)
-                            .background(Color.white)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4)
+                                .fill(colorScheme == .dark ? Color.darkGray.shadow(.drop(radius: 1)) : Color.gray3.shadow(.drop(radius: 1)))
+                            )
                             .cornerRadius(5)
                             .shadow(radius: 5)
                             .multilineTextAlignment(.center)

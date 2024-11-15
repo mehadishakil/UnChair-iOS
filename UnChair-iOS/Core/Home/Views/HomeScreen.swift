@@ -16,38 +16,44 @@ struct HomeScreen: View {
     var body: some View {
         NavigationStack{
             ScrollView{
-                VStack{
-                    HeaderView()
-                    HCalendarView().padding(.bottom)
-                    SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted ,selectedDuration: $selectedDuration).padding()
-                    DailyTracking()
-                        .environmentObject(manager)
+                ZStack{
+                    Color.backgroundtheme.opacity(0.7)
                     
-                    Spacer()
-                    BreakSectionView()
-                        .padding(.bottom)
                     
-                    CalmCorner()
+                    VStack{
+                        HeaderView()
+                        HCalendarView().padding(.bottom)
+                        SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted ,selectedDuration: $selectedDuration).padding()
+                        DailyTracking()
+                            .environmentObject(manager)
+                        
+                        Spacer()
+                        BreakSectionView()
+                            .padding(.bottom)
+                        
+                        CalmCorner()
                         
                         
-                    
-//                    NavigationLink(destination: LocalNotification()) {
-//                        HStack {
-//                            Image(systemName: "creditcard")
-//                            Text("Restore Purchase")
-//                            Spacer()
-//                        }
-//                    }
-                    
-                    
-                }
+                        
+                        //                    NavigationLink(destination: LocalNotification()) {
+                        //                        HStack {
+                        //                            Image(systemName: "creditcard")
+                        //                            Text("Restore Purchase")
+                        //                            Spacer()
+                        //                        }
+                        //                    }
+                        
+                        
+                    }}
                 .onAppear{
                     requestNotificationPermission()
                     manager.fetchTodaySteps()
                 }
             }
         }
+        
     }
+        
     
     
     func requestNotificationPermission() {
@@ -62,6 +68,7 @@ struct HomeScreen: View {
             }
         }
     }
+
 }
 
 #Preview {

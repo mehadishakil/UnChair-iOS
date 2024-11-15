@@ -21,26 +21,23 @@ struct DailySleepView: View {
                     .frame(height: 30)
                     .padding(4)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .foregroundColor(.black)
                 
                 VStack(spacing: 4) {
                     HStack(alignment: .center, spacing: 8) {
                         Text(String(format: "%.1f", sleep))
                             .font(.system(size: 24, weight: .bold))
-                            .foregroundColor(.black)
+
                         Text("h")
                             .font(.system(size: 24, weight: .bold))
-                            .foregroundColor(.black)
                             .padding(.bottom, 2)
                     }
                     Text("Sleep")
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.black)
                 }
             }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .center)
-            .background(Color.white)
+            .background(.ultraThinMaterial)
             .cornerRadius(12)
             .onTapGesture {
                 showSleepPicker.toggle()
@@ -51,6 +48,7 @@ struct DailySleepView: View {
                     .presentationDragIndicator(.visible)
             }
         }
+        .shadow(radius: 1)
     }
 }
 
@@ -80,9 +78,12 @@ struct SleepPickerView: View {
             .labelsHidden()
             .padding()
 
-            Button("Done") {
+            Button(action: {
                 sleep = Float(sleepValues[selectedSleepIndex])
                 presentationMode.wrappedValue.dismiss()
+            }) {
+                Text("Done")
+                    .bold() // Make the text bold
             }
             .padding()
         }

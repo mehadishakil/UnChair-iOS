@@ -20,7 +20,7 @@ struct HCalendarView: View {
             ZStack {
                 dayView
                     .padding(.vertical, 5)
-                blurView
+//                blurView
             }
             .frame(height: 30)
             .padding(.horizontal, 20)
@@ -75,11 +75,11 @@ struct HCalendarView: View {
                                 .font(.caption)
                             Text("\(calendar.component(.day, from: date))")
                         }
-                        .frame(width: 30, height: 30)
+                        .frame(width: 35, height: 35)
                         .padding(8)
-                        .background(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.blue : Color.clear)
+                        .background(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.gray : Color.clear /*Color.primary : Color.clear*/)
                         .cornerRadius(100)
-                        .foregroundColor(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? .primary : .primary)
+                        .foregroundColor(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.white : .primary)
                         .onTapGesture {
                             selectedDate = date
                         }

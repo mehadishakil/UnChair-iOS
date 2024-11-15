@@ -13,6 +13,7 @@ struct StepsBarChart: View {
     @Binding var plotWidth: CGFloat
     var stepsData: [StepsChartModel]
     @Binding var currentTab: String
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         let maxSteps = stepsData.max { $0.steps < $1.steps }?.steps ?? 0
@@ -131,8 +132,8 @@ struct StepsBarChart: View {
         .padding(.horizontal, 6)
         .padding(.vertical, 2)
         .background(
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .fill(.white.shadow(.drop(radius: 1)))
+            RoundedRectangle(cornerRadius: 4)
+            .fill(colorScheme == .dark ? Color.darkGray.shadow(.drop(radius: 1)) : Color.gray3.shadow(.drop(radius: 1)))
         )
     }
 }

@@ -23,18 +23,16 @@ struct SedentaryTime: View {
             Image(systemName: "hourglass.tophalf.filled")
                 .resizable()
                 .frame(width: 70, height: 100)
-                .foregroundColor(.black)
             
             Spacer()
             
             VStack(alignment : .center){
                 Text("Sedentary Time")
                     .font(.headline)
-                    .foregroundColor(.black)
+                    
                 
                 Text("\(formattedTime(timeElapsed))")
                     .font(.title3)
-                    .foregroundColor(.black)
                     .onReceive(timer){ firedDate in
                         timeElapsed = Int(firedDate.timeIntervalSince(startTime))
                     }
@@ -53,9 +51,10 @@ struct SedentaryTime: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(.ultraThinMaterial)
         .cornerRadius(15)
-        .shadow(radius: 5)
+        .shadow(radius: 3)
+        
     }
     
     func performScheduleNotification() {

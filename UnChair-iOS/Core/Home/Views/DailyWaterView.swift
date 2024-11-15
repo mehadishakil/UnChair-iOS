@@ -20,9 +20,9 @@ struct DailyWaterView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
         }
         .padding()
-        .background(Color.white)
+        .background(.ultraThinMaterial)
         .cornerRadius(15)
-        .shadow(radius: 5)
+        .shadow(radius: 1)
         .onTapGesture {
             showWaterPicker.toggle()
         }
@@ -67,14 +67,13 @@ struct CircularProgressBar: View {
                     .foregroundColor(.blue)
                 Text("Drink Target")
                     .font(.system(size: 14))
-                    .foregroundColor(.gray)
+
                 HStack {
                     Text("\(current)")
                         .font(.system(size: 14))
                         .foregroundColor(.blue)
                     Text("/ \(target)ml")
                         .font(.system(size: 14))
-                        .foregroundColor(.black)
                 }
             }
         }
@@ -150,10 +149,14 @@ struct WaterPickerView: View {
             }
             .padding()
             
-            Button("Done") {
+            Button(action: {
                 water = tempWater
                 dismiss()
-            }.padding()
+            }) {
+                Text("Done")
+                    .bold()
+            }
+            .padding()
         }
     }
     

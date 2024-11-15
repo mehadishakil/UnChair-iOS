@@ -15,6 +15,7 @@ struct ExerciseBarChart: View {
     @Binding var currentTab: String
     @State private var selectedCount: Int?
     @State private var animationProgress: CGFloat = 0
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         VStack {
@@ -133,8 +134,8 @@ struct ExerciseBarChart: View {
         .padding(.horizontal, 6)
         .padding(.vertical, 2)
         .background(
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .fill(.white.shadow(.drop(radius: 1)))
+            RoundedRectangle(cornerRadius: 4)
+            .fill(colorScheme == .dark ? Color.darkGray.shadow(.drop(radius: 1)) : Color.gray3.shadow(.drop(radius: 1)))
         )
     }
 }

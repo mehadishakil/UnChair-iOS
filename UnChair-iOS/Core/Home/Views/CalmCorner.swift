@@ -30,7 +30,7 @@ struct CalmCorner: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(Color.white)
+                .background(.ultraThinMaterial)
                 .cornerRadius(10)
                 .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
             }

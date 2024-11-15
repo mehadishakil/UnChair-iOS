@@ -19,22 +19,23 @@ struct DailyStepsView: View {
                     .frame(height: 40)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .foregroundColor(.black)
+
                 
                 VStack(spacing: 8) {
                     Text("\(manager.todayStepCount)")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.black)
+ 
                     Text("Steps")
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.black)
+
                 }
             }
             .padding()
-            .background(Color.white)
+            .background(.ultraThinMaterial)
             .cornerRadius(15)
-            .shadow(radius: 5)
         }
+        .shadow(radius: 1)
+        
     }
 }
 
