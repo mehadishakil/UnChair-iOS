@@ -100,7 +100,7 @@ struct DetailsBreakView: View {
                     Text("Next")
                         .font(.title3)
                         .bold()
-                        .foregroundColor(.black)
+                        .foregroundColor(.whiteblack)
                         .padding(.vertical)
                         .frame(maxWidth: .infinity)
                         .background(.primary)

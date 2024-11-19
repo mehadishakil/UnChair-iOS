@@ -19,8 +19,7 @@ struct EditProfile: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
-                
+                                
                 VStack(spacing: 20) {
                     ZStack(alignment: .bottomTrailing) {
                         if let avatarImage = avatarImage {
@@ -65,9 +64,9 @@ struct EditProfile: View {
                         TextField("", text: $first_name)
                             .padding(.leading)
                             .frame(height: 50)
-                            .background(Color(.darkGray))
+                            .background(.ultraThinMaterial)
                             .cornerRadius(8)
-                            .foregroundColor(.white)
+                            
                     }
                     
                     VStack(alignment: .leading, spacing: 5) {
@@ -78,9 +77,8 @@ struct EditProfile: View {
                         TextField("", text: $last_name)
                             .padding(.leading)
                             .frame(height: 50)
-                            .background(Color(.darkGray))
+                            .background(.ultraThinMaterial)
                             .cornerRadius(8)
-                            .foregroundColor(.white)
                     }
                     
                     VStack(alignment: .leading, spacing: 5) {
@@ -91,7 +89,7 @@ struct EditProfile: View {
                         TextField("", text: $email)
                             .padding(.leading)
                             .frame(height: 50)
-                            .background(Color(.darkGray))
+                            .background(.ultraThinMaterial)
                             .cornerRadius(8)
                             .foregroundColor(.gray)
                             .disabled(true)
@@ -103,13 +101,13 @@ struct EditProfile: View {
                         // Save action
                     }) {
                         Text("Save")
-                            .foregroundColor(.white)
+                            .foregroundStyle(.whiteblack)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.blue)
+                            .background(.primary)
                             .cornerRadius(8)
                             .font(.title3)
-                            .fontWeight(.semibold)
+                            .bold()
                     }
                 }
                 .padding()

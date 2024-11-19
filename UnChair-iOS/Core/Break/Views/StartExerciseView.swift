@@ -114,7 +114,7 @@ struct StartExerciseView: View {
             } else {
                 Button(action: startExercise) {
                     Text("Start Now")
-                        .foregroundColor(.black)
+                        .foregroundColor(.whiteblack)
                         .frame(width: 200, height: 50)
                         .background(.primary)
                         .cornerRadius(25)
