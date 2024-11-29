@@ -10,6 +10,8 @@ import UserNotifications
 
 @main
 struct UnChair_iOSApp: App {
+    
+    @StateObject private var themeManager = ThemeManager()
     @AppStorage("isOnboarding") var isOnboarding: Bool = true
     
     var body: some Scene {
@@ -19,9 +21,14 @@ struct UnChair_iOSApp: App {
 //            } else {
 //                ContentView()
 //            }
-            
             ContentView()
+                .environmentObject(themeManager)
+                .preferredColorScheme(themeManager.applyTheme())
+                
         }
         .modelContainer(for: [WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])
     }
 }
+
+
+

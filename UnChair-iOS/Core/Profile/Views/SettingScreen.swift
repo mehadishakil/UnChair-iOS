@@ -15,9 +15,8 @@ enum Language: String, CaseIterable, Identifiable {
 }
 
 
-struct ProfileScreen: View {
+struct SettingScreen: View {
     
-    @Binding var selectedDuration: TimeDuration
     @State private var language : Language = .English
     @State private var isNotificationEnabled = true
     @State private var isDarkOn = true
@@ -26,14 +25,12 @@ struct ProfileScreen: View {
     @State private var endTime = Calendar
         .current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
     @State private var changeTheme: Bool = false
-    // @AppStorage("user_theme") private var userTheme: Theme = .systemDefault
-    // @State private var appearanceMode : AppearanceMode = .light
-    // @AppStorage("user_theme") private var userTheme: AppearanceMode = .system
-    // @State private var colorScheme : ColorScheme? = nil
-    @State var show = true
+    @Binding var selectedDuration: TimeDuration
+    @AppStorage("userTheme") private var userTheme: Theme = .systemDefault
+    @Environment(\.colorScheme) private var scheme
     
     var body: some View {
-        NavigationView{
+        NavigationStack{
             Form{
                 // user profile
                 Section{
@@ -67,27 +64,22 @@ struct ProfileScreen: View {
                         }
                     }
                     
-                    HStack{
+                    HStack {
                         Button(action: {
                             changeTheme.toggle()
                         }) {
                             HStack {
                                 Image(systemName: "circle.lefthalf.filled")
-                                    .foregroundColor(.primary)
                                 Text("Appearance")
-                                    .foregroundColor(.primary)
                                 Spacer()
                                 Image(systemName: "chevron.right")
-                                    .foregroundColor(.gray)
                             }
                         }
                     }
-                    .sheet(isPresented: $changeTheme, content: {
-                        DLMode()
-                            .presentationDetents([.height(270)])
-                    })
-                    
-                    
+                    .sheet(isPresented: $changeTheme) {
+                        ThemeChangeView()
+                            .presentationDetents([.height(410)])
+                    }
                     
                     
                     HStack{
@@ -182,13 +174,14 @@ struct ProfileScreen: View {
                 
             }
         }
+        .preferredColorScheme(userTheme.colorScheme)
     }
 }
 
 
 
 #Preview {
-    ProfileScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
+    SettingScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
 }
 
 
