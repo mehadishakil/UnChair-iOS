@@ -30,7 +30,10 @@ struct ProfileScreen: View {
     // @State private var appearanceMode : AppearanceMode = .light
     // @AppStorage("user_theme") private var userTheme: AppearanceMode = .system
     // @State private var colorScheme : ColorScheme? = nil
-    @State var show = true
+    @Environment(\.colorScheme) private var scheme
+    @State var show = false
+    @AppStorage("userTheme") private var userTheme: Theme = .system
+    
     
     var body: some View {
         NavigationView{
@@ -69,7 +72,7 @@ struct ProfileScreen: View {
                     
                     HStack{
                         Button(action: {
-                            changeTheme.toggle()
+                            show.toggle()
                         }) {
                             HStack {
                                 Image(systemName: "circle.lefthalf.filled")
@@ -81,11 +84,13 @@ struct ProfileScreen: View {
                                     .foregroundColor(.gray)
                             }
                         }
+                        .sheet(isPresented: $show) {
+                            DLMode(show: $show, scheme: scheme)
+                                .presentationDetents([.height(280)])
+                                .presentationBackground(.clear)
+                        }
                     }
-                    .sheet(isPresented: $changeTheme, content: {
-                        DLMode()
-                            .presentationDetents([.height(270)])
-                    })
+                    
                     
                     
                     
@@ -182,6 +187,7 @@ struct ProfileScreen: View {
                 
             }
         }
+        .preferredColorScheme(userTheme.colorScheme)
     }
 }
 

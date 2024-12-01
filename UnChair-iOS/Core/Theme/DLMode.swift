@@ -1,169 +1,86 @@
-//import SwiftUI
-//
-//
-//struct DLMode: View {
-//    @Binding var appearanceMode: AppearanceMode
-//    @Binding var colorScheme: ColorScheme?
-//
-//    var body: some View {
-//        VStack(spacing: 20) {
-//            HStack(alignment: .center) {
-//                Text("Appearance")
-//                    .font(.title3.bold())
-//            }
-//            .padding()
-//
-//            HStack(spacing: 40){
-//                Button {
-//                    appearanceMode = .light
-//                    colorScheme = .light
-//                } label: {
-//                    UIButton(mode: .light, currentMode: $appearanceMode, Rbg: .LB, Rbgi: .LBI, ibg: .white)
-//                }
-//                .tint(.primary)
-//                Button {
-//                    appearanceMode = .dark
-//                    colorScheme = .dark
-//                } label: {
-//                    UIButton(mode: .dark, currentMode: $appearanceMode, Rbg: .DB, Rbgi: .DBI, ibg: .black)
-//                }
-//                .tint(.primary)
-//                
-//                
-//                ZStack {
-//                    UIButton(mode: .system, currentMode: $appearanceMode, Rbg: .LB, Rbgi: .LBI, ibg: .white)
-//                    UIButton(mode: .system, currentMode: $appearanceMode, Rbg: .DB, Rbgi: .DBI, ibg: .black)
-//                        .mask{
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .frame(width: 50, height: 200)
-//                                .offset(x: -24)
-//                        }
-//                }
-//                .onTapGesture {
-//                    appearanceMode = .system
-//                    colorScheme = nil
-//                }
-//                
-//                
-//            }
-//            .padding(.horizontal, 8)
-//            .preferredColorScheme(colorScheme)
-//
-//            Spacer()
-//        }
-//        .cornerRadius(30)
-//        .preferredColorScheme(colorScheme)
-//    }
-//}
-//
-//
-//
-//#Preview {
-//    DLMode(appearanceMode: .constant(.dark), colorScheme: .constant(.dark))
-//}
-//
-//enum AppearanceMode {
-//    case dark, light, system
-//}
-//
-//struct UIButton: View {
-//    var mode : AppearanceMode
-//    @Binding var currentMode : AppearanceMode
-//    var Rbg : Color
-//    var Rbgi : Color
-//    var ibg : Color
-//    
-//    var body: some View {
-//        VStack(spacing: 20) {
-//            VStack{
-//                Circle().frame(width: 20, height: 20)
-//                RoundedRectangle(cornerRadius: 10)
-//                    .frame(width: 49, height: 6)
-//                VStack(spacing: 5) {
-//                    RoundedRectangle(cornerRadius: 10)
-//                        .frame(width: 38, height: 6)
-//                    RoundedRectangle(cornerRadius: 10)
-//                        .frame(width: 38, height: 6)
-//                    RoundedRectangle(cornerRadius: 10)
-//                        .frame(width: 38, height: 6)
-//                }
-//                .frame(width: 55, height: 50)
-//                .background(ibg, in:RoundedRectangle(cornerRadius: 5))
-//            }
-//            .foregroundStyle(Rbgi)
-//            .padding(8)
-//            .overlay(content: {
-//                if currentMode == mode {
-//                    RoundedRectangle(cornerRadius: 8)
-//                        .stroke(lineWidth: 2)
-//                        .padding(-3)
-//                }
-//            })
-//            .background(Rbg, in: RoundedRectangle(cornerRadius: 7))
-//            Text(String(describing: mode).capitalized)
-//                .foregroundStyle(currentMode == mode ? .selectedT : .T)
-//                .font(.system(size: 15))
-//                .frame(width: 80, height: 25)
-//                .background(currentMode == mode ? .BL : .buttonBG, in: RoundedRectangle(cornerRadius: 10))
-//            
-//        }
-//        .scaleEffect(currentMode == mode ? 1.1 : 0.9)
-//        .animation(.default, value: currentMode)
-//    }
-//}
-
-
 
 import SwiftUI
 
 struct DLMode: View {
-    @EnvironmentObject var themeManager: ThemeManager
-
-    var body: some View {
-        VStack(spacing: 20) {
-            HStack(alignment: .center) {
-                Text("Appearance")
-                    .font(.title3.bold())
-            }
-            .padding()
-
-            HStack(spacing: 40) {
-                Button {
-                    themeManager.selectedTheme = .light
-                } label: {
-                    UIButton(mode: .light, currentMode: $themeManager.selectedTheme)
+    
+    @Binding var show : Bool
+    var scheme: ColorScheme
+    @AppStorage("userTheme") private var userTheme: Theme = .system
+    
+    var body: some View{
+        VStack{
+            VStack(spacing: 20){
+                HStack(alignment: .center){
+                    Text("Appearance")
+                        
                 }
+                .bold().font(.title3)
+                .padding(.bottom)
                 
-                Button {
-                    themeManager.selectedTheme = .dark
-                } label: {
-                    UIButton(mode: .dark, currentMode: $themeManager.selectedTheme)
-                }
-                
-                Button {
-                    themeManager.selectedTheme = .system
-                } label: {
+                HStack(spacing: 40){
+                    Button {
+                        userTheme = .light
+                    } label: {
+                        UIButton(mode: .light, currentMode: $userTheme, Rbg: .LB, Rbgi: .LBI, ibg: .white)
+                    }
+                    .tint(.primary)
+                    Button {
+                        userTheme = .dark
+                    } label: {
+                        UIButton(mode: .dark, currentMode: $userTheme, Rbg: .DB, Rbgi: .DBI, ibg: .black)
+                    }
+                    .tint(.primary)
+                    
+                    
                     ZStack {
-                        UIButton(mode: .system, currentMode: $themeManager.selectedTheme)
+                        UIButton(mode: .system, currentMode: $userTheme, Rbg: .LB, Rbgi: .LBI, ibg: .white)
+                        UIButton(mode: .system, currentMode: $userTheme, Rbg: .DB, Rbgi: .DBI, ibg: .black)
+                            .mask{
+                                RoundedRectangle(cornerRadius: 10)
+                                    .frame(width: 50, height: 200)
+                                    .offset(x: -24)
+                            }
+                    }
+                    .onTapGesture {
+                        userTheme = .system
                     }
                 }
+                .frame(maxWidth: .infinity)
+                .preferredColorScheme(scheme)
+                
+                Spacer()
             }
-            .padding(.horizontal, 8)
-
-            Spacer()
+            .padding(.top, 30)
+            .frame(maxWidth: .infinity)
         }
-        .preferredColorScheme(themeManager.applyTheme())
-        .cornerRadius(30)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(height: 280)
+        .background(.background)
+        .clipShape(.rect(cornerRadius: 30))
+        .padding(.horizontal, 15)
+        .environment(\.colorScheme, scheme)
     }
 }
 
+
+#Preview {
+    DLMode(show: .constant(false), scheme: .dark)
+}
+
+enum AppearanceMode {
+    case dark, light, system
+}
+
 struct UIButton: View {
-    var mode: Theme
-    @Binding var currentMode: Theme
+    var mode : Theme
+    @Binding var currentMode : Theme
+    var Rbg : Color
+    var Rbgi : Color
+    var ibg : Color
     
     var body: some View {
         VStack(spacing: 20) {
-            VStack {
+            VStack{
                 Circle().frame(width: 20, height: 20)
                 RoundedRectangle(cornerRadius: 10)
                     .frame(width: 49, height: 6)
@@ -176,9 +93,9 @@ struct UIButton: View {
                         .frame(width: 38, height: 6)
                 }
                 .frame(width: 55, height: 50)
-                .background(mode == .dark ? Color.black : .white, in: RoundedRectangle(cornerRadius: 5))
+                .background(ibg, in:RoundedRectangle(cornerRadius: 5))
             }
-            .foregroundStyle(mode == .dark ? Color.blue.opacity(0.3) : Color.blue.opacity(0.1))
+            .foregroundStyle(Rbgi)
             .padding(8)
             .overlay(content: {
                 if currentMode == mode {
@@ -187,15 +104,35 @@ struct UIButton: View {
                         .padding(-3)
                 }
             })
-            .background(mode == .dark ? Color.blue.opacity(0.2) : Color.blue.opacity(0.1), in: RoundedRectangle(cornerRadius: 7))
-            
+            .background(Rbg, in: RoundedRectangle(cornerRadius: 7))
             Text(String(describing: mode).capitalized)
-                .foregroundStyle(currentMode == mode ? .blue : .gray)
+                .foregroundStyle(currentMode == mode ? .selectedT : .T)
                 .font(.system(size: 15))
                 .frame(width: 80, height: 25)
-                .background(currentMode == mode ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+                .background(currentMode == mode ? .BL : .buttonBG, in: RoundedRectangle(cornerRadius: 10))
+            
         }
         .scaleEffect(currentMode == mode ? 1.1 : 0.9)
         .animation(.default, value: currentMode)
+    }
+}
+
+
+enum Theme: String, CaseIterable, Identifiable {
+    case light
+    case dark
+    case system
+    
+    var id: String { self.rawValue }
+    
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system:
+            return nil
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        }
     }
 }
