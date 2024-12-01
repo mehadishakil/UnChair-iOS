@@ -54,11 +54,12 @@ struct DLMode: View {
             .frame(maxWidth: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .frame(height: 280)
+        .frame(height: 270)
         .background(.background)
         .clipShape(.rect(cornerRadius: 30))
         .padding(.horizontal, 15)
         .environment(\.colorScheme, scheme)
+        .shadow(color: .gray, radius: 2)
     }
 }
 
