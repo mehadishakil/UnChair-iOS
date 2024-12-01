@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var tabBarVisible = true
     @State private var selectedDuration = TimeDuration(hours: 0, minutes: 1)
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     var body: some View {
         
@@ -29,6 +30,7 @@ struct ContentView: View {
         }
         .edgesIgnoringSafeArea(.all)
         .tint(.primary)
+        .preferredColorScheme(userTheme.colorScheme)
         
         
     }
