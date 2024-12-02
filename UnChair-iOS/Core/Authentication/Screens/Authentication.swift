@@ -10,6 +10,10 @@ import SwiftUI
 
 
 struct Authentication: View {
+    
+    @Environment(AuthController.self) private var authController
+
+    
     var body: some View {
             VStack {
                 Spacer()
@@ -61,7 +65,7 @@ struct Authentication: View {
                 // Continue with Google Button
                 Button(
                     action: {
-                        // add action here
+                        signIn()
                     },
                     label: {
                         HStack{
@@ -97,6 +101,18 @@ struct Authentication: View {
             .padding()
             
         }
+    
+    @MainActor
+    func signIn(){
+        Task {
+            do {
+                try await authController.signIn()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     }
 
 #Preview {

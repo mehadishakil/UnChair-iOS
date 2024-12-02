@@ -33,6 +33,7 @@ struct ProfileScreen: View {
     @Environment(\.colorScheme) private var scheme
     @State var show = false
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    @Environment(AuthController.self) private var authController
     
     
     var body: some View {
@@ -179,7 +180,11 @@ struct ProfileScreen: View {
                 }
                 
                 Button{
-                    
+                    do {
+                        try authController.signOut()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 } label: {
                     Text("Sign Out")
                         .foregroundColor(.primary)

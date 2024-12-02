@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>590088301790-i55rvra9uuddisoh58onshg9ven637vp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.590088301790-i55rvra9uuddisoh58onshg9ven637vp</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCmG38Mn5QBR6yufJnWR1HBXPYhTbToif8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>590088301790</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>MehadiShakil.UnChair-iOS</string>
+	<key>PROJECT_ID</key>
+	<string>unchair</string>
+	<key>STORAGE_BUCKET</key>
+	<string>unchair.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:590088301790:ios:fde3a49a71221d2809264f</string>
+</dict>
+</plist>

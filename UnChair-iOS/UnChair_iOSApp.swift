@@ -11,20 +11,14 @@ import UserNotifications
 @main
 struct UnChair_iOSApp: App {
     
-//    @StateObject private var themeManager = ThemeManager()
     @AppStorage("isOnboarding") var isOnboarding: Bool = true
+    @State private var authController = AuthController()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
-//            if isOnboarding {
-//                OnBoarding()
-//            } else {
-//                ContentView()
-//            }
-            ContentView()
-//                .environmentObject(themeManager)
-//                .preferredColorScheme(themeManager.applyTheme())
-                
+            MainView()
+                .environment(authController)
         }
         .modelContainer(for: [WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])
     }

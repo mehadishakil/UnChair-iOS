@@ -11,7 +11,6 @@
 		E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80268402C31846A00F026F1 /* BreakSectionView.swift */; };
 		E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */; };
 		E81E099F2CFA381700FFF547 /* DLMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81E099E2CFA381700FFF547 /* DLMode.swift */; };
-		E81E09A12CFA43E100FFF547 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81E09A02CFA43DB00FFF547 /* ThemeManager.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
 		E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF02C68DFBC00709773 /* CalmCorner.swift */; };
 		E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF22C68E35F00709773 /* Meditation.swift */; };
@@ -47,7 +46,6 @@
 		E8AFBAAF2C9C462F00AEE292 /* AnalyticScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAAE2C9C462F00AEE292 /* AnalyticScreen.swift */; };
 		E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFFFD72C32B3750002815E /* ActiveHour.swift */; };
 		E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */; };
-		E8B368652C7F28F4003F2741 /* ThemeChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */; };
 		E8B812362C33ECC400698849 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B812352C33ECC400698849 /* EditProfile.swift */; };
 		E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */; };
 		E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E32C555728003127CC /* BreakModel.swift */; };
@@ -55,6 +53,12 @@
 		E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */; };
 		E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */; };
 		E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */; };
+		E8C01E002CFE0C6D0073C616 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E8C01DFF2CFE0C6D0073C616 /* GoogleService-Info.plist */; };
+		E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E072CFE15790073C616 /* AuthController.swift */; };
+		E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E092CFE16670073C616 /* AuthState.swift */; };
+		E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0B2CFE16900073C616 /* MainView.swift */; };
+		E8C01E0E2CFE17F00073C616 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */; };
+		E8C01E102CFE19710073C616 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0F2CFE196F0073C616 /* AuthView.swift */; };
 		E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D200692C5D3F67002EB719 /* BreakTime.swift */; };
 		E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */; };
 		E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2BA7A2C84897400BEEAAF /* Authentication.swift */; };
@@ -70,7 +74,6 @@
 		E80268402C31846A00F026F1 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
 		E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onBoardingPage.swift; sourceTree = "<group>"; };
 		E81E099E2CFA381700FFF547 /* DLMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLMode.swift; sourceTree = "<group>"; };
-		E81E09A02CFA43DB00FFF547 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
 		E83A7EF02C68DFBC00709773 /* CalmCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmCorner.swift; sourceTree = "<group>"; };
 		E83A7EF22C68E35F00709773 /* Meditation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meditation.swift; sourceTree = "<group>"; };
@@ -106,7 +109,6 @@
 		E8AFFFD72C32B3750002815E /* ActiveHour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveHour.swift; sourceTree = "<group>"; };
 		E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthManager.swift; sourceTree = "<group>"; };
 		E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "UnChair-iOS.entitlements"; sourceTree = "<group>"; };
-		E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeChangeView.swift; sourceTree = "<group>"; };
 		E8B812352C33ECC400698849 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
 		E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBreakView.swift; sourceTree = "<group>"; };
 		E8B9A2E32C555728003127CC /* BreakModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakModel.swift; sourceTree = "<group>"; };
@@ -114,6 +116,12 @@
 		E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsBreakView.swift; sourceTree = "<group>"; };
 		E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
+		E8C01DFF2CFE0C6D0073C616 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E8C01E072CFE15790073C616 /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
+		E8C01E092CFE16670073C616 /* AuthState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthState.swift; sourceTree = "<group>"; };
+		E8C01E0B2CFE16900073C616 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E8C01E0F2CFE196F0073C616 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		E8D200692C5D3F67002EB719 /* BreakTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTime.swift; sourceTree = "<group>"; };
 		E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTimeModel.swift; sourceTree = "<group>"; };
 		E8D2BA7A2C84897400BEEAAF /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
@@ -170,7 +178,9 @@
 		E874A9FD2BFB53A50075644C /* UnChair-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				E8C01E0B2CFE16900073C616 /* MainView.swift */,
 				E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */,
+				E8C01DFF2CFE0C6D0073C616 /* GoogleService-Info.plist */,
 				E884D3212C726A4C0075A323 /* Info.plist */,
 				E8783CC12BFD921A0085A899 /* Core */,
 				E899A4172C6BE7030042C5CC /* Sounds */,
@@ -325,6 +335,10 @@
 		E89F481C2CE7444400B71FA5 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				E8C01E0F2CFE196F0073C616 /* AuthView.swift */,
+				E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */,
+				E8C01E092CFE16670073C616 /* AuthState.swift */,
+				E8C01E072CFE15790073C616 /* AuthController.swift */,
 				E8D2BA7A2C84897400BEEAAF /* Authentication.swift */,
 			);
 			path = Screens;
@@ -348,9 +362,7 @@
 		E8B368612C7F0C56003F2741 /* Theme */ = {
 			isa = PBXGroup;
 			children = (
-				E81E09A02CFA43DB00FFF547 /* ThemeManager.swift */,
 				E81E099E2CFA381700FFF547 /* DLMode.swift */,
-				E8B368642C7F28F4003F2741 /* ThemeChangeView.swift */,
 			);
 			path = Theme;
 			sourceTree = "<group>";
@@ -463,6 +475,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8C01E002CFE0C6D0073C616 /* GoogleService-Info.plist in Resources */,
 				E874AA062BFB53A60075644C /* Preview Assets.xcassets in Resources */,
 				E899A41B2C6BEBBF0042C5CC /* single_beep.mp3 in Resources */,
 				E899A4192C6BE73E0042C5CC /* count_down.mp3 in Resources */,
@@ -490,16 +503,17 @@
 				E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */,
 				E8AFBAA52C9C45B200AEE292 /* StepsBarChart.swift in Sources */,
 				E8D787042C9941CC00BA83A0 /* StepsChartModel.swift in Sources */,
+				E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */,
 				E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */,
+				E8C01E0E2CFE17F00073C616 /* AppDelegate.swift in Sources */,
 				E8AFBAA32C9C45B200AEE292 /* SleepCapsuleChart.swift in Sources */,
 				E8AFBAA22C9C45B200AEE292 /* ExerciseBarChartView.swift in Sources */,
 				E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */,
-				E81E09A12CFA43E100FFF547 /* ThemeManager.swift in Sources */,
 				E8AFBAA72C9C45B200AEE292 /* ExerciseBarChart.swift in Sources */,
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
+				E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */,
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
-				E8B368652C7F28F4003F2741 /* ThemeChangeView.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
@@ -516,7 +530,9 @@
 				E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */,
 				E869831D2C441877007A695F /* StartExerciseView.swift in Sources */,
 				E8AFBAAD2C9C460600AEE292 /* DataFetcher.swift in Sources */,
+				E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */,
 				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
+				E8C01E102CFE19710073C616 /* AuthView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
