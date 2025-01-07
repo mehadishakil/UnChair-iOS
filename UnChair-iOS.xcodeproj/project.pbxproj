@@ -12,6 +12,7 @@
 		E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */; };
 		E81E099F2CFA381700FFF547 /* DLMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81E099E2CFA381700FFF547 /* DLMode.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
+		E832992D2D2DCAB500B5D009 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */; };
 		E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF02C68DFBC00709773 /* CalmCorner.swift */; };
 		E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF22C68E35F00709773 /* Meditation.swift */; };
 		E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844B82A2C108B30006D54E4 /* SedentaryTime.swift */; };
@@ -53,7 +54,6 @@
 		E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */; };
 		E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */; };
 		E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */; };
-		E8C01E002CFE0C6D0073C616 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E8C01DFF2CFE0C6D0073C616 /* GoogleService-Info.plist */; };
 		E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E072CFE15790073C616 /* AuthController.swift */; };
 		E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E092CFE16670073C616 /* AuthState.swift */; };
 		E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0B2CFE16900073C616 /* MainView.swift */; };
@@ -75,6 +75,7 @@
 		E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onBoardingPage.swift; sourceTree = "<group>"; };
 		E81E099E2CFA381700FFF547 /* DLMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLMode.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
+		E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E83A7EF02C68DFBC00709773 /* CalmCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmCorner.swift; sourceTree = "<group>"; };
 		E83A7EF22C68E35F00709773 /* Meditation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meditation.swift; sourceTree = "<group>"; };
 		E844B82A2C108B30006D54E4 /* SedentaryTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedentaryTime.swift; sourceTree = "<group>"; };
@@ -116,7 +117,6 @@
 		E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsBreakView.swift; sourceTree = "<group>"; };
 		E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
-		E8C01DFF2CFE0C6D0073C616 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E8C01E072CFE15790073C616 /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		E8C01E092CFE16670073C616 /* AuthState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthState.swift; sourceTree = "<group>"; };
 		E8C01E0B2CFE16900073C616 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -179,8 +179,8 @@
 			isa = PBXGroup;
 			children = (
 				E8C01E0B2CFE16900073C616 /* MainView.swift */,
+				E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */,
 				E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */,
-				E8C01DFF2CFE0C6D0073C616 /* GoogleService-Info.plist */,
 				E884D3212C726A4C0075A323 /* Info.plist */,
 				E8783CC12BFD921A0085A899 /* Core */,
 				E899A4172C6BE7030042C5CC /* Sounds */,
@@ -475,9 +475,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8C01E002CFE0C6D0073C616 /* GoogleService-Info.plist in Resources */,
 				E874AA062BFB53A60075644C /* Preview Assets.xcassets in Resources */,
 				E899A41B2C6BEBBF0042C5CC /* single_beep.mp3 in Resources */,
+				E832992D2D2DCAB500B5D009 /* GoogleService-Info.plist in Resources */,
 				E899A4192C6BE73E0042C5CC /* count_down.mp3 in Resources */,
 				E874AA032BFB53A60075644C /* Assets.xcassets in Resources */,
 			);
@@ -677,7 +677,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UnChair-iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = XU5YG8Z2VX;
+				DEVELOPMENT_TEAM = 828PG3Q6MA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "UnChair-iOS/Info.plist";
@@ -691,7 +691,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "MehadiShakil.UnChair-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "IsrailAhmed.UnChair-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -710,7 +710,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"UnChair-iOS/Preview Content\"";
-				DEVELOPMENT_TEAM = XU5YG8Z2VX;
+				DEVELOPMENT_TEAM = 828PG3Q6MA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "UnChair-iOS/Info.plist";
@@ -724,7 +724,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "MehadiShakil.UnChair-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "IsrailAhmed.UnChair-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;

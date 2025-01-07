@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>590088301790-i55rvra9uuddisoh58onshg9ven637vp.apps.googleusercontent.com</string>
+	<string>590088301790-a7q8mvhmm3gd97abrltuj525m2j072ck.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.590088301790-i55rvra9uuddisoh58onshg9ven637vp</string>
+	<string>com.googleusercontent.apps.590088301790-a7q8mvhmm3gd97abrltuj525m2j072ck</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCmG38Mn5QBR6yufJnWR1HBXPYhTbToif8</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>MehadiShakil.UnChair-iOS</string>
+	<string>IsrailAhmed.UnChair-iOS</string>
 	<key>PROJECT_ID</key>
 	<string>unchair</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:590088301790:ios:fde3a49a71221d2809264f</string>
+	<string>1:590088301790:ios:bc3cb31218f940b209264f</string>
 </dict>
 </plist>
