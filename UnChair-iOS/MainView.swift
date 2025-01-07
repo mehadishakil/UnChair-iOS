@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     
-    @Environment(AuthController.self) private var authController
+    @EnvironmentObject var authController: AuthController
     
     var body: some View {
         Group{

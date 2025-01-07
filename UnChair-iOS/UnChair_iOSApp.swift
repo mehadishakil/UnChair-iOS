@@ -12,13 +12,13 @@ import UserNotifications
 struct UnChair_iOSApp: App {
     
     @AppStorage("isOnboarding") var isOnboarding: Bool = true
-    @State private var authController = AuthController()
+    @StateObject private var authController = AuthController()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
             MainView()
-                .environment(authController)
+                .environmentObject(authController)
         }
         .modelContainer(for: [WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])
     }

@@ -11,7 +11,7 @@ import FirebaseCore
 import GoogleSignIn
 
 @Observable
-class AuthController {
+class AuthController: ObservableObject {
     
     var authState : AuthState = .undefined
     
