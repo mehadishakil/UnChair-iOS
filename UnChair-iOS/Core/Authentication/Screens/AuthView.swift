@@ -29,7 +29,7 @@ struct AuthView: View {
     func signIn(){
         Task {
             do {
-                try await authController.signIn()
+                try await authController.signInWithGoogle()
             } catch {
                 print(error.localizedDescription)
             }
