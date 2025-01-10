@@ -13,8 +13,8 @@ import FirebaseFirestore
 
 
 struct EditProfile: View {
-    @State private var full_name: String = UserDefaults.standard.string(forKey: "name") ?? "John Smith"
-    @State private var email: String = UserDefaults.standard.string(forKey: "email") ?? "x@gmail.com"
+    @State private var full_name: String = ""
+    @State private var email: String = ""
     @State private var avatarImage: UIImage?
     @State private var isLoading: Bool = false
     @Environment(\.presentationMode) var presentationMode
@@ -24,15 +24,18 @@ struct EditProfile: View {
     var body: some View {
         NavigationView {
             ZStack {
-                
                 VStack(spacing: 20) {
                     if let user = Auth.auth().currentUser, let profileImageURL = user.photoURL {
                         
                         AsyncImage(url: URL(string: profileImageURL.absoluteString)) { phase in
                             switch phase {
                             case .failure:
-                                Image(systemName: "photo")
-                                    .font(.largeTitle)
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 200, height: 200)
+                                    .clipShape(Circle())
+                                    .foregroundColor(.gray)
                             case .success(let image):
                                 image
                                     .resizable()
@@ -112,12 +115,28 @@ struct EditProfile: View {
                 }
             }
             .navigationBarTitle("Profile Info", displayMode: .inline)
+            .onAppear {
+                fetchUserData()
+            }
         }
         .accentColor(.white)
     }
     
     
-    
+    private func fetchUserData() {
+        if let currentUser = Auth.auth().currentUser {
+                    Task {
+                        do {
+                            if let userData = try await UserManager.shared.fetchUserData(uid: currentUser.uid) {
+                                full_name = userData["name"] as? String ?? ""
+                                email = userData["email"] as? String ?? ""
+                            }
+                        } catch {
+                            print("Error loading user data: \(error)")
+                        }
+                    }
+                }
+        }
     
     
     

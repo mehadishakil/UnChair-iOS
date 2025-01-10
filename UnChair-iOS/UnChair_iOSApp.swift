@@ -20,7 +20,7 @@ struct UnChair_iOSApp: App {
             MainView()
                 .environmentObject(authController)
         }
-        .modelContainer(for: [WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])
+        .modelContainer(for: [UserData.self, WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])
     }
 }
 

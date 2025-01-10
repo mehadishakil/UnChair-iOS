@@ -17,9 +17,11 @@ import FirebaseStorage
 @Observable
 class AuthController: ObservableObject {
     
+    
     var authState: AuthState = .undefined
     private var db = Firestore.firestore()
     private var storage = Storage.storage()
+    
     
     func startListeningToAuthState() async {
         Auth.auth().addStateDidChangeListener { _, user in
@@ -43,7 +45,6 @@ class AuthController: ObservableObject {
         
         if let user = Auth.auth().currentUser {
             try await saveUserData(user: user, provider: "google")
-            try await saveUserDataLocally(user: user, provider: "google")
         }
     }
     
@@ -70,7 +71,6 @@ class AuthController: ObservableObject {
         
         if let user = Auth.auth().currentUser {
             try await saveUserData(user: user, provider: "apple")
-            try await saveUserDataLocally(user: user, provider: "apple")
         }
     }
     
@@ -95,11 +95,7 @@ class AuthController: ObservableObject {
         }
     }
     
-    private func saveUserDataLocally(user: User, provider: String) async throws {
-            UserDefaults.standard.set(user.uid, forKey: "uid")
-            UserDefaults.standard.set(user.displayName ?? "Unknown", forKey: "name")
-            UserDefaults.standard.set(user.email ?? "No email", forKey: "email")
-    }
+
     
 }
 

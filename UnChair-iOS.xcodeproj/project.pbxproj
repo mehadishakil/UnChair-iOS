@@ -20,6 +20,8 @@
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
 		E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDED2D30F2BC00F62142 /* FirebaseFirestore */; };
 		E866CDF02D30F2DC00F62142 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDEF2D30F2DC00F62142 /* FirebaseStorage */; };
+		E866CDFC2D3143F500F62142 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E866CDFB2D3143F500F62142 /* UserData.swift */; };
+		E866CE042D3151D900F62142 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E866CE032D3151D900F62142 /* UserManager.swift */; };
 		E868E3342C5CCE87005DFFE0 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */; };
 		E869831D2C441877007A695F /* StartExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E869831C2C441877007A695F /* StartExerciseView.swift */; };
 		E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */; };
@@ -82,6 +84,8 @@
 		E844B82A2C108B30006D54E4 /* SedentaryTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedentaryTime.swift; sourceTree = "<group>"; };
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
+		E866CDFB2D3143F500F62142 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserData.swift; path = "UnChair-iOS/Core/Authentication/UserData.swift"; sourceTree = SOURCE_ROOT; };
+		E866CE032D3151D900F62142 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		E869831C2C441877007A695F /* StartExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartExerciseView.swift; sourceTree = "<group>"; };
 		E874A9FB2BFB53A50075644C /* UnChair-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UnChair-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -331,6 +335,7 @@
 		E89F481A2CE7443100B71FA5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E866CDFB2D3143F500F62142 /* UserData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -349,6 +354,7 @@
 				E8C01E092CFE16670073C616 /* AuthState.swift */,
 				E8C01E072CFE15790073C616 /* AuthController.swift */,
 				E8D2BA7A2C84897400BEEAAF /* Authentication.swift */,
+				E866CE032D3151D900F62142 /* UserManager.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -525,6 +531,7 @@
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */,
+				E866CDFC2D3143F500F62142 /* UserData.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
 				E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */,
 				E8AFBAA92C9C45B200AEE292 /* WaterLineChartView.swift in Sources */,
@@ -545,6 +552,7 @@
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
 				E8D787052C9941CC00BA83A0 /* SleepChartModel.swift in Sources */,
+				E866CE042D3151D900F62142 /* UserManager.swift in Sources */,
 				E84992012C3EB232007F918A /* SiteView.swift in Sources */,
 				E81E099F2CFA381700FFF547 /* DLMode.swift in Sources */,
 				E8AFBAAF2C9C462F00AEE292 /* AnalyticScreen.swift in Sources */,

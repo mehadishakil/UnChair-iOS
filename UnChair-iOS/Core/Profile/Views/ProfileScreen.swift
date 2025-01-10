@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+import PhotosUI
 import FirebaseAuth
+import FirebaseFirestore
 
 enum Language: String, CaseIterable, Identifiable {
     case English = "English"
@@ -30,15 +32,10 @@ struct ProfileScreen: View {
     @State var show = false
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @Environment(AuthController.self) private var authController
+    @State private var full_name: String = ""
+    @State private var email: String = ""
+    var db = Firestore.firestore()
     
-    // Retrieve user name and email from UserDefaults
-    private var fullName: String {
-        UserDefaults.standard.string(forKey: "name") ?? "Unknown"
-    }
-    
-    private var email: String {
-        UserDefaults.standard.string(forKey: "email") ?? "x@gmail.com"
-    }
     
     var body: some View {
         NavigationView {
@@ -52,8 +49,12 @@ struct ProfileScreen: View {
                                 AsyncImage(url: URL(string: profileImageURL.absoluteString)) { phase in
                                     switch phase {
                                     case .failure:
-                                        Image(systemName: "photo")
-                                            .font(.largeTitle)
+                                        Image(systemName: "person.circle.fill")
+                                            .resizable()
+                                            .frame(width: 50, height: 50)
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(Circle())
+                                            .padding(1)
                                     case .success(let image):
                                         image
                                             .resizable()
@@ -78,9 +79,9 @@ struct ProfileScreen: View {
                                 }}
                             
                             VStack(alignment: .leading) {
-                                Text(fullName) // Use the name from UserDefaults
+                                Text(full_name)
                                     .font(.system(.headline))
-                                Text(email) // Use the email from UserDefaults
+                                Text(email)
                                     .font(.system(.caption))
                                     .foregroundColor(Color.black)
                             }.padding(1)
@@ -212,7 +213,27 @@ struct ProfileScreen: View {
             }
         }
         .preferredColorScheme(userTheme.colorScheme)
+        .onAppear {
+            fetchUserData()
+        }
     }
+    
+    
+    private func fetchUserData() {
+        if let currentUser = Auth.auth().currentUser {
+            Task {
+                do {
+                    if let userData = try await UserManager.shared.fetchUserData(uid: currentUser.uid) {
+                        full_name = userData["name"] as? String ?? ""
+                        email = userData["email"] as? String ?? ""
+                    }
+                } catch {
+                    print("Error loading user data: \(error)")
+                }
+            }
+        }
+    }
+    
 }
 
 #Preview {
