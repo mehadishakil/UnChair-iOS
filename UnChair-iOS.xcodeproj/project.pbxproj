@@ -18,6 +18,8 @@
 		E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844B82A2C108B30006D54E4 /* SedentaryTime.swift */; };
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
+		E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDED2D30F2BC00F62142 /* FirebaseFirestore */; };
+		E866CDF02D30F2DC00F62142 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDEF2D30F2DC00F62142 /* FirebaseStorage */; };
 		E868E3342C5CCE87005DFFE0 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */; };
 		E869831D2C441877007A695F /* StartExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E869831C2C441877007A695F /* StartExerciseView.swift */; };
 		E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */; };
@@ -58,7 +60,6 @@
 		E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E092CFE16670073C616 /* AuthState.swift */; };
 		E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0B2CFE16900073C616 /* MainView.swift */; };
 		E8C01E0E2CFE17F00073C616 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */; };
-		E8C01E102CFE19710073C616 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0F2CFE196F0073C616 /* AuthView.swift */; };
 		E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D200692C5D3F67002EB719 /* BreakTime.swift */; };
 		E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */; };
 		E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2BA7A2C84897400BEEAAF /* Authentication.swift */; };
@@ -121,7 +122,6 @@
 		E8C01E092CFE16670073C616 /* AuthState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthState.swift; sourceTree = "<group>"; };
 		E8C01E0B2CFE16900073C616 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E8C01E0F2CFE196F0073C616 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		E8D200692C5D3F67002EB719 /* BreakTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTime.swift; sourceTree = "<group>"; };
 		E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTimeModel.swift; sourceTree = "<group>"; };
 		E8D2BA7A2C84897400BEEAAF /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
@@ -138,7 +138,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E89F48242CE748C300B71FA5 /* GoogleSignInSwift in Frameworks */,
+				E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */,
 				E89F481F2CE7488200B71FA5 /* FirebaseAuth in Frameworks */,
+				E866CDF02D30F2DC00F62142 /* FirebaseStorage in Frameworks */,
 				E89F48222CE748C300B71FA5 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -159,10 +161,18 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		E866CDEC2D30F2BC00F62142 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E874A9F22BFB53A50075644C = {
 			isa = PBXGroup;
 			children = (
 				E874A9FD2BFB53A50075644C /* UnChair-iOS */,
+				E866CDEC2D30F2BC00F62142 /* Frameworks */,
 				E874A9FC2BFB53A50075644C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -335,7 +345,6 @@
 		E89F481C2CE7444400B71FA5 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				E8C01E0F2CFE196F0073C616 /* AuthView.swift */,
 				E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */,
 				E8C01E092CFE16670073C616 /* AuthState.swift */,
 				E8C01E072CFE15790073C616 /* AuthController.swift */,
@@ -532,7 +541,6 @@
 				E8AFBAAD2C9C460600AEE292 /* DataFetcher.swift in Sources */,
 				E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */,
 				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
-				E8C01E102CFE19710073C616 /* AuthView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
@@ -776,6 +784,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E866CDED2D30F2BC00F62142 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E89F481D2CE7488200B71FA5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		E866CDEF2D30F2DC00F62142 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E89F481D2CE7488200B71FA5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
 		E89F481E2CE7488200B71FA5 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E89F481D2CE7488200B71FA5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

@@ -8,78 +8,73 @@
 
 import SwiftUI
 import PhotosUI
+import FirebaseAuth
+import FirebaseFirestore
+
 
 struct EditProfile: View {
-    @State private var first_name: String = "John"
-    @State private var last_name: String = "Smith"
-    @State private var email: String = "Johnsmithmobbin@gmail.com"
+    @State private var full_name: String = UserDefaults.standard.string(forKey: "name") ?? "John Smith"
+    @State private var email: String = UserDefaults.standard.string(forKey: "email") ?? "x@gmail.com"
     @State private var avatarImage: UIImage?
-    @State private var photosPickerItem: PhotosPickerItem?
-
+    @State private var isLoading: Bool = false
+    @Environment(\.presentationMode) var presentationMode
+    private var db = Firestore.firestore()
+    
+    
     var body: some View {
         NavigationView {
             ZStack {
-                                
+                
                 VStack(spacing: 20) {
-                    ZStack(alignment: .bottomTrailing) {
-                        if let avatarImage = avatarImage {
-                            Image(uiImage: avatarImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 120, height: 120)
-                                .clipShape(Circle())
-                        } else {
+                    if let user = Auth.auth().currentUser, let profileImageURL = user.photoURL {
+                        
+                        AsyncImage(url: URL(string: profileImageURL.absoluteString)) { phase in
+                            switch phase {
+                            case .failure:
+                                Image(systemName: "photo")
+                                    .font(.largeTitle)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 200, height: 200)
+                                    .clipShape(Circle())
+                                    .foregroundColor(.gray)
+                            default:
+                                ProgressView()
+                            }
+                        }
+                        
+                        
+                    } else {
+                        VStack {
                             Image(systemName: "person.circle.fill")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .frame(width: 120, height: 120)
+                                .frame(width: 200, height: 200)
                                 .clipShape(Circle())
                                 .foregroundColor(.gray)
                         }
                         
-                        PhotosPicker(selection: $photosPickerItem, matching: .images) {
-                            Image(systemName: "pencil")
-                                .foregroundColor(.white)
-                                .frame(width: 30, height: 30)
-                                .background(Color.blue)
-                                .clipShape(Circle())
-                        }
-                        .onChange(of: photosPickerItem) { newValue in
-                            Task {
-                                if let photosPickerItem = photosPickerItem,
-                                   let data = try? await photosPickerItem.loadTransferable(type: Data.self),
-                                   let image = UIImage(data: data) {
-                                    avatarImage = image
-                                }
-                            }
-                        }
+                        
                     }
-                    .padding(.bottom, 20)
-
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("First Name")
-                            .foregroundColor(.gray)
-                            .font(.caption)
-                            .fontWeight(.bold)
-                        TextField("", text: $first_name)
-                            .padding(.leading)
-                            .frame(height: 50)
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(8)
-                            
-                    }
+                    Text("To change your profile picture, update your Google account.")
+                        .foregroundColor(.gray)
+                        .font(.caption2)
                     
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Last Name")
+                        Text("Full Name")
                             .foregroundColor(.gray)
                             .font(.caption)
                             .fontWeight(.bold)
-                        TextField("", text: $last_name)
+                        TextField("", text: $full_name)
                             .padding(.leading)
                             .frame(height: 50)
                             .background(.ultraThinMaterial)
                             .cornerRadius(8)
+                        
                     }
+                    
                     
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Email")
@@ -98,7 +93,7 @@ struct EditProfile: View {
                     Spacer()
                     
                     Button(action: {
-                        // Save action
+                        saveProfileData()
                     }) {
                         Text("Save")
                             .foregroundStyle(.whiteblack)
@@ -111,11 +106,56 @@ struct EditProfile: View {
                     }
                 }
                 .padding()
+                
+                if isLoading {
+                    LoadingScreen()
+                }
             }
             .navigationBarTitle("Profile Info", displayMode: .inline)
         }
         .accentColor(.white)
     }
+    
+    
+    
+    
+    
+    
+    private func saveProfileData() {
+        isLoading = true
+        UserDefaults.standard.set(full_name, forKey: "name")
+        
+        if let user = Auth.auth().currentUser {
+            let userRef = db.collection("users").document(user.uid)
+            
+            userRef.updateData([
+                "name": full_name
+            ]) { error in
+                if let error = error {
+                    print("Can't update now.")
+                } else {
+                    print("Updated successfully!")
+                    presentationMode.wrappedValue.dismiss()
+                }
+                isLoading = false
+            }
+        }
+    }
+    
+    
+    @ViewBuilder
+    func LoadingScreen() -> some View {
+        ZStack {
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .edgesIgnoringSafeArea(.all)
+            
+            ProgressView()
+                .frame(width: 45, height: 45)
+                .background(.background, in: RoundedRectangle(cornerRadius: 5))
+        }
+    }
+    
 }
 
 struct ProfileInfoView_Previews: PreviewProvider {

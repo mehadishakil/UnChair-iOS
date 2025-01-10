@@ -10,11 +10,16 @@ import FirebaseAuth
 import FirebaseCore
 import GoogleSignIn
 import AuthenticationServices
+import FirebaseFirestore
+import FirebaseStorage
 
+@MainActor
 @Observable
 class AuthController: ObservableObject {
     
-    var authState : AuthState = .undefined
+    var authState: AuthState = .undefined
+    private var db = Firestore.firestore()
+    private var storage = Storage.storage()
     
     func startListeningToAuthState() async {
         Auth.auth().addStateDidChangeListener { _, user in
@@ -36,7 +41,12 @@ class AuthController: ObservableObject {
         let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
         try await Auth.auth().signIn(with: credential)
         
+        if let user = Auth.auth().currentUser {
+            try await saveUserData(user: user, provider: "google")
+            try await saveUserDataLocally(user: user, provider: "google")
+        }
     }
+    
     
     func signInWithApple(authorization: ASAuthorization, nonce: String?) async throws {
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
@@ -57,10 +67,38 @@ class AuthController: ObservableObject {
         
         let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: appleIDCredential.fullName)
         try await Auth.auth().signIn(with: credential)
+        
+        if let user = Auth.auth().currentUser {
+            try await saveUserData(user: user, provider: "apple")
+            try await saveUserDataLocally(user: user, provider: "apple")
+        }
     }
     
     func signOut() throws {
         try Auth.auth().signOut()
+    }
+    
+    private func saveUserData(user: User, provider: String) async throws {
+        // Check if user already exists in Firestore
+        let userRef = db.collection("users").document(user.uid)
+        let snapshot = try await userRef.getDocument()
+        
+        if !snapshot.exists {
+            // User doesn't exist, create new document
+            var userData: [String: Any] = [
+                "name": user.displayName ?? "Unknown",
+                "email": user.email ?? "No email",
+                "provider": provider,
+                "uid": user.uid,
+            ]
+            try await userRef.setData(userData)
+        }
+    }
+    
+    private func saveUserDataLocally(user: User, provider: String) async throws {
+            UserDefaults.standard.set(user.uid, forKey: "uid")
+            UserDefaults.standard.set(user.displayName ?? "Unknown", forKey: "name")
+            UserDefaults.standard.set(user.email ?? "No email", forKey: "email")
     }
     
 }
@@ -74,3 +112,5 @@ extension UIApplication {
             .first(where: \.isKeyWindow)
     }
 }
+
+

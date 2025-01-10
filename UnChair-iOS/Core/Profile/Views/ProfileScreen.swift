@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 enum Language: String, CaseIterable, Identifiable {
     case English = "English"
     case Bangla = "Bangla"
     case Arabic = "Arabic"
-    var id: String { self.rawValue}
+    var id: String { self.rawValue }
 }
-
 
 struct ProfileScreen: View {
     
@@ -26,34 +26,61 @@ struct ProfileScreen: View {
     @State private var endTime = Calendar
         .current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
     @State private var changeTheme: Bool = false
-    // @AppStorage("user_theme") private var userTheme: Theme = .systemDefault
-    // @State private var appearanceMode : AppearanceMode = .light
-    // @AppStorage("user_theme") private var userTheme: AppearanceMode = .system
-    // @State private var colorScheme : ColorScheme? = nil
     @Environment(\.colorScheme) private var scheme
     @State var show = false
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @Environment(AuthController.self) private var authController
     
+    // Retrieve user name and email from UserDefaults
+    private var fullName: String {
+        UserDefaults.standard.string(forKey: "name") ?? "Unknown"
+    }
+    
+    private var email: String {
+        UserDefaults.standard.string(forKey: "email") ?? "x@gmail.com"
+    }
     
     var body: some View {
-        NavigationView{
-            Form{
-                // user profile
-                Section{
+        NavigationView {
+            Form {
+                // User profile section
+                Section {
                     NavigationLink(destination: EditProfile()) {
-                        HStack{
-                            Image(.mehadiHasan)
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .aspectRatio(contentMode: .fit)
-                                .clipShape(Circle())
-                                .padding(1)
+                        HStack {
+                            if let user = Auth.auth().currentUser, let profileImageURL = user.photoURL {
+                                
+                                AsyncImage(url: URL(string: profileImageURL.absoluteString)) { phase in
+                                    switch phase {
+                                    case .failure:
+                                        Image(systemName: "photo")
+                                            .font(.largeTitle)
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .frame(width: 50, height: 50)
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(Circle())
+                                            .padding(1)
+                                    default:
+                                        ProgressView()
+                                    }
+                                }
+                                
+                                
+                            } else {
+                                VStack {
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                        .aspectRatio(contentMode: .fit)
+                                        .clipShape(Circle())
+                                        .padding(1)
+                                }}
                             
-                            VStack(alignment: .leading){
-                                Text("Mehadi Hasan")
+                            VStack(alignment: .leading) {
+                                Text(fullName) // Use the name from UserDefaults
                                     .font(.system(.headline))
-                                Text("mehadishakil469@gmail.com")
+                                Text(email) // Use the email from UserDefaults
                                     .font(.system(.caption))
                                     .foregroundColor(Color.black)
                             }.padding(1)
@@ -63,15 +90,15 @@ struct ProfileScreen: View {
                     }
                 }
                 
-                Section(header: Text("Personalization")){
-                    HStack{
+                Section(header: Text("Personalization")) {
+                    HStack {
                         Image(systemName: "bell")
-                        Toggle(isOn: $isNotificationEnabled){
+                        Toggle(isOn: $isNotificationEnabled) {
                             Text("Notification")
                         }
                     }
                     
-                    HStack{
+                    HStack {
                         Button(action: {
                             show.toggle()
                         }) {
@@ -92,13 +119,9 @@ struct ProfileScreen: View {
                         }
                     }
                     
-                    
-                    
-                    
-                    
-                    HStack{
+                    HStack {
                         Image(systemName: "globe")
-                        Picker("Language", selection: $language){
+                        Picker("Language", selection: $language) {
                             Text("English").tag(Language.English)
                             Text("Bangla").tag(Language.Bangla)
                             Text("Arabic").tag(Language.Arabic)
@@ -107,9 +130,7 @@ struct ProfileScreen: View {
                     
                     ActiveHour()
                     
-                    
                     BreakTime(selectedDuration: $selectedDuration)
-                    
                 }
                 
                 Section(header: Text("Accessibility & Advanced")) {
@@ -176,10 +197,9 @@ struct ProfileScreen: View {
                             Spacer()
                         }
                     }
-                    
                 }
                 
-                Button{
+                Button {
                     do {
                         try authController.signOut()
                     } catch {
@@ -189,14 +209,11 @@ struct ProfileScreen: View {
                     Text("Sign Out")
                         .foregroundColor(.primary)
                 }
-                
             }
         }
         .preferredColorScheme(userTheme.colorScheme)
     }
 }
-
-
 
 #Preview {
     ProfileScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
