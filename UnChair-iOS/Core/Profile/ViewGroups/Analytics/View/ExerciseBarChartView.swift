@@ -50,7 +50,7 @@ struct ExerciseBarChartView: View {
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            // addSamples()
+            addSamples()
             fetchData(for: currentTab)
             
             print("Fetched Exercise Data: \(String(describing: exerciseData))")

@@ -11,7 +11,6 @@ import FirebaseCore
 import GoogleSignIn
 import AuthenticationServices
 import FirebaseFirestore
-import FirebaseStorage
 
 @MainActor
 @Observable
@@ -20,7 +19,7 @@ class AuthController: ObservableObject {
     
     var authState: AuthState = .undefined
     private var db = Firestore.firestore()
-    private var storage = Storage.storage()
+
     
     
     func startListeningToAuthState() async {

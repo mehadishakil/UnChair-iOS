@@ -7,6 +7,8 @@
 
 import SwiftUI
 import UserNotifications
+import Firebase
+import FirebaseFirestore
 
 @main
 struct UnChair_iOSApp: App {

@@ -17,12 +17,14 @@ final class UserManager {
     
     private init() {}
     
-    func loadUserData(user: User) async throws {
-        let userRef = db.collection("users").document(user.uid)
-        let snapshot = try await userRef.getDocument()
-        
-        if snapshot.exists, let data = snapshot.data() {
-            self.userData = data
+    func fetchUserData(uid: String) async throws -> [String: Any]? {
+            let userRef = db.collection("users").document(uid)
+            let snapshot = try await userRef.getDocument()
+            
+            if snapshot.exists, let data = snapshot.data() {
+                return data
+            } else {
+                return nil
+            }
         }
-    }
 }

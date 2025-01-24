@@ -10,6 +10,7 @@
 		E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E802683E2C317E0900F026F1 /* HeaderView.swift */; };
 		E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80268402C31846A00F026F1 /* BreakSectionView.swift */; };
 		E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */; };
+		E81D86062D3D7A3900B39499 /* FirebaseDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81D86052D3D7A2C00B39499 /* FirebaseDataManager.swift */; };
 		E81E099F2CFA381700FFF547 /* DLMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81E099E2CFA381700FFF547 /* DLMode.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
 		E832992D2D2DCAB500B5D009 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */; };
@@ -68,6 +69,7 @@
 		E8D787032C9941CC00BA83A0 /* WaterChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D786FF2C9941CC00BA83A0 /* WaterChartModel.swift */; };
 		E8D787042C9941CC00BA83A0 /* StepsChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787002C9941CC00BA83A0 /* StepsChartModel.swift */; };
 		E8D787052C9941CC00BA83A0 /* SleepChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787012C9941CC00BA83A0 /* SleepChartModel.swift */; };
+		E8E787CC2D431DCE0091EE28 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */; };
 		E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */; };
 		E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */; };
 /* End PBXBuildFile section */
@@ -76,6 +78,7 @@
 		E802683E2C317E0900F026F1 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		E80268402C31846A00F026F1 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
 		E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onBoardingPage.swift; sourceTree = "<group>"; };
+		E81D86052D3D7A2C00B39499 /* FirebaseDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDataManager.swift; sourceTree = "<group>"; };
 		E81E099E2CFA381700FFF547 /* DLMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLMode.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
 		E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -132,6 +135,7 @@
 		E8D786FF2C9941CC00BA83A0 /* WaterChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WaterChartModel.swift; path = ../../../../../../../ModuleDraft/ModuleDraft/Code/Features/Chart/Models/WaterChartModel.swift; sourceTree = "<group>"; };
 		E8D787002C9941CC00BA83A0 /* StepsChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsChartModel.swift; sourceTree = "<group>"; };
 		E8D787012C9941CC00BA83A0 /* SleepChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepChartModel.swift; sourceTree = "<group>"; };
+		E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
 		E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -415,7 +419,9 @@
 		E8E5B35D2C93369D0021F76A /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				E81D86052D3D7A2C00B39499 /* FirebaseDataManager.swift */,
 				E8AFBAAC2C9C460600AEE292 /* DataFetcher.swift */,
+				E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -541,6 +547,7 @@
 				E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */,
 				E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */,
 				E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */,
+				E8E787CC2D431DCE0091EE28 /* FirestoreService.swift in Sources */,
 				E868E3342C5CCE87005DFFE0 /* LocalNotification.swift in Sources */,
 				E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */,
 				E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */,
@@ -549,6 +556,7 @@
 				E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */,
 				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
+				E81D86062D3D7A3900B39499 /* FirebaseDataManager.swift in Sources */,
 				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
 				E8D787052C9941CC00BA83A0 /* SleepChartModel.swift in Sources */,
