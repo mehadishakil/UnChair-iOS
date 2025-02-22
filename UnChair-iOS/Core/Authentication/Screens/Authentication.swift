@@ -123,7 +123,9 @@ struct Authentication: View {
                 .frame(width: 250)
         }
         .padding()
-        .alert(errorMessage, isPresented: $showAlert) { }
+        .alert(errorMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
+        }
         .overlay {
             if isLoading {
                 LoadingScreen()

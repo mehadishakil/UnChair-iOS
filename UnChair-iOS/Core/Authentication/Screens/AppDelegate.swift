@@ -16,8 +16,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         FirebaseApp.configure()
         let settings = FirestoreSettings()
         // Use memory-only cache
-        settings.cacheSettings =
-        MemoryCacheSettings(garbageCollectorSettings: MemoryLRUGCSettings())
+        settings.cacheSettings = MemoryCacheSettings(garbageCollectorSettings: MemoryLRUGCSettings())
         // Use persistent disk cache, with 100 MB cache size
         settings.cacheSettings = PersistentCacheSettings(sizeBytes: 100 * 1024 * 1024 as NSNumber)
         // Enable offline data persistence
