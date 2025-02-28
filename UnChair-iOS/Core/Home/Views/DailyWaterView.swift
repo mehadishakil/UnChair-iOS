@@ -96,6 +96,8 @@ struct WaterPickerView: View {
     let minIntake: Int
     @Environment(\.dismiss) private var dismiss
     @State private var tempWater: Int
+    @EnvironmentObject var authController: AuthController
+
 
     init(water: Binding<Int>, waterTarget: Int, maxIntake: Int, minIntake: Int) {
         self._water = water
@@ -151,12 +153,31 @@ struct WaterPickerView: View {
             
             Button(action: {
                 water = tempWater
-                dismiss()
+                // Call the update function using Task
+                Task {
+                    do {
+                        let service = HealthDataService()
+                        if let userId = authController.currentUser?.uid {
+                            try await service.updateDailyHealthData(
+                                for: userId,
+                                date: Date(),
+                                waterIntake: water,
+                                stepsTaken: nil,
+                                sleepDuration: nil,
+                                exerciseTime: nil
+                            )
+                        }
+                    } catch {
+                        print("Error updating daily water data: \(error.localizedDescription)")
+                    }
+                    dismiss()
+                }
             }) {
                 Text("Done")
                     .bold()
             }
             .padding()
+
         }
     }
     

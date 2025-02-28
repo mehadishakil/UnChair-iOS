@@ -233,7 +233,6 @@ struct ProfileScreen: View {
             }
         }
     }
-    
 }
 
 #Preview {
