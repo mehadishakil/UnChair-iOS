@@ -83,7 +83,7 @@ struct ProfileScreen: View {
                                     .font(.system(.headline))
                                 Text(email)
                                     .font(.system(.caption))
-                                    .foregroundColor(Color.black)
+                                    
                             }.padding(1)
                             
                             Spacer()

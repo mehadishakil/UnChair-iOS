@@ -14,7 +14,7 @@ struct HealthDataService {
         date: Date,
         waterIntake: Int?,         // New or updated water intake value
         stepsTaken: Int?,          // New or updated steps count
-        sleepDuration: Int?,       // New or updated sleep duration in minutes
+        sleepDuration: Float?,       // New or updated sleep duration in minutes
         exerciseTime: [String: Int]?  // New or updated exercise time data
     ) async throws {
         // Format the date to create a document name, e.g., "daily_log_2025_02_20"

@@ -56,6 +56,7 @@ struct SleepPickerView: View {
     @Binding var sleep: Float
     @Environment(\.presentationMode) var presentationMode
     @State private var selectedSleepIndex: Int
+    @EnvironmentObject var authController: AuthController
     private let sleepValues = Array(stride(from: 0.0, through: 12.0, by: 0.1))
 
     init(sleep: Binding<Float>) {
@@ -80,6 +81,27 @@ struct SleepPickerView: View {
 
             Button(action: {
                 sleep = Float(sleepValues[selectedSleepIndex])
+                
+                Task {
+                    do {
+                        let service = HealthDataService()
+                        if let userId = authController.currentUser?.uid {
+                            try await service.updateDailyHealthData(
+                                for: userId,
+                                date: Date(),
+                                waterIntake: nil,
+                                stepsTaken: nil,
+                                sleepDuration: sleep,
+                                exerciseTime: nil
+                            )
+                        }
+                    } catch {
+                        print("Error updating daily water data: \(error.localizedDescription)")
+                    }
+                    
+                }
+
+                
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text("Done")

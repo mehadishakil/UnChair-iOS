@@ -9,7 +9,8 @@ import SwiftUI
 
 struct DailyStepsView: View {
     @EnvironmentObject var manager: HealthManager
-
+    @EnvironmentObject var authController: AuthController  // Inject AuthController
+     
     var body: some View {
         StepsCardView {
             VStack(spacing: 16) {
@@ -19,7 +20,6 @@ struct DailyStepsView: View {
                     .frame(height: 40)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
-
                 
                 VStack(spacing: 8) {
                     Text("\(manager.todayStepCount)")
@@ -27,7 +27,6 @@ struct DailyStepsView: View {
  
                     Text("Steps")
                         .font(.system(size: 16, weight: .bold))
-
                 }
             }
             .padding()
@@ -35,9 +34,29 @@ struct DailyStepsView: View {
             .cornerRadius(15)
         }
         .shadow(radius: 1)
-        
+        .onDisappear {
+            // When the view disappears, update steps in Firestore.
+            Task {
+                do {
+                    let service = HealthDataService()
+                    if let userId = authController.currentUser?.uid {
+                        try await service.updateDailyHealthData(
+                            for: userId,
+                            date: Date(),
+                            waterIntake: nil,
+                            stepsTaken: manager.todayStepCount,
+                            sleepDuration: nil,
+                            exerciseTime: nil
+                        )
+                    }
+                } catch {
+                    print("Error updating daily water data: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 }
+
 
 struct StepsCardView<Content: View>: View {
     var content: Content
