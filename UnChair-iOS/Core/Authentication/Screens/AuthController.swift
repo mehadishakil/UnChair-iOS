@@ -22,11 +22,35 @@ class AuthController: ObservableObject {
     var currentUser: UserData? = nil
     
     
+//    func startListeningToAuthState() async {
+//        _ = Auth.auth().addStateDidChangeListener { _, user in
+//            DispatchQueue.main.async {
+//                if let user = user {
+//                    self.authState = .authenticated
+//                    Task {
+//                        try await self.loadUserData(user: user)
+//                    }
+//                } else {
+//                    self.authState = .unauthenticated
+//                    self.currentUser = nil
+//                }
+//            }
+//        }
+//    }
+    
     func startListeningToAuthState() async {
         _ = Auth.auth().addStateDidChangeListener { _, user in
             DispatchQueue.main.async {
-                if user != nil {
+                if let user = user {
                     self.authState = .authenticated
+                    // Reload user data from Firestore when a user is found
+                    Task {
+                        do {
+                            try await self.loadUserData(user: user)
+                        } catch {
+                            print("Error loading user data: \(error.localizedDescription)")
+                        }
+                    }
                 } else {
                     self.authState = .unauthenticated
                     self.currentUser = nil
@@ -34,6 +58,8 @@ class AuthController: ObservableObject {
             }
         }
     }
+
+
 
     
     

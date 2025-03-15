@@ -6,41 +6,57 @@
 //
 
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
 
 struct ContentView: View {
     @State private var tabBarVisible = true
     @State private var selectedDuration = TimeDuration(hours: 0, minutes: 1)
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @StateObject private var firestoreService = FirestoreService()
+    // @State private var today = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
+    @EnvironmentObject var authController: AuthController
     @State private var dailyData: [String: Any] = [:]
-    @State private var today = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
     
+    private var today: String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            return formatter.string(from: Date())
+    }
     
     var body: some View {
-        
-        TabView{
-            HomeScreen(selectedDuration: $selectedDuration)
-                .tabItem {
-                    Image(systemName: "house")
+            TabView {
+                HomeScreen(selectedDuration: $selectedDuration)
+                    .tabItem { Image(systemName: "house") }
+                AnalyticScreen()
+                    .tabItem { Image(systemName: "chart.bar.xaxis") }
+                ProfileScreen(selectedDuration: $selectedDuration)
+                    .tabItem { Image(systemName: "person") }
+            }
+            .edgesIgnoringSafeArea(.all)
+            .tint(.primary)
+            .preferredColorScheme(userTheme.colorScheme)
+            .task {
+                guard let user = Auth.auth().currentUser else {
+                    print("User is not authenticated. Skipping data load.")
+                    return
                 }
-            AnalyticScreen()
-                .tabItem {
-                    Image(systemName: "chart.bar.xaxis")
+                let userDoc = Firestore.firestore().collection("users").document(user.uid).collection("dailyData").document(today)
+                userDoc.addSnapshotListener { snapshot, error in
+                    if let error = error {
+                        print("Error listening for data: \(error.localizedDescription)")
+                        return
+                    }
+                    if let data = snapshot?.data() {
+                        // Make sure to update on the main thread
+                        DispatchQueue.main.async {
+                            self.dailyData = data
+                        }
+                    }
                 }
-            ProfileScreen(selectedDuration: $selectedDuration)
-                .tabItem {
-                    Image(systemName: "person")
-                }
+            }
+
         }
-        .edgesIgnoringSafeArea(.all)
-        .tint(.primary)
-        .preferredColorScheme(userTheme.colorScheme)
-        .onAppear {
-            loadDataForToday()
-        }
-        
-        
-    }
     
     // Load data for today
     private func loadDataForToday() {
@@ -50,7 +66,9 @@ struct ContentView: View {
                     switch result {
                     case .success(let data):
                         if let todayData = data[today] as? [String: Any] {
-                            dailyData = todayData
+                            DispatchQueue.main.async {
+                                dailyData = todayData
+                            }
                         }
                     case .failure(let error):
                         print("Error fetching data: \(error.localizedDescription)")
@@ -61,6 +79,8 @@ struct ContentView: View {
             }
         }
     }
+
+
     
     // Create a document for today if it doesn't exist
     private func createDataForToday() {
