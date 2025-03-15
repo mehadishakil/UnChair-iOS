@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct DailyWaterView: View {
-    @State var waterIntake: Int = 1800
+    @State var waterIntake: Int = 0
     @State private var showWaterPicker = false
     private let waterTarget: Int = 3500
     private let maxIntake: Int = 6000
     private let minIntake: Int = 0
+    @Environment(AuthController.self) private var authController
+    let healthService = HealthDataService()
 
     var body: some View {
         VStack(spacing: 20) {
@@ -31,7 +33,29 @@ struct DailyWaterView: View {
                 .presentationDetents([.fraction(0.8), .large])
                 .presentationDragIndicator(.visible)
         }
+        .onAppear{
+            fetchWaterData()
+        }
     }
+    
+    private func fetchWaterData() {
+            guard let userId = authController.currentUser?.uid else {
+                print("user not found")
+                return
+            }
+        
+            Task {
+                do {
+                    if let waterAmount = try await healthService.fetchTodaysWaterData(for: userId, date: Date()) {
+                        DispatchQueue.main.async {
+                            self.waterIntake = waterAmount
+                        }
+                    }
+                } catch {
+                    print("Error fetching water data: \(error.localizedDescription)")
+                }
+            }
+        }
 }
 
 struct CircularProgressBar: View {

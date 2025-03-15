@@ -6,11 +6,11 @@
 //
 import SwiftUI
 
-import SwiftUI
-
 struct DailySleepView: View {
     @State private var showSleepPicker = false
-    @State public var sleep: Float = 6.5
+    @State private var sleep: Float = 0
+    @Environment(AuthController.self) private var authController
+    let healthService = HealthDataService()
 
     var body: some View {
         CardView {
@@ -49,8 +49,27 @@ struct DailySleepView: View {
             }
         }
         .shadow(radius: 1)
+        .onAppear {
+            fetchSleepData()
+        }
+    }
+
+    private func fetchSleepData() {
+        guard let userId = authController.currentUser?.uid else { return }
+        Task {
+            do {
+                if let sleepDuration = try await healthService.fetchTodaysSleepData(for: userId, date: Date()) {
+                    DispatchQueue.main.async {
+                        self.sleep = sleepDuration
+                    }
+                }
+            } catch {
+                print("Error fetching sleep data: \(error.localizedDescription)")
+            }
+        }
     }
 }
+
 
 struct SleepPickerView: View {
     @Binding var sleep: Float
@@ -128,5 +147,5 @@ struct CardView<Content: View>: View {
 }
 
 #Preview {
-    DailySleepView(sleep: 6.5)
+    DailySleepView()
 }

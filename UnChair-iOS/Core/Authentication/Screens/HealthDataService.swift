@@ -9,28 +9,26 @@ import Foundation
 import FirebaseFirestore
 
 struct HealthDataService {
+    private let db = Firestore.firestore()
+
     func updateDailyHealthData(
         for userId: String,
         date: Date,
-        waterIntake: Int?,         // New or updated water intake value
-        stepsTaken: Int?,          // New or updated steps count
-        sleepDuration: Float?,       // New or updated sleep duration in minutes
-        exerciseTime: [String: Int]?  // New or updated exercise time data
+        waterIntake: Int?,
+        stepsTaken: Int?,
+        sleepDuration: Float?,
+        exerciseTime: [String: Int]?
     ) async throws {
-        // Format the date to create a document name, e.g., "daily_log_2025_02_20"
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy_MM_dd"
         let dateString = dateFormatter.string(from: date)
         let documentName = "daily_log_\(dateString)"
         
-        // Reference the user's daily log document in the health_data sub-collection
-        let logRef = Firestore.firestore()
-            .collection("users")
+        let logRef = db.collection("users")
             .document(userId)
             .collection("health_data")
             .document(documentName)
         
-        // Prepare the data dictionary with only the fields you want to update
         var updatedData: [String: Any] = [:]
         
         if let water = waterIntake {
@@ -43,14 +41,53 @@ struct HealthDataService {
             updatedData["sleepDuration"] = sleep
         }
         if let exercise = exerciseTime {
-            // This will update the entire exerciseTime map.
-            // If you want to update specific nested fields, you can use dot notation like:
-            // updatedData["exerciseTime.quick_break"] = exercise["quick_break"]
             updatedData["exerciseTime"] = exercise
         }
         
-        // Update the document; merge: true ensures that only the fields in updatedData are updated.
         try await logRef.setData(updatedData, merge: true)
         print("Daily health data for \(documentName) updated successfully.")
+    }
+
+    // Function to fetch daily sleep data
+    func fetchTodaysSleepData(for userId: String, date: Date) async throws -> Float? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy_MM_dd"
+        let dateString = dateFormatter.string(from: date)
+        let documentName = "daily_log_\(dateString)"
+
+        let logRef = db.collection("users")
+            .document(userId)
+            .collection("health_data")
+            .document(documentName)
+        
+        let document = try await logRef.getDocument()
+        
+        if let data = document.data(), let sleepDuration = data["sleepDuration"] as? Float {
+            return sleepDuration
+        } else {
+            return nil
+        }
+    }
+    
+    func fetchTodaysWaterData(for userId: String, date: Date) async throws -> Int? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy_MM_dd"
+        let dateString = dateFormatter.string(from: date)
+        let documentName = "daily_log_\(dateString)"
+
+        let logRef = db.collection("users")
+            .document(userId)
+            .collection("health_data")
+            .document(documentName)
+        
+        print("Hello")
+        
+        let document = try await logRef.getDocument()
+        
+        if let data = document.data(), let waterIntake = data["waterIntake"] as? Int {
+            return waterIntake
+        } else {
+            return nil
+        }
     }
 }

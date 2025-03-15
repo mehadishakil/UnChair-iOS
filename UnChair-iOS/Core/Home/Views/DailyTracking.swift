@@ -22,7 +22,7 @@ struct DailyTracking: View {
             }
             .frame(maxWidth: .infinity)
             
-            DailySleepView(sleep: 6.5)
+            DailySleepView()
                 .frame(maxWidth: .infinity)
         }
         .padding()
