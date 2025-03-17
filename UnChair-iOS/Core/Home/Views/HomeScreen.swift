@@ -11,7 +11,7 @@ struct HomeScreen: View {
     
     @Binding var selectedDuration: TimeDuration
     @State private var notificationPermissionGranted = false
-    @StateObject var manager = HealthManager()
+    @EnvironmentObject var healthViewModel: HealthDataViewModel
     
     var body: some View {
         NavigationStack{
@@ -25,7 +25,7 @@ struct HomeScreen: View {
                         HCalendarView().padding(.bottom)
                         SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted ,selectedDuration: $selectedDuration).padding()
                         DailyTracking()
-                            .environmentObject(manager)
+                            
                         
                         Spacer()
                         BreakSectionView()
@@ -33,22 +33,14 @@ struct HomeScreen: View {
                         
                         CalmCorner()
                         
-                        
-                        
-                        //                    NavigationLink(destination: LocalNotification()) {
-                        //                        HStack {
-                        //                            Image(systemName: "creditcard")
-                        //                            Text("Restore Purchase")
-                        //                            Spacer()
-                        //                        }
-                        //                    }
-                        
-                        
                     }}
-                .onAppear{
-                    requestNotificationPermission()
-                    manager.fetchTodaySteps()
-                }
+                .onAppear {
+                                requestNotificationPermission()
+                                healthViewModel.refreshData()
+                            }
+                            .refreshable {
+                                healthViewModel.refreshData()
+                            }
             }
         }
         

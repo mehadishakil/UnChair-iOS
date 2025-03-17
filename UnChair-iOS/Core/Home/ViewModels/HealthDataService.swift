@@ -7,9 +7,32 @@
 
 import Foundation
 import FirebaseFirestore
+import HealthKit
 
-struct HealthDataService {
+class HealthDataService {
     private let db = Firestore.firestore()
+    var healthStore: HKHealthStore?
+    @Published var todayStepCount: Int = 0
+
+    init() {
+        let steps = HKQuantityType(.stepCount)
+        let healthTypes: Set = [steps]
+
+        Task {
+            if HKHealthStore.isHealthDataAvailable() {
+                healthStore = HKHealthStore()
+                do {
+                    try await healthStore!.requestAuthorization(toShare: [], read: healthTypes)
+                    fetchTodaySteps() // Fetch steps after getting authorization
+                } catch {
+                    print("Error fetching health data")
+                }
+            } else {
+                print("Your device does not support health services")
+            }
+        }
+    }
+
 
     func updateDailyHealthData(
         for userId: String,
@@ -80,8 +103,7 @@ struct HealthDataService {
             .collection("health_data")
             .document(documentName)
         
-        print("Hello")
-        
+
         let document = try await logRef.getDocument()
         
         if let data = document.data(), let waterIntake = data["waterIntake"] as? Int {
@@ -89,5 +111,23 @@ struct HealthDataService {
         } else {
             return nil
         }
+    }
+    
+    func fetchTodaySteps()-> Int {
+        let steps = HKQuantityType(.stepCount)
+        let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
+        let query = HKStatisticsQuery(quantityType: steps, quantitySamplePredicate: predicate) { [weak self] _, result, error in
+            guard let quantity = result?.sumQuantity(), error == nil else {
+                print("Error fetching today's step data")
+                return
+            }
+            let stepCount = quantity.doubleValue(for: .count())
+            DispatchQueue.main.async {
+                self?.todayStepCount = Int(stepCount)
+            }
+        }
+        healthStore!.execute(query)
+        
+        return todayStepCount
     }
 }

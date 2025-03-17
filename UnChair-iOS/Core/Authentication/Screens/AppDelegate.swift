@@ -15,8 +15,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         FirebaseApp.configure()
-        let settings = FirestoreSettings()
-        // Configure persistent disk cache with 100 MB size
+        let settings = Firestore.firestore().settings
         settings.cacheSettings = PersistentCacheSettings(sizeBytes: 100 * 1024 * 1024 as NSNumber)
         Firestore.firestore().settings = settings
         return true

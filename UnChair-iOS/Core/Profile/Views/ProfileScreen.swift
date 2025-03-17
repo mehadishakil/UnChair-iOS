@@ -31,7 +31,7 @@ struct ProfileScreen: View {
     @Environment(\.colorScheme) private var scheme
     @State var show = false
     @AppStorage("userTheme") private var userTheme: Theme = .system
-    @Environment(AuthController.self) private var authController
+    @EnvironmentObject var authController: AuthController
     @State private var full_name: String = ""
     @State private var email: String = ""
     var db = Firestore.firestore()

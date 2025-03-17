@@ -21,23 +21,6 @@ class AuthController: ObservableObject {
     private var db = Firestore.firestore()
     var currentUser: UserData? = nil
     
-    
-//    func startListeningToAuthState() async {
-//        _ = Auth.auth().addStateDidChangeListener { _, user in
-//            DispatchQueue.main.async {
-//                if let user = user {
-//                    self.authState = .authenticated
-//                    Task {
-//                        try await self.loadUserData(user: user)
-//                    }
-//                } else {
-//                    self.authState = .unauthenticated
-//                    self.currentUser = nil
-//                }
-//            }
-//        }
-//    }
-    
     func startListeningToAuthState() async {
         _ = Auth.auth().addStateDidChangeListener { _, user in
             DispatchQueue.main.async {

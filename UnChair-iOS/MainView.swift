@@ -10,6 +10,7 @@ import SwiftUI
 struct MainView: View {
     
     @EnvironmentObject var authController: AuthController
+    @EnvironmentObject var healthViewModel: HealthDataViewModel
     
     var body: some View {
         Group{
@@ -18,6 +19,11 @@ struct MainView: View {
                 ProgressView()
             case .authenticated:
                 ContentView()
+                    .onAppear {
+                        if let userId = authController.currentUser?.uid {
+                            healthViewModel.setUserId(userId)
+                        }
+                    }
             case .unauthenticated:
                 Authentication()
             }

@@ -55,7 +55,6 @@
 		E8B812362C33ECC400698849 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B812352C33ECC400698849 /* EditProfile.swift */; };
 		E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */; };
 		E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E32C555728003127CC /* BreakModel.swift */; };
-		E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E52C555B87003127CC /* HomeViewModel.swift */; };
 		E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */; };
 		E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */; };
 		E8BB4E362BFD0AEF00C1459C /* ProfileScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */; };
@@ -71,6 +70,7 @@
 		E8D787052C9941CC00BA83A0 /* SleepChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D787012C9941CC00BA83A0 /* SleepChartModel.swift */; };
 		E8DB22842D71EECC001172B5 /* HealthDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8DB22832D71EECC001172B5 /* HealthDataService.swift */; };
 		E8E787CC2D431DCE0091EE28 /* FirestoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */; };
+		E8FB19A32D882CF700A5CF82 /* HealthDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FB19A22D882CF600A5CF82 /* HealthDataViewModel.swift */; };
 		E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */; };
 		E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */; };
 /* End PBXBuildFile section */
@@ -122,7 +122,6 @@
 		E8B812352C33ECC400698849 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
 		E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBreakView.swift; sourceTree = "<group>"; };
 		E8B9A2E32C555728003127CC /* BreakModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakModel.swift; sourceTree = "<group>"; };
-		E8B9A2E52C555B87003127CC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsBreakView.swift; sourceTree = "<group>"; };
 		E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E8BB4E352BFD0AEF00C1459C /* ProfileScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreen.swift; sourceTree = "<group>"; };
@@ -138,6 +137,7 @@
 		E8D787012C9941CC00BA83A0 /* SleepChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepChartModel.swift; sourceTree = "<group>"; };
 		E8DB22832D71EECC001172B5 /* HealthDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataService.swift; sourceTree = "<group>"; };
 		E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirestoreService.swift; sourceTree = "<group>"; };
+		E8FB19A22D882CF600A5CF82 /* HealthDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataViewModel.swift; sourceTree = "<group>"; };
 		E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -246,8 +246,9 @@
 		E8783CC32BFD923D0085A899 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E8FB19A22D882CF600A5CF82 /* HealthDataViewModel.swift */,
+				E8DB22832D71EECC001172B5 /* HealthDataService.swift */,
 				E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */,
-				E8B9A2E52C555B87003127CC /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -359,7 +360,6 @@
 				E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */,
 				E8C01E092CFE16670073C616 /* AuthState.swift */,
 				E8C01E072CFE15790073C616 /* AuthController.swift */,
-				E8DB22832D71EECC001172B5 /* HealthDataService.swift */,
 				E8D2BA7A2C84897400BEEAAF /* Authentication.swift */,
 				E866CE032D3151D900F62142 /* UserManager.swift */,
 			);
@@ -538,6 +538,7 @@
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
 				E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */,
+				E8FB19A32D882CF700A5CF82 /* HealthDataViewModel.swift in Sources */,
 				E80268412C31846A00F026F1 /* BreakSectionView.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */,
@@ -561,7 +562,6 @@
 				E8FF2F4B2C58F6BC00E9974E /* FeedbackView.swift in Sources */,
 				E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */,
 				E81D86062D3D7A3900B39499 /* FirebaseDataManager.swift in Sources */,
-				E8B9A2E62C555B87003127CC /* HomeViewModel.swift in Sources */,
 				E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */,
 				E8D787052C9941CC00BA83A0 /* SleepChartModel.swift in Sources */,
 				E866CE042D3151D900F62142 /* UserManager.swift in Sources */,

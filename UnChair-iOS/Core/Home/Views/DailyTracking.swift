@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct DailyTracking: View {
+    @EnvironmentObject var healthViewModel: HealthDataViewModel
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Daily Tracking")
@@ -17,7 +19,6 @@ struct DailyTracking: View {
             
             HStack(spacing: 15) {
                 DailyStepsView()
-                    .environmentObject(HealthManager())
                 DailyWaterView()
             }
             .frame(maxWidth: .infinity)
@@ -26,6 +27,13 @@ struct DailyTracking: View {
                 .frame(maxWidth: .infinity)
         }
         .padding()
+        .overlay {
+            if healthViewModel.isLoading {
+                ProgressView()
+                    .background(Color.white.opacity(0.1))
+                    .cornerRadius(8)
+            }
+        }
     }
 }
 
