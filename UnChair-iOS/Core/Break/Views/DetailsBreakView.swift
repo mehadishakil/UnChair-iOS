@@ -28,6 +28,7 @@ struct DetailsBreakView: View {
                             alignment: .bottom
                         )
                         .edgesIgnoringSafeArea(.all)
+                        
                     
                     
                     
@@ -96,7 +97,7 @@ struct DetailsBreakView: View {
                 
                 Spacer(minLength: 0)
                 
-                NavigationLink(destination: StartExerciseView(exercises: breakItem.exercises)) {
+                NavigationLink(destination: StartExerciseView(breakItem: breakItem)) {
                     Text("Next")
                         .font(.title3)
                         .bold()

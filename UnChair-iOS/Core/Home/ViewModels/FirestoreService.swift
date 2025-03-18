@@ -24,7 +24,7 @@ class FirestoreService: ObservableObject {
             return
         }
 
-        db.collection("users").document(userId).collection("dailyData").getDocuments { snapshot, error in
+        db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
             if let error = error {
                 completion(.failure(error))
                 return
@@ -48,7 +48,7 @@ class FirestoreService: ObservableObject {
             return
         }
 
-        db.collection("users").document(userId).collection("dailyData").document(date).getDocument { snapshot, _ in
+        db.collection("users").document(userId).collection("health_data").document(date).getDocument { snapshot, _ in
             completion(snapshot?.exists ?? false)
         }
     }
@@ -61,7 +61,7 @@ class FirestoreService: ObservableObject {
             return
         }
 
-        db.collection("users").document(userId).collection("dailyData").document(date).setData(initialData) { error in
+        db.collection("users").document(userId).collection("health_data").document(date).setData(initialData) { error in
             completion(error)
         }
     }
@@ -74,7 +74,7 @@ class FirestoreService: ObservableObject {
             return
         }
 
-        db.collection("users").document(userId).collection("dailyData").document(date).setData(updatedData, merge: true) { error in
+        db.collection("users").document(userId).collection("health_data").document(date).setData(updatedData, merge: true) { error in
             completion(error)
         }
     }

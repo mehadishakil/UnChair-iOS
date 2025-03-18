@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import FirebaseAuth
 
 class SoundManager {
     static let instance = SoundManager()
@@ -44,8 +45,8 @@ struct StartExerciseView: View {
     @State private var timerRunning: Bool = false
     @State private var showControlButtons: Bool = false
     @State private var isPaused: Bool = false
-    
-    let exercises: [Exercise]
+    let breakItem: Break
+    var exercises: [Exercise] { breakItem.exercises }
     @Environment(\.presentationMode) var presentationMode
 
     var totalDuration: Int {
@@ -157,10 +158,50 @@ struct StartExerciseView: View {
             }
         } else {
             SoundManager.instance.allExerciseFinishBeep()
+            updateExerciseRecord()
             resetExercise()
             presentationMode.wrappedValue.dismiss()
         }
     }
+    
+    
+    
+    /// Updates the exercise record in Firestore using the break's title as key.
+        private func updateExerciseRecord() {
+            // Ensure the user is authenticated.
+            guard let user = Auth.auth().currentUser else {
+                print("User not authenticated; cannot update exercise record.")
+                return
+            }
+            
+            // Calculate total exercise time in minutes.
+            let totalExerciseSeconds = totalDuration
+            let exerciseMinutes = totalExerciseSeconds / 60
+            
+            // Derive the key from the break title (for example, "Quick Break" -> "quick_break").
+            let breakKey = breakItem.title.lowercased().replacingOccurrences(of: " ", with: "_")
+            let exerciseRecord: [String: Int] = [breakKey: exerciseMinutes]
+            
+            // Use your HealthDataService to update the record in Firestore.
+            let healthDataService = HealthDataService()
+            Task {
+                do {
+                    try await healthDataService.updateDailyHealthData(
+                        for: user.uid,
+                        date: Date(),
+                        waterIntake: nil,
+                        stepsTaken: nil,
+                        sleepDuration: nil,
+                        exerciseTime: exerciseRecord
+                    )
+                    print("Exercise record updated successfully for key: \(breakKey)")
+                } catch {
+                    print("Failed to update exercise record: \(error.localizedDescription)")
+                }
+            }
+        }
+    
+    
 
     private func remainingTime(for exercise: Exercise) -> Int {
         return exercise.duration - elapsedTime
@@ -175,10 +216,17 @@ struct StartExerciseView: View {
 
 struct BreakScreenView_Previews: PreviewProvider {
     static var previews: some View {
-        let sets: [Exercise] = [
-            Exercise(image: "neck_rolls", name: "Neck Rolls", description: "Gently roll your neck in a circular motion.", duration: 15),
-            Exercise(image: "neck_rolls", name: "Shoulder Shrugs", description: "Raise your shoulders towards your ears, then lower them.", duration: 15)
-        ]
-        StartExerciseView(exercises: sets)
+        let dummyBreak = Break(
+            title: "Quick Break",
+            image: "neck_rolls",
+            overview: "A quick break to relieve tension",
+            description: "A quick session focusing on neck and shoulder stretches.",
+            duration: 30,
+            exercises: [
+                Exercise(image: "neck_rolls", name: "Neck Rolls", description: "Gently roll your neck in a circular motion.", duration: 15),
+                Exercise(image: "neck_rolls", name: "Shoulder Shrugs", description: "Raise your shoulders towards your ears, then lower them.", duration: 15)
+            ]
+        )
+        return StartExerciseView(breakItem: dummyBreak)
     }
 }

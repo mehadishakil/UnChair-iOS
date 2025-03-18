@@ -84,7 +84,7 @@ class HealthDataViewModel: ObservableObject {
         let userDoc = Firestore.firestore()
             .collection("users")
             .document(userId)
-            .collection("dailyData")
+            .collection("health_data")
             .document(today)
         
         firestoreListener = userDoc.addSnapshotListener { [weak self] snapshot, error in
