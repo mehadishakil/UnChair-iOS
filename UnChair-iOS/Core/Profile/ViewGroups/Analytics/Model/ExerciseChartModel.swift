@@ -9,19 +9,16 @@ import Foundation
 import SwiftData
 
 @Model
-class ExerciseChartModel {
-    @Attribute(.unique) var id: String
+class ExerciseChartModel : Identifiable {
+    var id: String
     var date: Date
     var breakEntries: [BreakEntry]
-    var lastUpdated: Date
-    var isSynced: Bool
+
     
-    init(id: String, date: Date = .now, breakEntries: [BreakEntry], lastUpdated: Date, isSynced: Bool = false) {
+    init(id: String = UUID().uuidString, date: Date, breakEntries: [BreakEntry]) {
         self.id = id
         self.date = date
         self.breakEntries = breakEntries
-        self.lastUpdated = lastUpdated
-        self.isSynced = isSynced
     }
 }
 

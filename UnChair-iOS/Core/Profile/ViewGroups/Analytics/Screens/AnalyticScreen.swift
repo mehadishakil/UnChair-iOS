@@ -14,14 +14,14 @@ struct AnalyticScreen: View {
                 WaterLineChartView()
                     .padding()
                 
-                StepsBarChartView()
-                    .padding()
-                
-                SleepCapsuleChartView()
-                    .padding()
-                
-                ExerciseBarChartView()
-                    .padding()
+//                StepsBarChartView()
+//                    .padding()
+//                
+//                SleepCapsuleChartView()
+//                    .padding()
+//                
+//                ExerciseBarChartView()
+//                    .padding()
             }
         }
     }

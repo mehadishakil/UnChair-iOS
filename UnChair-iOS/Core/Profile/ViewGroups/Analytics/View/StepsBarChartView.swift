@@ -61,7 +61,7 @@ struct StepsBarChartView: View {
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            addSamples()
+            // addSamples()
             fetchData(for: currentTab)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -71,57 +71,57 @@ struct StepsBarChartView: View {
     }
     
     
-    private func addSamples() {
-        var sampleStepsData: [StepsChartModel] = []
-        
-        // Loop over the past 30 days
-        for dayOffset in 0..<365 {
-            // Generate a random water consumption between 1000ml and 3000ml
-            let randomSteps = Int.random(in: 1000...2000)
-            
-            // Calculate the date by subtracting the offset from the current date
-            let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
-            
-            // Create a new WaterChartModel object
-            let sample = StepsChartModel(id: UUID().uuidString,
-                                         date: date,
-                                         steps: randomSteps,
-                                         lastUpdated: Date(),
-                                         isSynced: false)
-            
-            // Append the sample to an array before inserting
-            sampleStepsData.append(sample)
-        }
-        
-        // Sort the sampleData by date in ascending order (oldest to newest)
-        sampleStepsData.sort { $0.date < $1.date }
-        
-        // Insert sorted samples into the model context
-        for sample in sampleStepsData {
-            modelContext.insert(sample)
-        }
-        
-        do {
-            // Save the context after inserting all the samples
-            try modelContext.save()
-            print("Samples for the last 30 days added and sorted by date successfully.")
-        } catch {
-            print("Error saving samples: \(error)")
-        }
-    }
+//    private func addSamples() {
+//        var sampleStepsData: [StepsChartModel] = []
+//        
+//        // Loop over the past 30 days
+//        for dayOffset in 0..<365 {
+//            // Generate a random water consumption between 1000ml and 3000ml
+//            let randomSteps = Int.random(in: 1000...2000)
+//            
+//            // Calculate the date by subtracting the offset from the current date
+//            let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
+//            
+//            // Create a new WaterChartModel object
+//            let sample = StepsChartModel(id: UUID().uuidString,
+//                                         date: date,
+//                                         steps: randomSteps,
+//                                         lastUpdated: Date(),
+//                                         isSynced: false)
+//            
+//            // Append the sample to an array before inserting
+//            sampleStepsData.append(sample)
+//        }
+//        
+//        // Sort the sampleData by date in ascending order (oldest to newest)
+//        sampleStepsData.sort { $0.date < $1.date }
+//        
+//        // Insert sorted samples into the model context
+//        for sample in sampleStepsData {
+//            modelContext.insert(sample)
+//        }
+//        
+//        do {
+//            // Save the context after inserting all the samples
+//            try modelContext.save()
+//            print("Samples for the last 30 days added and sorted by date successfully.")
+//        } catch {
+//            print("Error saving samples: \(error)")
+//        }
+//    }
     
     private func fetchData(for period: String) {
         let dataFetcher = DataFetcher(modelContext: modelContext)
-        switch period {
-        case "Week":
-            stepsData = dataFetcher.fetchLast7DaysStepsData()
-        case "Month":
-            stepsData = dataFetcher.fetchLastMonthStepsData()
-        case "Year":
-            stepsData = dataFetcher.fetchLastYearStepsData()
-        default:
-            stepsData = dataFetcher.fetchAllTimeStepsData()
-        }
+//        switch period {
+//        case "Week":
+//            stepsData = dataFetcher.fetchLast7DaysStepsData()
+//        case "Month":
+//            stepsData = dataFetcher.fetchLastMonthStepsData()
+//        case "Year":
+//            stepsData = dataFetcher.fetchLastYearStepsData()
+//        default:
+//            stepsData = dataFetcher.fetchAllTimeStepsData()
+//        }
     }
 }
 

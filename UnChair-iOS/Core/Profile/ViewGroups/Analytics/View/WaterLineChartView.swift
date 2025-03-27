@@ -15,7 +15,7 @@ struct WaterLineChartView: View {
     @State private var waterData: [WaterChartModel] = []
     @State private var currentActiveItem: WaterChartModel?
     @State private var plotWidth: CGFloat = 0
-
+    @StateObject private var firestoreService = FirestoreService()
     
     var body: some View {
         VStack {
@@ -59,7 +59,6 @@ struct WaterLineChartView: View {
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            addSamples()
             fetchData(for: currentTab)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -81,9 +80,7 @@ struct WaterLineChartView: View {
             // Create a new WaterChartModel object
             let sample = WaterChartModel(id: UUID().uuidString,
                                          date: date,
-                                         consumption: randomConsumption,
-                                         lastUpdated: Date(),
-                                         isSynced: false)
+                                         consumption: randomConsumption)
             
             // Append the sample to an array before inserting
             sampleData.append(sample)
@@ -107,30 +104,30 @@ struct WaterLineChartView: View {
     }
     
     private func fetchData(for period: String) {
-        let dataFetcher = DataFetcher(modelContext: modelContext)
+        firestoreService.fetchWaterData { fetchedData in
+            DispatchQueue.main.async {
+                self.waterData = filterDataByPeriod(fetchedData, period: period)
+            }
+        }
+    }
+    
+    private func filterDataByPeriod(_ data: [WaterChartModel], period: String) -> [WaterChartModel] {
+        let calendar = Calendar.current
+        let now = Date()
+        
         switch period {
         case "Week":
-            waterData = dataFetcher.fetchLast7DaysWaterData()
+            return data.filter { calendar.isDate($0.date, equalTo: now, toGranularity: .weekOfYear) }
         case "Month":
-            waterData = dataFetcher.fetchLastMonthWaterData()
+            return data.filter { calendar.isDate($0.date, equalTo: now, toGranularity: .month) }
         case "Year":
-            waterData = dataFetcher.fetchLastYearWaterData()
+            return data.filter { calendar.isDate($0.date, equalTo: now, toGranularity: .year) }
         default:
-            waterData = dataFetcher.fetchAllTimeWaterData()
+            return data
         }
     }
 
+
+
 }
 
-
-//extension Double {
-//    var stringFormat: String {
-//        if self >= 10000 && self < 999999 {
-//            return String(format: "%.1fK", self / 1000).replacingOccurrences(of: ".0", with: "")
-//        }
-//        if self > 999999 {
-//            return String(format: "%.1fM", self / 1000000).replacingOccurrences(of: ".0", with: "")
-//        }
-//        return String(format: "%.0f", self)
-//    }
-//}
