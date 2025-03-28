@@ -16,6 +16,7 @@ struct SleepCapsuleChartView: View {
     @State private var sleepData: [SleepChartModel] = []
     @State private var currentActiveItem: SleepChartModel?
     @State private var plotWidth: CGFloat = 0
+    @StateObject private var firestoreService = FirestoreService()
 
     
     var body: some View {
@@ -61,66 +62,42 @@ struct SleepCapsuleChartView: View {
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            //addSamples()
             fetchData(for: currentTab)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .navigationTitle("Water Chart")
+        .navigationTitle("Sleep Chart")
     }
-    
-    
-//    private func addSamples() {
-//        var sampleData: [SleepChartModel] = []
-//        
-//        // Loop over the past 30 days
-//        for dayOffset in 0..<365 {
-//            // Generate a random water consumption between 1000ml and 3000ml
-//            let randomSleep = Double.random(in: 0...12)
-//            
-//            // Calculate the date by subtracting the offset from the current date
-//            let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
-//            
-//            // Create a new WaterChartModel object
-//            let sample = SleepChartModel(id: UUID().uuidString,
-//                                         date: date,
-//                                         sleep: randomSleep,
-//                                         lastUpdated: Date(),
-//                                         isSynced: false)
-//            
-//            // Append the sample to an array before inserting
-//            sampleData.append(sample)
-//        }
-//        
-//        // Sort the sampleData by date in ascending order (oldest to newest)
-//        sampleData.sort { $0.date < $1.date }
-//        
-//        // Insert sorted samples into the model context
-//        for sample in sampleData {
-//            modelContext.insert(sample)
-//        }
-//        
-//        do {
-//            // Save the context after inserting all the samples
-//            try modelContext.save()
-//            print("Samples for the last 30 days added and sorted by date successfully.")
-//        } catch {
-//            print("Error saving samples: \(error)")
-//        }
-//    }
     
     private func fetchData(for period: String) {
-        let dataFetcher = DataFetcher(modelContext: modelContext)
-//        switch period {
-//        case "Week":
-//            sleepData = dataFetcher.fetchLast7DaysSleepData()
-//        case "Month":
-//            sleepData = dataFetcher.fetchLastMonthSleepData()
-//        case "Year":
-//            sleepData = dataFetcher.fetchLastYearSleepData()
-//        default:
-//            sleepData = dataFetcher.fetchAllTimeSleepData()
-//        }
+        firestoreService.fetchSleepData(for: period) { fetchedData in
+                DispatchQueue.main.async {
+                    self.sleepData = filterDataByPeriod(fetchedData, period: period)
+                }
+            }
+        }
+    
+    
+    private func filterDataByPeriod(_ data: [SleepChartModel], period: String) -> [SleepChartModel] {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        return data.filter { dataPoint in
+            switch period {
+            case "Week":
+                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
+                       calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 6
+            case "Month":
+                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
+                       calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 29
+            case "Year":
+                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
+                       calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 364
+            default:
+                return true
+            }
+        }
     }
+    
 
 }
 

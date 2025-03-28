@@ -14,7 +14,7 @@ class SleepChartModel : Identifiable {
     var date: Date                  // Date of record
     var sleep: Double               // Amount of water consumed in ml
     
-    init(id: String = UUID().uuidString, date: Date, sleep: Double = 0.0) {
+    init(id: String = UUID().uuidString, date: Date, sleep: Double) {
         self.id = id
         self.date = date
         self.sleep = sleep

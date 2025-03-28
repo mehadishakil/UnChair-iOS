@@ -110,6 +110,7 @@ class FirestoreService: ObservableObject {
                 if let waterIntake = data["waterIntake"] as? Double,
                    let date = formatter.date(from: dateString) {
                     let model = WaterChartModel(date: date, consumption: waterIntake)
+                    //print(model.consumption)
                     waterData.append(model)
                 }
             }
@@ -119,13 +120,103 @@ class FirestoreService: ObservableObject {
             
             // Fill missing dates for the selected period.
             // You can adjust the period parameter ("Week", "Month", or "Year") as needed.
-            let filledData = self.fillMissingDates(for: waterData, period: "Week")
+            let filledData = self.fillMissingWaterDates(for: waterData, period: "Week")
             completion(filledData)
         }
     }
+    
+    
+    
+    func fetchStepsData(completion: @escaping ([StepsChartModel]) -> Void) {
+        guard let userId = userId else {
+            print("No authenticated user available.")
+            completion([])
+            return
+        }
+        
+        db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching steps data: \(error.localizedDescription)")
+                completion([])
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                completion([])
+                return
+            }
+            
+            var stepsData: [StepsChartModel] = []
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy_MM_dd"
+            
+            for document in documents {
+                let data = document.data()
+                // Remove the prefix "daily_log_" from the document id.
+                let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+                if let steps = data["stepsTaken"] as? Int,
+                   let date = formatter.date(from: dateString) {
+                    let model = StepsChartModel(date: date, steps: steps)
+                    //print(model.steps)
+                    stepsData.append(model)
+                }
+            }
+            
+            stepsData.sort { $0.date < $1.date }
+            
+            // Fill in missing dates. For example, if you want a weekly chart:
+            let completeData = self.fillMissingStepsDates(for: stepsData, period: "Week")
+            completion(completeData)
+        }
+    }
 
-    /// This helper function takes the fetched data and fills in missing dates with default consumption (0).
-    private func fillMissingDates(for data: [WaterChartModel], period: String) -> [WaterChartModel] {
+    
+    
+    
+    func fetchSleepData(for period: String, completion: @escaping ([SleepChartModel]) -> Void) {
+        guard let userId = userId else {
+            print("No authenticated user available.")
+            completion([])
+            return
+        }
+        
+        db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
+            if let error = error {
+                print("Error fetching sleep data: \(error.localizedDescription)")
+                completion([])
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                completion([])
+                return
+            }
+            
+            var sleepData: [SleepChartModel] = []
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy_MM_dd"
+            
+            for document in documents {
+                let data = document.data()
+                let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+                if let sleep = data["sleepDuration"] as? Double,
+                   let date = formatter.date(from: dateString) {
+                    let model = SleepChartModel(date: date, sleep: sleep)
+                    // print(model.sleep)
+                    sleepData.append(model)
+                }
+            }
+            
+            sleepData.sort { $0.date < $1.date }
+            
+            // Fill in missing dates (here, also for a weekly chart; adjust "Week" if needed)
+            let completeData = self.fillMissingSleepDates(for: sleepData, period: period)
+            completion(completeData)
+        }
+    }
+
+    
+    private func fillMissingWaterDates(for data: [WaterChartModel], period: String) -> [WaterChartModel] {
         let calendar = Calendar.current
         let now = Date()
         var startDate: Date
@@ -161,6 +252,81 @@ class FirestoreService: ObservableObject {
         return completeData
     }
 
+    
+    
+    private func fillMissingStepsDates(for data: [StepsChartModel], period: String) -> [StepsChartModel] {
+        let calendar = Calendar.current
+        let now = Date()
+        var startDate: Date
+        
+        // Determine the start date based on the selected period.
+        switch period {
+        case "Week":
+            startDate = calendar.date(byAdding: .day, value: -6, to: now)!
+        case "Month":
+            startDate = calendar.date(byAdding: .day, value: -29, to: now)!
+        case "Year":
+            startDate = calendar.date(byAdding: .day, value: -364, to: now)!
+        default:
+            startDate = data.first?.date ?? now
+        }
+        
+        var completeData: [StepsChartModel] = []
+        var currentDate = startDate
+        
+        // Loop through each day in the range.
+        while currentDate <= now {
+            if let existing = data.first(where: { calendar.isDate($0.date, inSameDayAs: currentDate) }) {
+                completeData.append(existing)
+            } else {
+                // If no data exists for this day, create a default record.
+                completeData.append(StepsChartModel(date: currentDate, steps: 0))
+            }
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        // Ensure the final data is sorted.
+        completeData.sort { $0.date < $1.date }
+        return completeData
+    }
+
+
+    
+    private func fillMissingSleepDates(for data: [SleepChartModel], period: String) -> [SleepChartModel] {
+        let calendar = Calendar.current
+        let now = Date()
+        var startDate: Date
+        
+        // Determine the start date based on the selected period.
+        switch period {
+        case "Week":
+            startDate = calendar.date(byAdding: .day, value: -6, to: now)!
+        case "Month":
+            startDate = calendar.date(byAdding: .day, value: -29, to: now)!
+        case "Year":
+            startDate = calendar.date(byAdding: .day, value: -364, to: now)!
+        default:
+            startDate = data.first?.date ?? now
+        }
+        
+        var completeData: [SleepChartModel] = []
+        var currentDate = startDate
+        
+        // Loop through each day in the range.
+        while currentDate <= now {
+            if let existing = data.first(where: { calendar.isDate($0.date, inSameDayAs: currentDate) }) {
+                completeData.append(existing)
+            } else {
+                // If no data exists for this day, create a default record.
+                completeData.append(SleepChartModel(date: currentDate, sleep: 0))
+            }
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        // Ensure the final data is sorted.
+        completeData.sort { $0.date < $1.date }
+        return completeData
+    }
 
 
 }

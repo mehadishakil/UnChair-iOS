@@ -65,44 +65,6 @@ struct WaterLineChartView: View {
         .navigationTitle("Water Chart")
     }
     
-    
-    private func addSamples() {
-        var sampleData: [WaterChartModel] = []
-        
-        // Loop over the past 30 days
-        for dayOffset in 0..<365 {
-            // Generate a random water consumption between 1000ml and 3000ml
-            let randomConsumption = Double.random(in: 1000...2000)
-            
-            // Calculate the date by subtracting the offset from the current date
-            let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
-            
-            // Create a new WaterChartModel object
-            let sample = WaterChartModel(id: UUID().uuidString,
-                                         date: date,
-                                         consumption: randomConsumption)
-            
-            // Append the sample to an array before inserting
-            sampleData.append(sample)
-        }
-        
-        // Sort the sampleData by date in ascending order (oldest to newest)
-        sampleData.sort { $0.date < $1.date }
-        
-        // Insert sorted samples into the model context
-        for sample in sampleData {
-            modelContext.insert(sample)
-        }
-        
-        do {
-            // Save the context after inserting all the samples
-            try modelContext.save()
-            print("Samples for the last 30 days added and sorted by date successfully.")
-        } catch {
-            print("Error saving samples: \(error)")
-        }
-    }
-    
     private func fetchData(for period: String) {
         firestoreService.fetchWaterData { fetchedData in
             DispatchQueue.main.async {
