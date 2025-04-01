@@ -13,125 +13,134 @@ struct SleepCapsuleChart: View {
     @Binding var currentTab: String
     @Environment(\.colorScheme) var colorScheme
     
+    private var displayData: [SleepChartModel] {
+        switch currentTab {
+        case "Week", "Month":
+            return sleepData
+        case "Year":
+            return aggregateByMonth(sleepData)
+        default:
+            return sleepData
+        }
+    }
+    
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .center) {
-                
-                // Vertical dotted line behind the capsules
-                if let activeItem = currentActiveItem {
-                    let annotationOffset = self.annotationOffset(for: activeItem, in: geo.size)
-                    let itemPosition = itemPosition(for: activeItem, in: geo.size)
-                    
-                    // Draw vertical dotted line before capsules
-                    Path { path in
-                        path.move(to: CGPoint(x: itemPosition.x, y: itemPosition.y))
-                        path.addLine(to: CGPoint(x: itemPosition.x, y: geo.size.height / 2 + annotationOffset.height))
-                    }
-                    .stroke(style: StrokeStyle(lineWidth: 1, dash: [2]))
-                    .foregroundColor(.gray)
-                }
-                
-                // Chart bars
-                HStack(spacing: 0) {
-                    ForEach(sleepData) { data in
-                        ItemVerticalStat(
-                            xAxisLabel: formatDate(data.date),
-                            yAxisValue: (data.sleep / 12) * 100,
-                            isActive: currentActiveItem == data
-                        )
-                        .frame(width: geo.size.width / CGFloat(sleepData.count))
-                    }
-                }
-                
                 RoundedRectangle(cornerRadius: 3)
                     .fill(Color.gray.opacity(0.7))
                     .frame(height: 0.5)
                     .frame(maxWidth: .infinity)
-                    .position(x: geo.size.width / 2, y: geo.size.height / 2 - 5)
+                    .position(x: geo.size.width / 2, y: geo.size.height / 2)
                 
-                Color.clear
-                    .contentShape(Rectangle())
-                    .gesture(
-                        DragGesture(minimumDistance: 0)
-                            .onChanged { value in
-                                let widthPerItem = geo.size.width / CGFloat(sleepData.count)
-                                let index = min(max(Int(value.location.x / widthPerItem), 0), sleepData.count - 1)
-                                currentActiveItem = sleepData[index]
-                            }
-                            .onEnded { _ in
-                                currentActiveItem = nil
-                            }
-                    )
-                
-                // Annotation for active item
-                if let activeItem = currentActiveItem {
-                    let annotationOffset = self.annotationOffset(for: activeItem, in: geo.size)
-                    VStack {
-                        Text("Sleep\n\(activeItem.sleep, specifier: "%.2f") hrs")
-                            .font(.caption)
-                            .padding(4)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                .fill(colorScheme == .dark ? Color.darkGray.shadow(.drop(radius: 1)) : Color.gray3.shadow(.drop(radius: 1)))
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 0) {
+                        ForEach(displayData) { data in
+                            CapsuleItem(
+                                data: data,
+                                isActive: currentActiveItem?.id == data.id,
+                                xAxisLabel: formatDate(data.date, index: displayData.firstIndex(of: data) ?? 0),
+                                yAxisValue: (data.sleep / 12) * 100
                             )
-                            .cornerRadius(5)
-                            .shadow(radius: 5)
-                            .multilineTextAlignment(.center)
-                        Spacer()
+                            .frame(width: max(geo.size.width / CGFloat(displayData.count), 35))
+                            .frame(height: geo.size.height)
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        currentActiveItem = data
+                                    }
+                                    .onEnded { _ in
+                                        currentActiveItem = nil
+                                    }
+                            )
+                        }
                     }
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .offset(annotationOffset)
+                    .scrollTargetBehavior(.paging)
+                    .padding(.trailing, 40)
                 }
             }
         }
     }
     
-    private func formatDate(_ date: Date) -> String {
+    private func aggregateByMonth(_ data: [SleepChartModel]) -> [SleepChartModel] {
+            let calendar = Calendar.current
+            
+            let groupedData = Dictionary(grouping: data) { item in
+                let components = calendar.dateComponents([.year, .month], from: item.date)
+                return components
+            }
+            
+            return groupedData.map { (components, items) in
+                let firstDayComponents = DateComponents(year: components.year, month: components.month, day: 1)
+                let firstDay = calendar.date(from: firstDayComponents) ?? Date()
+                
+                let nonZeroItems = items.filter { $0.sleep > 0 }
+                let totalSleep = nonZeroItems.reduce(0) { $0 + $1.sleep }
+                let averageSleep = nonZeroItems.isEmpty ? 0 : totalSleep / Double(nonZeroItems.count)
+                
+                return SleepChartModel(
+                    id: "month-\(components.year ?? 0)-\(components.month ?? 0)",
+                    date: firstDay,
+                    sleep: averageSleep
+                )
+            }
+            .sorted { $0.date < $1.date }
+        }
+
+    
+    private func formatDate(_ date: Date, index: Int) -> String {
         let formatter = DateFormatter()
         switch currentTab {
         case "Week":
             formatter.dateFormat = "E"
+            return formatter.string(from: date)
         case "Month":
             formatter.dateFormat = "dd MMM"
+            return index % 2 == 0 ? formatter.string(from: date) : ""
         case "Year":
             formatter.dateFormat = "MMM"
+            return formatter.string(from: date)
         default:
             formatter.dateFormat = "MMM yy"
+            return formatter.string(from: date)
         }
-        return formatter.string(from: date)
-    }
-    
-    private func formatDate(_ date: Date, format: String) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = format
-        return formatter.string(from: date)
-    }
-    
-    private func annotationOffset(for item: SleepChartModel, in size: CGSize) -> CGSize {
-        guard let index = sleepData.firstIndex(of: item) else { return .zero }
-        let widthPerItem = size.width / CGFloat(sleepData.count)
-        let xOffset = widthPerItem * CGFloat(index) + widthPerItem / 2 - size.width / 2
-        return CGSize(width: xOffset, height: -size.height / 2 + 65)
-    }
-    
-    private func itemPosition(for item: SleepChartModel, in size: CGSize) -> CGPoint {
-        guard let index = sleepData.firstIndex(of: item) else { return .zero }
-        let widthPerItem = size.width / CGFloat(sleepData.count)
-        let xPosition = widthPerItem * CGFloat(index) + widthPerItem / 2
-        let yPosition = -size.height / 2 + 65
-        return CGPoint(x: xPosition, y: yPosition)
     }
 }
 
-struct ItemVerticalStat: View {
+struct CapsuleItem: View {
+    var data: SleepChartModel
+    var isActive: Bool
     var xAxisLabel: String
     var yAxisValue: CGFloat
-    var isActive: Bool
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack {
-            Spacer()
+        VStack(spacing: 0) {
+            if isActive {
+                Text("Sleep\(data.sleep, specifier: "%.2f") hrs")
+                    .font(.caption)
+                    .padding(4)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(colorScheme == .dark ? Color.black.opacity(0.8) : Color.white)
+                            .shadow(radius: 2)
+                    )
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 4)
+                
+                // Dotted line
+                Rectangle()
+                    .fill(Color.gray)
+                    .frame(width: 1, height: 20)
+                    .opacity(0.6)
+                    .padding(.bottom, 4)
+            }
+            else {
+                Spacer()
+            }
             
+            
+            // Capsule
             ZStack(alignment: .top) {
                 Capsule()
                     .fill(Color.blue)
@@ -147,13 +156,19 @@ struct ItemVerticalStat: View {
             
             Spacer()
             
+            
+        }
+        .frame(maxHeight: .infinity)
+        .overlay(alignment: .bottom) {
             Text(xAxisLabel)
                 .foregroundColor(Color.gray)
                 .font(.system(size: 10, weight: .medium))
                 .fixedSize(horizontal: true, vertical: true)
+                .padding(.top, 4)
         }
     }
 }
+
 
 extension SleepChartModel: Equatable {
     static func == (lhs: SleepChartModel, rhs: SleepChartModel) -> Bool {

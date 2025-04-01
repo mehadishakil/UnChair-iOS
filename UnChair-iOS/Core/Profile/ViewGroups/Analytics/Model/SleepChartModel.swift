@@ -10,9 +10,9 @@ import SwiftData
 
 @Model
 class SleepChartModel : Identifiable {
-    var id: String                  // Unique identifier (UUID)
-    var date: Date                  // Date of record
-    var sleep: Double               // Amount of water consumed in ml
+    var id: String
+    var date: Date
+    var sleep: Double
     
     init(id: String = UUID().uuidString, date: Date, sleep: Double) {
         self.id = id
