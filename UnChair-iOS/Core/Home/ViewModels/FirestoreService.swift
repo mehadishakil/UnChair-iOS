@@ -80,7 +80,7 @@ class FirestoreService: ObservableObject {
     }
     
     
-    func fetchWaterData(completion: @escaping ([WaterChartModel]) -> Void) {
+    func fetchWaterData(for period: String = "Week", completion: @escaping ([WaterChartModel]) -> Void) {
         guard let userId = userId else {
             print("No authenticated user available.")
             completion([])
@@ -120,7 +120,7 @@ class FirestoreService: ObservableObject {
             
             // Fill missing dates for the selected period.
             // You can adjust the period parameter ("Week", "Month", or "Year") as needed.
-            let filledData = self.fillMissingWaterDates(for: waterData, period: "Week")
+            let filledData = self.fillMissingWaterDates(for: waterData, period: period)
             completion(filledData)
         }
     }

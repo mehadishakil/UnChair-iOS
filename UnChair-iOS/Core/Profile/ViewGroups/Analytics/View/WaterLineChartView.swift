@@ -66,7 +66,7 @@ struct WaterLineChartView: View {
     }
     
     private func fetchData(for period: String) {
-        firestoreService.fetchWaterData { fetchedData in
+        firestoreService.fetchWaterData(for: period) { fetchedData in
             DispatchQueue.main.async {
                 self.waterData = filterDataByPeriod(fetchedData, period: period)
             }
@@ -79,11 +79,20 @@ struct WaterLineChartView: View {
         
         switch period {
         case "Week":
-            return data.filter { calendar.isDate($0.date, equalTo: now, toGranularity: .weekOfYear) }
+            // Get data from the last 7 days
+            guard let oneWeekAgo = calendar.date(byAdding: .day, value: -6, to: now) else { return [] }
+            return data.filter { $0.date >= oneWeekAgo && $0.date <= now }
+            
         case "Month":
-            return data.filter { calendar.isDate($0.date, equalTo: now, toGranularity: .month) }
+            // Get data from the last 30 days
+            guard let oneMonthAgo = calendar.date(byAdding: .day, value: -29, to: now) else { return [] }
+            return data.filter { $0.date >= oneMonthAgo && $0.date <= now }
+            
         case "Year":
-            return data.filter { calendar.isDate($0.date, equalTo: now, toGranularity: .year) }
+            // Get data from the last 365 days
+            guard let oneYearAgo = calendar.date(byAdding: .day, value: -364, to: now) else { return [] }
+            return data.filter { $0.date >= oneYearAgo && $0.date <= now }
+            
         default:
             return data
         }
