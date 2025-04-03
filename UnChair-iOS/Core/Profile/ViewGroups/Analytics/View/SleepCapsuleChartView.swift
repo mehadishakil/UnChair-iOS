@@ -71,33 +71,10 @@ struct SleepCapsuleChartView: View {
     private func fetchData(for period: String) {
         firestoreService.fetchSleepData(for: period) { fetchedData in
                 DispatchQueue.main.async {
-                    self.sleepData = filterDataByPeriod(fetchedData, period: period)
+                    self.sleepData = fetchedData
                 }
             }
         }
-    
-    
-    private func filterDataByPeriod(_ data: [SleepChartModel], period: String) -> [SleepChartModel] {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        return data.filter { dataPoint in
-            switch period {
-            case "Week":
-                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
-                       calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 6
-            case "Month":
-                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
-                       calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 29
-            case "Year":
-                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
-                       calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 364
-            default:
-                return true
-            }
-        }
-    }
-    
 
 }
 

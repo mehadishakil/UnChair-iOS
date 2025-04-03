@@ -53,6 +53,8 @@ struct WaterLineChartView: View {
             }
             WaterLineChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, waterData: waterData, currentTab: $currentTab)
                 .padding()
+            
+            
         }
         .padding()
         .background(.ultraThinMaterial)
@@ -68,37 +70,11 @@ struct WaterLineChartView: View {
     private func fetchData(for period: String) {
         firestoreService.fetchWaterData(for: period) { fetchedData in
             DispatchQueue.main.async {
-                self.waterData = filterDataByPeriod(fetchedData, period: period)
+                self.waterData = fetchedData
+                print(waterData.count)
             }
         }
     }
-    
-    private func filterDataByPeriod(_ data: [WaterChartModel], period: String) -> [WaterChartModel] {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        switch period {
-        case "Week":
-            // Get data from the last 7 days
-            guard let oneWeekAgo = calendar.date(byAdding: .day, value: -6, to: now) else { return [] }
-            return data.filter { $0.date >= oneWeekAgo && $0.date <= now }
-            
-        case "Month":
-            // Get data from the last 30 days
-            guard let oneMonthAgo = calendar.date(byAdding: .day, value: -29, to: now) else { return [] }
-            return data.filter { $0.date >= oneMonthAgo && $0.date <= now }
-            
-        case "Year":
-            // Get data from the last 365 days
-            guard let oneYearAgo = calendar.date(byAdding: .day, value: -364, to: now) else { return [] }
-            return data.filter { $0.date >= oneYearAgo && $0.date <= now }
-            
-        default:
-            return data
-        }
-    }
-
-
 
 }
 

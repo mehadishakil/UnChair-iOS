@@ -122,6 +122,7 @@ class FirestoreService: ObservableObject {
             // You can adjust the period parameter ("Week", "Month", or "Year") as needed.
             let filledData = self.fillMissingWaterDates(for: waterData, period: period)
             completion(filledData)
+            print(filledData.count)
         }
     }
     
@@ -249,6 +250,7 @@ class FirestoreService: ObservableObject {
         
         // Ensure the final data is sorted.
         completeData.sort { $0.date < $1.date }
+        //completeData.reverse()
         return completeData
     }
 

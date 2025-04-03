@@ -16,84 +16,127 @@ struct WaterLineChart: View {
     @Binding var currentTab: String
     @Environment(\.colorScheme) var colorScheme
     
+    
+    private var dataToPlot: [WaterChartModel] {
+        if currentTab == "Year" {
+            return monthlyAverageData
+        } else {
+            return waterData
+        }
+    }
+    
+    
+    
     var body: some View {
         let maxConsumption = waterData.max { $0.consumption < $1.consumption }?.consumption ?? 0
         
         buildChart(maxConsumption: maxConsumption)
-            .chartOverlay(content: chartOverlay)
             .frame(height: 200)
     }
     
     
     private func buildChart(maxConsumption: Double) -> some View {
-        Chart(waterData) {
-            LineMark(x: .value("Date", $0.date), y: .value("Consumption", $0.consumption))
-                .foregroundStyle(Color.blue)
-                .interpolationMethod(.catmullRom)
-            
-            AreaMark(x: .value("Date", $0.date), y: .value("Consumption", $0.consumption))
-                //.foregroundStyle(.blue.opacity(0.1).gradient)
-                .foregroundStyle(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.4), Color.white.opacity(0)]), startPoint: .top, endPoint: .bottom))
-                .interpolationMethod(.catmullRom)
-            
-            if let currentActiveItem, currentActiveItem.id == $0.id {
-                RuleMark(x: .value("Date", currentActiveItem.date))
-                    .foregroundStyle(Color.gray.opacity(0.3))
-                    .lineStyle(.init(lineWidth: 2))
-                    .annotation(position: .top, spacing: 0) {
-                        annotationView(for: currentActiveItem)
-                    }
-            }
-        }
-        .chartXAxis {
-            switch currentTab {
-            case "Week":
-                AxisMarks(preset: .aligned, values: .stride(by: .day)) { value in
-                    if let date = value.as(Date.self) {
-                        AxisValueLabel {
-                            Text(formatDate(date, format: "E"))
-                                .font(.caption2)
+        ScrollView(.horizontal) {
+            Chart(dataToPlot) {
+                LineMark(x: .value("Date", $0.date), y: .value("Consumption", $0.consumption))
+                    .foregroundStyle(Color.blue)
+                    .interpolationMethod(.catmullRom)
+                
+                AreaMark(x: .value("Date", $0.date), y: .value("Consumption", $0.consumption))
+                    .foregroundStyle(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.blue.opacity(0.4), Color.white.opacity(0)]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .interpolationMethod(.catmullRom)
+                
+                // Example: If you want to highlight a point
+                if let currentActiveItem, currentActiveItem.id == $0.id {
+                    RuleMark(x: .value("Date", currentActiveItem.date))
+                        .foregroundStyle(Color.gray.opacity(0.3))
+                        .lineStyle(.init(lineWidth: 2))
+                        .annotation(position: .top, spacing: 0) {
+                            annotationView(for: currentActiveItem)
                         }
-                    }
-                }
-            case "Month":
-                AxisMarks(preset: .aligned, values: waterData.map { $0.date }) { value in
-                    if let date = value.as(Date.self) {
-                        AxisValueLabel {
-                            Text(formatDate(date, format: "dd MMM"))
-                                .font(.caption2)
-                        }
-                    }
-                }
-            case "Year":
-                AxisMarks(preset: .aligned, values: .stride(by: .month, count: 2)) { value in
-                    if let date = value.as(Date.self) {
-                        AxisValueLabel {
-                            Text(formatDate(date, format: "MMM"))
-                                .font(.caption2)
-                        }
-                    }
-                }
-            default:
-                AxisMarks(preset: .aligned, values: .stride(by: .month, count: 3)) { value in
-                    if let date = value.as(Date.self) {
-                        AxisValueLabel {
-                            Text(formatDate(date, format: "MMM yy"))
-                                .font(.caption2)
-                        }
-                    }
                 }
             }
-        }
-        .chartYAxis {
-            AxisMarks(position: .trailing, values: .automatic) {
-                AxisTick()
-                AxisValueLabel()
+            .chartXAxis {
+                switch currentTab {
+                case "Week":
+                    AxisMarks(preset: .aligned, values: .stride(by: .day)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(formatDate(date, format: "E"))
+                                    .font(.caption2)
+                            }
+                        }
+                    }
+                case "Month":
+                    // Use stride if your month view should show a consistent gap.
+                    AxisMarks(preset: .aligned, values: .stride(by: .day, count: 2)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(formatDate(date, format: "dd MMM"))
+                                    .font(.caption2)
+                            }
+                        }
+                    }
+                case "Year":
+                    // With monthly aggregated data, we can use a stride of 1 month.
+                    AxisMarks(preset: .aligned, values: .stride(by: .month)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(formatDate(date, format: "MMM"))
+                                    .font(.caption2)
+                            }
+                        }
+                    }
+                default:
+                    AxisMarks(preset: .aligned, values: .stride(by: .month, count: 3)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(formatDate(date, format: "MMM yy"))
+                                    .font(.caption2)
+                            }
+                        }
+                    }
+                }
             }
+            .chartYAxis {
+                AxisMarks(position: .trailing, values: .automatic) {
+                    AxisTick()
+                    AxisValueLabel()
+                }
+            }
+            .chartYScale(domain: 0...(dataToPlot.map { $0.consumption }.max() ?? 0 + 1000))
+            .frame(width: max(CGFloat(dataToPlot.count) * 20, UIScreen.main.bounds.width))
+
         }
-        .chartYScale(domain: 0...(maxConsumption + 1000))
+        .scrollTargetBehavior(.paging)
     }
     
+    
+    private var monthlyAverageData: [WaterChartModel] {
+        let calendar = Calendar.current
+        // Group by month using a date with only year and month components.
+        let grouped = Dictionary(grouping: waterData) { model -> Date in
+            let components = calendar.dateComponents([.year, .month], from: model.date)
+            return calendar.date(from: components)!
+        }
+        
+        // Create a WaterChartModel for each group with the average consumption.
+        return grouped.map { (monthDate, models) in
+            let avgConsumption = models.map { $0.consumption }.reduce(0, +) / Double(models.count)
+            return WaterChartModel(date: monthDate, consumption: avgConsumption)
+        }
+        .sorted { $0.date < $1.date }
+    }
+
+    
+    
+
     
     private func strideDates(from endDate: Date, by component: Calendar.Component, value: Int) -> [Date] {
         var dates: [Date] = []
