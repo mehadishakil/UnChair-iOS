@@ -11,10 +11,10 @@ struct AnalyticScreen: View {
     var body: some View {
         ScrollView{
             VStack{
-                WaterLineChartView()
+                WaterBarChartView()
                     .padding()
                 
-                StepsBarChartView()
+                StepsLineChartView()
                     .padding()
                 
                 SleepCapsuleChartView()

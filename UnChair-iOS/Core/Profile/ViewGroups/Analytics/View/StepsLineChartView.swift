@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StepsBarChartView: View {
+struct StepsLineChartView: View {
     
     @Environment(\.modelContext) var modelContext
     @State private var currentTab: String = "Week"
@@ -54,7 +54,7 @@ struct StepsBarChartView: View {
                 }
             }
             
-            StepsBarChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, stepsData: stepsData, currentTab: $currentTab)
+            StepsLineChart(currentActiveItem: $currentActiveItem, plotWidth: $plotWidth, stepsData: stepsData, currentTab: $currentTab)
                 .padding()
         }
         .padding()
@@ -97,5 +97,5 @@ struct StepsBarChartView: View {
 }
 
 #Preview {
-    StepsBarChartView()
+    StepsLineChartView()
 }

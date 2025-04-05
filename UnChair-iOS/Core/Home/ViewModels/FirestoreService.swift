@@ -79,8 +79,8 @@ class FirestoreService: ObservableObject {
         }
     }
     
-    
-    func fetchWaterData(for period: String = "Week", completion: @escaping ([WaterChartModel]) -> Void) {
+
+    func fetchWaterData(completion: @escaping ([WaterChartModel]) -> Void) {
         guard let userId = userId else {
             print("No authenticated user available.")
             completion([])
@@ -120,9 +120,9 @@ class FirestoreService: ObservableObject {
             
             // Fill missing dates for the selected period.
             // You can adjust the period parameter ("Week", "Month", or "Year") as needed.
-            let filledData = self.fillMissingWaterDates(for: waterData, period: period)
-            completion(filledData)
-            print(filledData.count)
+            // let filledData = self.fillMissingWaterDates(for: waterData, period: period)
+            completion(waterData)
+            // print(filledData.count)
         }
     }
     
@@ -174,7 +174,7 @@ class FirestoreService: ObservableObject {
     
     
     
-    func fetchSleepData(for period: String, completion: @escaping ([SleepChartModel]) -> Void) {
+    func fetchSleepData(completion: @escaping ([SleepChartModel]) -> Void) {
         guard let userId = userId else {
             print("No authenticated user available.")
             completion([])
@@ -211,48 +211,13 @@ class FirestoreService: ObservableObject {
             sleepData.sort { $0.date < $1.date }
             
             // Fill in missing dates (here, also for a weekly chart; adjust "Week" if needed)
-            let completeData = self.fillMissingSleepDates(for: sleepData, period: period)
-            completion(completeData)
+            // let completeData = self.fillMissingSleepDates(for: sleepData, period: period)
+            completion(sleepData)
         }
     }
 
     
-    private func fillMissingWaterDates(for data: [WaterChartModel], period: String) -> [WaterChartModel] {
-        let calendar = Calendar.current
-        let now = Date()
-        var startDate: Date
-        
-        // Determine the start date based on the selected period.
-        switch period {
-        case "Week":
-            startDate = calendar.date(byAdding: .day, value: -6, to: now)!
-        case "Month":
-            startDate = calendar.date(byAdding: .day, value: -29, to: now)!
-        case "Year":
-            startDate = calendar.date(byAdding: .day, value: -364, to: now)!
-        default:
-            startDate = data.first?.date ?? now
-        }
-        
-        var completeData: [WaterChartModel] = []
-        var currentDate = startDate
-        
-        // Loop through each day in the range.
-        while currentDate <= now {
-            if let existing = data.first(where: { calendar.isDate($0.date, inSameDayAs: currentDate) }) {
-                completeData.append(existing)
-            } else {
-                // If no data exists for this day, create a default record.
-                completeData.append(WaterChartModel(date: currentDate, consumption: 0))
-            }
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
-        }
-        
-        // Ensure the final data is sorted.
-        completeData.sort { $0.date < $1.date }
-        //completeData.reverse()
-        return completeData
-    }
+    
 
     
     
@@ -331,10 +296,4 @@ class FirestoreService: ObservableObject {
     }
 
 
-}
-
-
-protocol ChartDataModel: AnyObject {
-    var date: Date { get }
-    static func createDefault(for date: Date) -> Self
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 import Charts
 
-struct StepsBarChart: View {
+struct StepsLineChart: View {
     @Binding var currentActiveItem: StepsChartModel?
     @Binding var plotWidth: CGFloat
     var stepsData: [StepsChartModel]

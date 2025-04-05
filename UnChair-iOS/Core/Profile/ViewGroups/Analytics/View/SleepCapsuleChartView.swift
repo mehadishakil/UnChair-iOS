@@ -55,7 +55,7 @@ struct SleepCapsuleChartView: View {
             }
             SleepCapsuleChart(sleepData: sleepData, currentTab: $currentTab)
                 .frame(minHeight: 180)
-                .padding()
+                .padding(.horizontal)
         }
         .padding()
         .background(.ultraThinMaterial)
@@ -69,13 +69,73 @@ struct SleepCapsuleChartView: View {
     }
     
     private func fetchData(for period: String) {
-        firestoreService.fetchSleepData(for: period) { fetchedData in
-                DispatchQueue.main.async {
-                    self.sleepData = fetchedData
-                }
+        firestoreService.fetchSleepData() { fetchedData in
+            DispatchQueue.main.async {
+                // CHANGE: First filter the data, then fill missing dates
+                let filteredData = filterDataByPeriod(fetchedData, period: period)
+                self.sleepData = fillMissingSleepDates(for: filteredData, period: period)
             }
         }
-
+    }
+    
+    
+    private func fillMissingSleepDates(for data: [SleepChartModel], period: String) -> [SleepChartModel] {
+        let calendar = Calendar.current
+        let now = Date()
+        var startDate: Date
+        
+        // Determine the start date based on the selected period.
+        switch period {
+        case "Week":
+            startDate = calendar.date(byAdding: .day, value: -6, to: now)!
+        case "Month":
+            startDate = calendar.date(byAdding: .day, value: -29, to: now)!
+        case "Year":
+            startDate = calendar.date(byAdding: .day, value: -364, to: now)!
+        default:
+            startDate = data.first?.date ?? now
+        }
+        
+        var completeData: [SleepChartModel] = []
+        var currentDate = startDate
+        
+        // Loop through each day in the range.
+        while currentDate <= now {
+            if let existing = data.first(where: { calendar.isDate($0.date, inSameDayAs: currentDate) }) {
+                completeData.append(existing)
+            } else {
+                // If no data exists for this day, create a default record.
+                completeData.append(SleepChartModel(date: currentDate, sleep: 0))
+            }
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+        }
+        
+        // Ensure the final data is sorted.
+        completeData.sort { $0.date < $1.date }
+        return completeData
+    }
+    
+    
+    private func filterDataByPeriod(_ data: [SleepChartModel], period: String) -> [SleepChartModel] {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        return data.filter { dataPoint in
+            switch period {
+            case "Week":
+                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
+                calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 6
+            case "Month":
+                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
+                calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 29
+            case "Year":
+                return calendar.isDate(dataPoint.date, inSameDayAs: now) ||
+                calendar.dateComponents([.day], from: dataPoint.date, to: now).day ?? 0 <= 364
+            default:
+                return true
+            }
+        }
+    }
 }
 
 

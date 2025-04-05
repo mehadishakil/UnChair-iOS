@@ -15,6 +15,7 @@
 		E832992D2D2DCAB500B5D009 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */; };
 		E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF02C68DFBC00709773 /* CalmCorner.swift */; };
 		E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A7EF22C68E35F00709773 /* Meditation.swift */; };
+		E84115062DA1649600CB21DF /* BreakMultiLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84115052DA1649600CB21DF /* BreakMultiLineChartView.swift */; };
 		E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844B82A2C108B30006D54E4 /* SedentaryTime.swift */; };
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
@@ -41,11 +42,11 @@
 		E8AFBAA22C9C45B200AEE292 /* ExerciseBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9A2C9C45B100AEE292 /* ExerciseBarChartView.swift */; };
 		E8AFBAA32C9C45B200AEE292 /* SleepCapsuleChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9B2C9C45B100AEE292 /* SleepCapsuleChart.swift */; };
 		E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9C2C9C45B100AEE292 /* SleepCapsuleChartView.swift */; };
-		E8AFBAA52C9C45B200AEE292 /* StepsBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9D2C9C45B100AEE292 /* StepsBarChart.swift */; };
-		E8AFBAA62C9C45B200AEE292 /* WaterLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9E2C9C45B200AEE292 /* WaterLineChart.swift */; };
+		E8AFBAA52C9C45B200AEE292 /* StepsLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9D2C9C45B100AEE292 /* StepsLineChart.swift */; };
+		E8AFBAA62C9C45B200AEE292 /* WaterBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9E2C9C45B200AEE292 /* WaterBarChart.swift */; };
 		E8AFBAA72C9C45B200AEE292 /* ExerciseBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9F2C9C45B200AEE292 /* ExerciseBarChart.swift */; };
-		E8AFBAA82C9C45B200AEE292 /* StepsBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAA02C9C45B200AEE292 /* StepsBarChartView.swift */; };
-		E8AFBAA92C9C45B200AEE292 /* WaterLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAA12C9C45B200AEE292 /* WaterLineChartView.swift */; };
+		E8AFBAA82C9C45B200AEE292 /* StepsLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAA02C9C45B200AEE292 /* StepsLineChartView.swift */; };
+		E8AFBAA92C9C45B200AEE292 /* WaterBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAA12C9C45B200AEE292 /* WaterBarChartView.swift */; };
 		E8AFBAAB2C9C45D600AEE292 /* ExerciseChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAAA2C9C45D600AEE292 /* ExerciseChartModel.swift */; };
 		E8AFBAAD2C9C460600AEE292 /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAAC2C9C460600AEE292 /* DataFetcher.swift */; };
 		E8AFBAAF2C9C462F00AEE292 /* AnalyticScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAAE2C9C462F00AEE292 /* AnalyticScreen.swift */; };
@@ -83,6 +84,7 @@
 		E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E83A7EF02C68DFBC00709773 /* CalmCorner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmCorner.swift; sourceTree = "<group>"; };
 		E83A7EF22C68E35F00709773 /* Meditation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meditation.swift; sourceTree = "<group>"; };
+		E84115052DA1649600CB21DF /* BreakMultiLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakMultiLineChartView.swift; sourceTree = "<group>"; };
 		E844B82A2C108B30006D54E4 /* SedentaryTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedentaryTime.swift; sourceTree = "<group>"; };
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
@@ -106,11 +108,11 @@
 		E8AFBA9A2C9C45B100AEE292 /* ExerciseBarChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseBarChartView.swift; sourceTree = "<group>"; };
 		E8AFBA9B2C9C45B100AEE292 /* SleepCapsuleChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepCapsuleChart.swift; sourceTree = "<group>"; };
 		E8AFBA9C2C9C45B100AEE292 /* SleepCapsuleChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepCapsuleChartView.swift; sourceTree = "<group>"; };
-		E8AFBA9D2C9C45B100AEE292 /* StepsBarChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsBarChart.swift; sourceTree = "<group>"; };
-		E8AFBA9E2C9C45B200AEE292 /* WaterLineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterLineChart.swift; sourceTree = "<group>"; };
+		E8AFBA9D2C9C45B100AEE292 /* StepsLineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsLineChart.swift; sourceTree = "<group>"; };
+		E8AFBA9E2C9C45B200AEE292 /* WaterBarChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterBarChart.swift; sourceTree = "<group>"; };
 		E8AFBA9F2C9C45B200AEE292 /* ExerciseBarChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseBarChart.swift; sourceTree = "<group>"; };
-		E8AFBAA02C9C45B200AEE292 /* StepsBarChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsBarChartView.swift; sourceTree = "<group>"; };
-		E8AFBAA12C9C45B200AEE292 /* WaterLineChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterLineChartView.swift; sourceTree = "<group>"; };
+		E8AFBAA02C9C45B200AEE292 /* StepsLineChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsLineChartView.swift; sourceTree = "<group>"; };
+		E8AFBAA12C9C45B200AEE292 /* WaterBarChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterBarChartView.swift; sourceTree = "<group>"; };
 		E8AFBAAA2C9C45D600AEE292 /* ExerciseChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseChartModel.swift; sourceTree = "<group>"; };
 		E8AFBAAC2C9C460600AEE292 /* DataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetcher.swift; sourceTree = "<group>"; };
 		E8AFBAAE2C9C462F00AEE292 /* AnalyticScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticScreen.swift; sourceTree = "<group>"; };
@@ -368,14 +370,15 @@
 		E8AFBA992C9C459400AEE292 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				E84115052DA1649600CB21DF /* BreakMultiLineChartView.swift */,
 				E8AFBA9F2C9C45B200AEE292 /* ExerciseBarChart.swift */,
 				E8AFBA9A2C9C45B100AEE292 /* ExerciseBarChartView.swift */,
 				E8AFBA9B2C9C45B100AEE292 /* SleepCapsuleChart.swift */,
 				E8AFBA9C2C9C45B100AEE292 /* SleepCapsuleChartView.swift */,
-				E8AFBA9D2C9C45B100AEE292 /* StepsBarChart.swift */,
-				E8AFBAA02C9C45B200AEE292 /* StepsBarChartView.swift */,
-				E8AFBA9E2C9C45B200AEE292 /* WaterLineChart.swift */,
-				E8AFBAA12C9C45B200AEE292 /* WaterLineChartView.swift */,
+				E8AFBA9D2C9C45B100AEE292 /* StepsLineChart.swift */,
+				E8AFBAA02C9C45B200AEE292 /* StepsLineChartView.swift */,
+				E8AFBA9E2C9C45B200AEE292 /* WaterBarChart.swift */,
+				E8AFBAA12C9C45B200AEE292 /* WaterBarChartView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -513,16 +516,16 @@
 			files = (
 				E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */,
 				E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */,
-				E8AFBAA62C9C45B200AEE292 /* WaterLineChart.swift in Sources */,
+				E8AFBAA62C9C45B200AEE292 /* WaterBarChart.swift in Sources */,
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8AFBAAB2C9C45D600AEE292 /* ExerciseChartModel.swift in Sources */,
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
-				E8AFBAA82C9C45B200AEE292 /* StepsBarChartView.swift in Sources */,
+				E8AFBAA82C9C45B200AEE292 /* StepsLineChartView.swift in Sources */,
 				E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */,
 				E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */,
 				E83A7EF32C68E35F00709773 /* Meditation.swift in Sources */,
 				E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */,
-				E8AFBAA52C9C45B200AEE292 /* StepsBarChart.swift in Sources */,
+				E8AFBAA52C9C45B200AEE292 /* StepsLineChart.swift in Sources */,
 				E8D787042C9941CC00BA83A0 /* StepsChartModel.swift in Sources */,
 				E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */,
 				E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */,
@@ -532,6 +535,7 @@
 				E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */,
 				E8AFBAA72C9C45B200AEE292 /* ExerciseBarChart.swift in Sources */,
 				E8DB22842D71EECC001172B5 /* HealthDataService.swift in Sources */,
+				E84115062DA1649600CB21DF /* BreakMultiLineChartView.swift in Sources */,
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
 				E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */,
@@ -542,7 +546,7 @@
 				E866CDFC2D3143F500F62142 /* UserData.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
 				E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */,
-				E8AFBAA92C9C45B200AEE292 /* WaterLineChartView.swift in Sources */,
+				E8AFBAA92C9C45B200AEE292 /* WaterBarChartView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
 				E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */,
 				E8D787032C9941CC00BA83A0 /* WaterChartModel.swift in Sources */,
