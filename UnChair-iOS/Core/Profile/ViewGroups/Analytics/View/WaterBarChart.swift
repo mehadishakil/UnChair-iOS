@@ -1,154 +1,247 @@
 //
-//  LineChartView.swift
-//  ModuleDraft
+//  Sample.swift
+//  UnChair-iOS
 //
-//  Created by Mehadi Hasan on 10/9/24.
+//  Created by Mehadi Hasan on 5/4/25.
 //
+// .chartXScale(domain: minDate...maxDate)
+
+
+//import SwiftUI
+//import Charts
 //
+//struct Sample : View {
+//    
+//    @State private var rawSelectedDate: Date?
+//    var selectedViewMonth: ViewMonth? {
+//        guard let rawSelectedDate else { return nil }
+//        return viewMonths.first {
+//            Calendar.current.isDate(rawSelectedDate, equalTo: $0.date, toGranularity: .month)
+//        }
+//    }
+//    
+//    let viewMonths: [ViewMonth] = [
+//        .init(date: Date.from(year: 2023, month: 1, day: 1), viewCount: 55000),
+//        .init(date: Date.from(year: 2023, month: 2, day: 1), viewCount: 89000),
+//        .init(date: Date.from(year: 2023, month: 3, day: 1), viewCount: 64000),
+//        .init(date: Date.from(year: 2023, month: 4, day: 1), viewCount: 79000),
+//        .init(date: Date.from(year: 2023, month: 5, day: 1), viewCount: 13000),
+//        .init(date: Date.from(year: 2023, month: 6, day: 1), viewCount: 90000),
+//        .init(date: Date.from(year: 2023, month: 7, day: 1), viewCount: 88000),
+//        .init(date: Date.from(year: 2023, month: 8, day: 1), viewCount: 64000),
+//        .init(date: Date.from(year: 2023, month: 9, day: 1), viewCount: 74000),
+//        .init(date: Date.from(year: 2023, month: 10, day: 1), viewCount: 99000),
+//        .init(date: Date.from(year: 2023, month: 11, day: 1), viewCount: 110000),
+//        .init(date: Date.from(year: 2023, month: 12, day: 1), viewCount: 94000)
+//    ]
+//
+//    var body: some View {
+//        VStack {
+//            Chart {
+//                
+//                if let selectedViewMonth {
+//                    RuleMark(x: .value("Selected Month", selectedViewMonth.date, unit: .month))
+//                        .foregroundStyle(.secondary.opacity(0.3))
+//                        .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
+//                            VStack{
+//                                Text(selectedViewMonth.date, format: .dateTime.month(.wide))
+//                                    .bold()
+//                                
+//                                Text("\(selectedViewMonth.viewCount)")
+//                                    .font(.title3.bold())
+//                            }
+//                            .foregroundStyle(.white)
+//                            .padding(12)
+//                            .frame(width: 120)
+//                            .background(RoundedRectangle(cornerRadius: 10).fill(.pink.gradient))
+//                        }
+//                }
+//                
+//                
+//                RuleMark(y: .value("Goal", 80000))
+//                    .foregroundStyle(Color.mint)
+//                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+//                    .annotation(alignment: .leading){
+//                        Text("Goal")
+//                            .font(.caption)
+//                            .foregroundColor(.secondary)
+//                    }
+//                ForEach(viewMonths) { viewMonths in
+//                    BarMark(x: .value("Month", viewMonths.date, unit: .month), y: .value("Views", viewMonths.viewCount))
+//                        .foregroundStyle(Color.pink.gradient)
+//                        .opacity(rawSelectedDate == nil || viewMonths.date == selectedViewMonth?.date ? 1.0 : 0.3)
+//                }
+//            }
+//            .frame(height: 180)
+//            // .chartXScale(domain: minDate...maxDate)
+//            .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
+//            .onChange(of: selectedViewMonth?.viewCount, { oldValue, newValue in
+//                print(newValue)
+//            })
+//            .chartXAxis{
+//                AxisMarks(values: viewMonths.map { $0.date }) {date in
+//                    AxisValueLabel(format: .dateTime.month(.narrow), centered: true)
+//                }
+//            }
+//            .chartYAxis{
+//                AxisMarks { value in
+//                    AxisValueLabel()
+//                    AxisGridLine()
+//                }
+//            }
+//        }
+//        .padding()
+//    }
+//}
+//
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//            // Create a mock AuthController instance (or use a real one if necessary)
+//            let authController = AuthController()
+//            
+//            // Provide the AuthController to the environment
+//            return Sample()
+//            .environmentObject(authController)  // Inject the AuthController environment object
+//        }
+//}
+
+
+
+
+
 import SwiftUI
 import Charts
 
-struct WaterBarChart: View {
+struct WaterBarChart : View {
+    @State private var rawSelectedDate: Date?
     @Binding var currentActiveItem: WaterChartModel?
     @Binding var plotWidth: CGFloat
     var waterData: [WaterChartModel]
     @Binding var currentTab: String
     @Environment(\.colorScheme) var colorScheme
+    @State private var monthlyAggregatedWaterData: [WaterChartModel] = []
+
     
-    private var barWidth: MarkDimension {
-        switch currentTab {
-        case "Week":
-            return MarkDimension(floatLiteral: 24)
-        case "Month":
-            return MarkDimension(floatLiteral: 8)
-        case "Year":
-            return MarkDimension(floatLiteral: 15)
-        default:
-            return MarkDimension(floatLiteral: 15)
+    var selectedViewItem: WaterChartModel? {
+        guard let rawSelectedDate else { return nil }
+        
+        // Different granularity based on the tab
+        let granularity: Calendar.Component = currentTab == "Year" ? .month : .day
+        
+        return waterChartData.first {
+            Calendar.current.isDate(rawSelectedDate, equalTo: $0.date, toGranularity: granularity)
         }
     }
     
     private var waterChartData: [WaterChartModel] {
         switch currentTab {
         case "Week":
-            return waterData.suffix(7) // Last 7 days
+            return waterData.suffix(7)
         case "Month":
-            return waterData.suffix(30) // Last 30 days
+            return waterData.suffix(30)
         case "Year":
-            return aggregateByMonth(waterData).suffix(12) // Last 12 months
+            return monthlyAggregatedWaterData
         default:
             return waterData
         }
     }
-
+    
     var body: some View {
-        let maxConsumption = waterData.max { $0.consumption < $1.consumption }?.consumption ?? 0
-
-        VStack(spacing: 0) {
+        VStack {
             Chart {
-                ForEach(waterChartData) { item in
-                    BarMark(
-                        x: .value("Date", item.date),
-                        y: .value("Consumption", item.consumption),
-                        width: barWidth
-                    )
-                    .foregroundStyle(Color.blue)
+                if let selectedItem = selectedViewItem {
+                    let component: Calendar.Component = currentTab == "Year" ? .month : .day
+                    RuleMark(x: .value("Selected", selectedItem.date, unit: component))
+                        .foregroundStyle(.secondary.opacity(0.3))
+                        .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
+                            VStack{
+                                if currentTab == "Year" {
+                                    Text(selectedItem.date, format: .dateTime.month(.wide))
+                                        .bold()
+                                } else {
+                                    Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                                        .bold()
+                                }
+                                
+                                Text("\(selectedItem.consumption, specifier: "%.1f")")
+                                    .font(.title3.bold())
+                            }
+                            .foregroundStyle(.white)
+                            .padding(12)
+                            .frame(width: 120)
+                            .background(RoundedRectangle(cornerRadius: 10).fill(.pink.gradient))
+                        }
                 }
                 
-                if let currentActiveItem {
-                    RuleMark(
-                        x: .value("Date", currentActiveItem.date)
-                    )
-                    .foregroundStyle(Color.gray.opacity(0.3))
-                    .annotation(position: .top) {
-                        VStack(alignment: .center, spacing: 4) {
-                            Text(formatDate(currentActiveItem.date, tab: currentTab))
-                                .font(.caption)
-                                .fontWeight(.bold)
-                            
-                            Text("\(Int(currentActiveItem.consumption)) ml")
-                                .font(.caption)
-                                .fontWeight(.bold)
-                        }
-                        .padding(8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(Color.blue.opacity(0.2))
-                        )
+                RuleMark(y: .value("Goal", 3000))
+                    .foregroundStyle(Color.mint)
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+                    .annotation(alignment: .leading){
+                        Text("Goal")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
+                
+                ForEach(waterChartData) { water in
+                    BarMark(
+                        x: .value("Date", water.date, unit: currentTab == "Year" ? .month : .day),
+                        y: .value("Value", water.consumption)
+                    )
+                    .cornerRadius(4)
+                    .foregroundStyle(Color.pink.gradient)
+                    .opacity(rawSelectedDate == nil || Calendar.current.isDate(water.date,
+                             equalTo: selectedViewItem?.date ?? Date(),
+                             toGranularity: currentTab == "Year" ? .month : .day) ? 1.0 : 0.3)
                 }
             }
             .frame(height: 180)
+            .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
+            .onChange(of: waterData) { oldData, newData in
+                if currentTab == "Year" {
+                    monthlyAggregatedWaterData = aggregateByMonth(newData).suffix(12)
+                }
+            }
             .chartXAxis {
-                AxisMarks(preset: .aligned, values: .automatic(desiredCount: getDesiredAxisCount())) { value in
-                    if let date = value.as(Date.self) {
-                        AxisValueLabel {
-                            Text(formatAxisLabel(date))
-                                .font(.caption2)
+                if currentTab == "Year" {
+                    AxisMarks(values: .stride(by: .month)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(date, format: .dateTime.month(.narrow))
+                            }
+                            AxisTick()
+                            AxisGridLine()
+                        }
+                    }
+                } else if currentTab == "Week" {
+                    AxisMarks(values: .stride(by: .day)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(date, format: .dateTime.weekday(.abbreviated))
+                            }
+                            AxisTick()
+                            AxisGridLine()
+                        }
+                    }
+                } else if currentTab == "Month" {
+                    AxisMarks(values: .stride(by: .day, count: 5)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(date, format: .dateTime.day())
+                            }
+                            AxisTick()
+                            AxisGridLine()
                         }
                     }
                 }
             }
-            .chartYAxis {
-                AxisMarks {
-                    AxisTick()
+            .chartYAxis{
+                AxisMarks { value in
                     AxisValueLabel()
-                }
-            }
-            .chartOverlay { proxy in
-                GeometryReader { geometry in
-                    Rectangle()
-                        .fill(Color.clear)
-                        .contentShape(Rectangle())
-                        .gesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { value in
-                                    handleDragChange(value, in: proxy, geometry: geometry)
-                                }
-                                .onEnded { _ in
-                                    currentActiveItem = nil
-                                }
-                        )
+                    AxisGridLine()
                 }
             }
         }
-    }
-    
-    private func getDesiredAxisCount() -> Int {
-        switch currentTab {
-        case "Week": return 7
-        case "Month": return 10
-        case "Year": return 12
-        default: return 7
-        }
-    }
-    
-    private func formatAxisLabel(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        switch currentTab {
-        case "Week":
-            formatter.dateFormat = "E"
-        case "Month":
-            formatter.dateFormat = "dd"
-        case "Year":
-            formatter.dateFormat = "MMM"
-            let monthString = formatter.string(from: date)
-            return String(monthString.prefix(1))
-        default:
-            formatter.dateFormat = "MMM"
-        }
-        return formatter.string(from: date)
-    }
-    
-    private func formatDate(_ date: Date, tab: String) -> String {
-        let formatter = DateFormatter()
-        switch tab {
-        case "Year":
-            formatter.dateFormat = "MMM yyyy"
-        default:
-            formatter.dateFormat = "MMM d"
-        }
-        return formatter.string(from: date)
+        .padding()
     }
     
     private func aggregateByMonth(_ data: [WaterChartModel]) -> [WaterChartModel] {
@@ -175,473 +268,18 @@ struct WaterBarChart: View {
         }
         .sorted { $0.date < $1.date }
     }
-
-    private func handleDragChange(_ value: DragGesture.Value, in proxy: ChartProxy, geometry: GeometryProxy) {
-        let xPosition = value.location.x
-        
-        if let date = proxy.value(atX: xPosition) as Date? {
-            // Find the closest item in waterChartData, not waterData
-            if let item = waterChartData.min(by: {
-                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
-            }) {
-                currentActiveItem = item
-                plotWidth = geometry.size.width
-            }
-        }
-    }
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-//import SwiftUI
-//import Charts
-//
-//struct WaterBarChart: View {
-//    @Binding var currentActiveItem: WaterChartModel?
-//    @Binding var plotWidth: CGFloat
-//    var waterData: [WaterChartModel]
-//    @Binding var currentTab: String
-//    @Environment(\.colorScheme) var colorScheme
-//    
-//    
-//    private var barWidth: MarkDimension {
-//        switch currentTab {
-//        case "Week":
-//            return MarkDimension(floatLiteral: 24)
-//        case "Month":
-//            return MarkDimension(floatLiteral: 8)
-//        case "Year":
-//            return MarkDimension(floatLiteral: 15)
-//        default:
-//            return MarkDimension(floatLiteral: 15)
-//        }
-//    }
-//    
-//    private var waterChartData: [WaterChartModel] {
-//        switch currentTab {
-//        case "Week":
-//            return waterData.suffix(7) // Last 7 days
-//        case "Month":
-//            return waterData.suffix(30) // Last 30 days
-//        case "Year":
-//            return aggregateByMonth(waterData).suffix(12) // Last 12 months
-//        default:
-//            return waterData
-//        }
-//    }
-//
-//    var body: some View {
-//        let maxConsumption = waterData.max { $0.consumption < $1.consumption }?.consumption ?? 0
-//
-//        VStack(spacing: 0) {
-//            Chart {
-//                ForEach(waterChartData) { item in
-//                    BarMark(
-//                        x: .value("Date", item.date),
-//                        y: .value("Consumption", item.consumption),
-//                        width: barWidth
-//                    )
-//                    .foregroundStyle(Color.blue)
-////                    .opacity(currentActiveItem?.id == item.id || currentActiveItem == nil ? 1.0 : 0.3)
-//                }
-//                
-//                if let currentActiveItem {
-//                    RuleMark(
-//                        x: .value("Date", currentActiveItem.date)
-//                    )
-//                    .foregroundStyle(Color.gray.opacity(0.3))
-//                    .annotation(position: .top) {
-//                        VStack(alignment: .center, spacing: 4) {
-//                            Text(formatDate(currentActiveItem.date, format: currentTab == "Year" ? "MMM yyyy" : "MMM d"))
-//                                .font(.caption)
-//                                .fontWeight(.bold)
-//                            
-//                            Text("\(Int(currentActiveItem.consumption)) ml")
-//                                .font(.caption)
-//                                .fontWeight(.bold)
-//                        }
-//                        .padding(8)
-//                        .background(
-//                            RoundedRectangle(cornerRadius: 8)
-//                                .fill(Color.blue.opacity(0.2))
-//                        )
-//                    }
-//                }
-//            }
-//            .frame(height: 180)
-//            // .chartXScale(domain: chartDateRange()) // Set fixed date range to ensure all data fits
-//            .chartXAxis {
-//                AxisMarks(preset: .aligned, values: .stride(by: .day)) { value in
-//                    if let date = value.as(Date.self) {
-//                        AxisValueLabel {
-//                            Text(formatDate(waterChartData.date, index: waterChartData.firstIndex(of: waterChartData) ?? 0))
-//                                .font(.caption2)
-//                        }
-//                    }
-//                }
-////                switch currentTab {
-////                case "Week":
-////                    
-////                case "Month":
-////                    AxisMarks(preset: .aligned, values: .stride(by: .day, count: 7)) { value in
-////                        if let date = value.as(Date.self) {
-////                            AxisValueLabel {
-////                                Text(formatDate(date, format: "d"))
-////                                    .font(.caption2)
-////                            }
-////                        }
-////                    }
-////                case "Year":
-////                    AxisMarks(preset: .aligned, values: .stride(by: .month)) { value in
-////                        if let date = value.as(Date.self) {
-////                            AxisValueLabel {
-////                                Text(formatDate(date, format: "MMM"))
-////                                    .font(.caption2)
-////                            }
-////                        }
-////                    }
-////                default:
-////                    AxisMarks(preset: .aligned, values: .stride(by: .month, count: 3)) { value in
-////                        if let date = value.as(Date.self) {
-////                            AxisValueLabel {
-////                                Text(formatDate(date, format: "MMM"))
-////                                    .font(.caption2)
-////                            }
-////                        }
-////                    }
-////                }
-//            }
-//            .chartYAxis {
-//                AxisMarks {
-//                    AxisTick()
-//                    AxisValueLabel()
-//                }
-//            }
-//            .chartOverlay { proxy in
-//                GeometryReader { geometry in
-//                    Rectangle()
-//                        .fill(Color.clear)
-//                        .contentShape(Rectangle())
-//                        .gesture(
-//                            DragGesture(minimumDistance: 0)
-//                                .onChanged { value in
-//                                    handleDragChange(value, in: proxy, geometry: geometry)
-//                                }
-//                                .onEnded { _ in
-//                                    currentActiveItem = nil
-//                                }
-//                        )
-//                }
-//            }
-//        }
-//    }
-//    
-//    
-//    private func aggregateByMonth(_ data: [WaterChartModel]) -> [WaterChartModel] {
-//        let calendar = Calendar.current
-//        
-//        let groupedData = Dictionary(grouping: data) { item in
-//            let components = calendar.dateComponents([.year, .month], from: item.date)
-//            return components
-//        }
-//        
-//        return groupedData.map { (components, items) in
-//            let firstDayComponents = DateComponents(year: components.year, month: components.month, day: 1)
-//            let firstDay = calendar.date(from: firstDayComponents) ?? Date()
-//            
-//            let nonZeroItems = items.filter { $0.consumption > 0 }
-//            let totalConsumption = nonZeroItems.reduce(0) { $0 + $1.consumption }
-//            let averageConsumption = nonZeroItems.isEmpty ? 0 : totalConsumption / Double(nonZeroItems.count)
-//            
-//            return WaterChartModel(
-//                id: "month-\(components.year ?? 0)-\(components.month ?? 0)",
-//                date: firstDay,
-//                consumption: averageConsumption
-//            )
-//        }
-//        .sorted { $0.date < $1.date }
-//    }
-//
-//    private func handleDragChange(_ value: DragGesture.Value, in proxy: ChartProxy, geometry: GeometryProxy) {
-//        let xPosition = value.location.x
-//        let relativeXPosition = xPosition / geometry.size.width
-//        
-//        // Convert the relative position to a date
-//        if let date = proxy.value(atX: xPosition) as Date? {
-//            // Find the closest data point
-//            if let item = waterData.min(by: {
-//                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
-//            }) {
-//                currentActiveItem = item
-//                plotWidth = geometry.size.width
-//            }
-//        }
-//    }
-//
-////    private func formatDate(_ date: Date, format: String) -> String {
-////        let formatter = DateFormatter()
-////        formatter.dateFormat = format
-////        return formatter.string(from: date)
-////    }
-//    
-//    private func formatDate(_ date: Date, index: Int) -> String {
-//        let formatter = DateFormatter()
-//        switch currentTab {
-//        case "Week":
-//            formatter.dateFormat = "E"
-//            return formatter.string(from: date)
-//        case "Month":
-//            formatter.dateFormat = "dd"
-//            // Show every 5th day label for month view to avoid crowding
-//            return index % 3 == 0 ? formatter.string(from: date) : ""
-//        case "Year":
-//            formatter.dateFormat = "MMM"
-//            let monthString = formatter.string(from: date)
-//            return String(monthString.prefix(1))
-//        default:
-//            formatter.dateFormat = "MMM yy"
-//            return formatter.string(from: date)
-//        }
-//    }
+//struct ViewMonth: Identifiable {
+//    let id = UUID()
+//    let date: Date
+//    let viewCount: Int
 //}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//AxisValueLabel(format: .dateTime.month(.narrow), centered: true)
-//extension Date{
-//    static func from(year: Int, month: Int, day: Int) -> Date? {
+//extension Date {
+//    static func from(year: Int, month: Int, day: Int) -> Date {
 //        let components = DateComponents(year: year, month: month, day: day)
-//        return Calendar.current.date(from: components)
+//        return Calendar.current.date(from: components)!
 //    }
-//}
-
-
-//
-//import SwiftUI
-//import Charts
-//
-//struct WaterBarChart: View {
-//    @Binding var currentActiveItem: WaterChartModel?
-//    @Binding var plotWidth: CGFloat
-//    var waterData: [WaterChartModel]
-//    @Binding var currentTab: String
-//    @Environment(\.colorScheme) var colorScheme
-//    
-//    private var displayData: [WaterChartModel] {
-//        switch currentTab {
-//        case "Week", "Month":
-//            return waterData  // Ensure that waterData already contains the full set for the period
-//        case "Year":
-//            // Group by month and calculate monthly averages
-//            let calendar = Calendar.current
-//            let groupedByMonth = Dictionary(grouping: waterData) { item in
-//                let components = calendar.dateComponents([.year, .month], from: item.date)
-//                return calendar.date(from: components)!
-//            }
-//            return groupedByMonth.map { date, items in
-//                let totalConsumption = items.reduce(0) { $0 + $1.consumption }
-//                let averageConsumption = totalConsumption / Double(items.count)
-//                return WaterChartModel(id: UUID().uuidString, date: date, consumption: averageConsumption)
-//            }
-//            .sorted { $0.date < $1.date }
-//        default:
-//            return waterData
-//        }
-//    }
-//
-//    
-//    // Dynamic bar width based on current tab
-//    private var barWidth: MarkDimension {
-//        switch currentTab {
-//        case "Week":
-//            return MarkDimension(floatLiteral: 24)
-//        case "Month":
-//            return MarkDimension(floatLiteral: 8)
-//        case "Year":
-//            return MarkDimension(floatLiteral: 20)
-//        default:
-//            return MarkDimension(floatLiteral: 15)
-//        }
-//    }
-//
-//
-//    var body: some View {
-////        let maxConsumption = displayData.max { $0.consumption < $1.consumption }?.consumption ?? 0
-//
-//        VStack {
-//            Chart {
-//                ForEach(displayData) { item in
-//                    BarMark(
-//                        x: .value("Date", item.date),
-//                        y: .value("Consumption", item.consumption),
-//                        width: barWidth // Using dynamic bar width
-//                    )
-//                    .foregroundStyle(Color.blue.gradient)
-//                    .opacity(currentActiveItem?.id == item.id || currentActiveItem == nil ? 1.0 : 0.3)
-//                }
-//                
-//                if let currentActiveItem {
-//                    RuleMark(
-//                        x: .value("Date", currentActiveItem.date)
-//                    )
-//                    .foregroundStyle(Color.gray.opacity(0.3))
-//                    .annotation(position: .top) {
-//                        VStack(alignment: .center, spacing: 4) {
-//                            Text(formatDate(currentActiveItem.date, format: currentTab == "Year" ? "MMM yyyy" : "MMM d"))
-//                                .font(.caption)
-//                                .fontWeight(.bold)
-//                            
-//                            Text("\(Int(currentActiveItem.consumption)) ml")
-//                                .font(.caption)
-//                                .fontWeight(.bold)
-//                        }
-//                        .padding(8)
-//                        .background(
-//                            RoundedRectangle(cornerRadius: 8)
-//                                .fill(Color.blue.opacity(0.2))
-//                        )
-//                    }
-//                }
-//            }
-//            .frame(height: 180)
-//            .chartXScale(domain: chartDateRange()) // Set fixed date range to ensure all data fits
-//            .chartXAxis {
-//                switch currentTab {
-//                case "Week":
-//                    AxisMarks(preset: .aligned, values: .stride(by: .day)) { value in
-//                        if let date = value.as(Date.self) {
-//                            AxisValueLabel {
-//                                Text(formatDate(date, format: "E"))
-//                                    .font(.caption2)
-//                            }
-//                        }
-//                    }
-//                case "Month":
-//                    AxisMarks(preset: .aligned, values: .stride(by: .day, count: 5)) { value in
-//                        if let date = value.as(Date.self) {
-//                            AxisValueLabel {
-//                                Text(formatDate(date, format: "d"))
-//                                    .font(.caption2)
-//                            }
-//                        }
-//                    }
-//                case "Year":
-//                    AxisMarks(preset: .aligned, values: .stride(by: .month)) { value in
-//                        if let date = value.as(Date.self) {
-//                            AxisValueLabel {
-//                                Text(formatDate(date, format: "MMM"))
-//                                    .font(.caption2)
-//                            }
-//                        }
-//                    }
-//                default:
-//                    AxisMarks(preset: .aligned, values: .stride(by: .month, count: 3)) { value in
-//                        if let date = value.as(Date.self) {
-//                            AxisValueLabel {
-//                                Text(formatDate(date, format: "MMM"))
-//                                    .font(.caption2)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            .chartYAxis {
-//                AxisMarks {
-//                    AxisTick()
-//                    AxisValueLabel()
-//                }
-//            }
-//            .chartOverlay { proxy in
-//                GeometryReader { geometry in
-//                    Rectangle()
-//                        .fill(Color.clear)
-//                        .contentShape(Rectangle())
-//                        .gesture(
-//                            DragGesture(minimumDistance: 0)
-//                                .onChanged { value in
-//                                    handleDragChange(value, in: proxy, geometry: geometry)
-//                                }
-//                                .onEnded { _ in
-//                                    currentActiveItem = nil
-//                                }
-//                        )
-//                }
-//            }
-//        }
-//    }
-//    
-//    private func chartDateRange() -> ClosedRange<Date> {
-//        let calendar = Calendar.current
-//        guard let minDate = displayData.min(by: { $0.date < $1.date })?.date,
-//              let maxDate = displayData.max(by: { $0.date < $1.date })?.date else {
-//            return Date().addingTimeInterval(-86400 * 7)...Date()
-//        }
-//        
-//        switch currentTab {
-//        case "Week":
-//            let startOfWeek = calendar.date(byAdding: .day, value: -1, to: minDate) ?? minDate
-//            let endOfWeek = calendar.date(byAdding: .day, value: 1, to: maxDate) ?? maxDate
-//            return startOfWeek...endOfWeek
-//        case "Month":
-//            let startOfMonth = calendar.date(byAdding: .day, value: -1, to: minDate) ?? minDate
-//            let endOfMonth = calendar.date(byAdding: .day, value: 1, to: maxDate) ?? maxDate
-//            return startOfMonth...endOfMonth
-//        case "Year":
-//            let startOfYear = calendar.date(byAdding: .day, value: -15, to: minDate) ?? minDate
-//            let endOfYear = calendar.date(byAdding: .day, value: 15, to: maxDate) ?? maxDate
-//            return startOfYear...endOfYear
-//        default:
-//            let start = calendar.date(byAdding: .day, value: -1, to: minDate) ?? minDate
-//            let end = calendar.date(byAdding: .day, value: 1, to: maxDate) ?? maxDate
-//            return start...end
-//        }
-//    }
-//
-//
-//    private func handleDragChange(_ value: DragGesture.Value, in proxy: ChartProxy, geometry: GeometryProxy) {
-//        let xPosition = value.location.x
-//        
-//        // Convert the position to a date
-//        if let date = proxy.value(atX: xPosition) as Date? {
-//            // Find the closest data point
-//            if let item = displayData.min(by: {
-//                abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
-//            }) {
-//                currentActiveItem = item
-//                plotWidth = geometry.size.width
-//            }
-//        }
-//    }
-//
-//    private func formatDate(_ date: Date, format: String) -> String {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = format
-//        return formatter.string(from: date)
-//    }
-//
 //}

@@ -112,13 +112,15 @@
 import SwiftUI
 import Charts
 
-struct BarChart : View {
+struct WaterBarChart : View {
     @State private var rawSelectedDate: Date?
     @Binding var currentActiveItem: WaterChartModel?
     @Binding var plotWidth: CGFloat
     var waterData: [WaterChartModel]
     @Binding var currentTab: String
     @Environment(\.colorScheme) var colorScheme
+    @State private var monthlyAggregatedWaterData: [WaterChartModel] = []
+
     
     var selectedViewItem: WaterChartModel? {
         guard let rawSelectedDate else { return nil }
@@ -138,7 +140,7 @@ struct BarChart : View {
         case "Month":
             return waterData.suffix(30)
         case "Year":
-            return aggregateByMonth(waterData).suffix(12)
+            return monthlyAggregatedWaterData
         default:
             return waterData
         }
@@ -194,6 +196,11 @@ struct BarChart : View {
             }
             .frame(height: 180)
             .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
+            .onChange(of: waterData) { oldData, newData in
+                if currentTab == "Year" {
+                    monthlyAggregatedWaterData = aggregateByMonth(newData).suffix(12)
+                }
+            }
             .chartXAxis {
                 if currentTab == "Year" {
                     AxisMarks(values: .stride(by: .month)) { value in

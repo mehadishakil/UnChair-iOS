@@ -10,9 +10,9 @@ import SwiftData
 
 @Model
 class StepsChartModel : Identifiable {
-    var id: String               // Unique identifier (UUID)
-    var date: Date               // Date of record
-    var steps: Int               // Amount of water consumed in ml
+    var id: String
+    var date: Date
+    var steps: Int
     
     init(id: String = UUID().uuidString, date: Date, steps: Int) {
         self.id = id

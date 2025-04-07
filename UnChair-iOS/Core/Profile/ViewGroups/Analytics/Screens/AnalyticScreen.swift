@@ -26,7 +26,7 @@ struct AnalyticScreen: View {
 //                Sample()
 //                    .padding()
                 
-                LollipopMeditationChart()
+                MeditationLollipopChartView()
                     .padding()
             }
         }

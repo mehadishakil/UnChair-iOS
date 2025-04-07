@@ -298,6 +298,7 @@ import SwiftUI
 import SwiftData
 
 struct WaterBarChartView: View {
+    
     @Environment(\.modelContext) var modelContext
     @State private var currentTab: String = "Week"
     @State private var waterData: [WaterChartModel] = []
@@ -350,7 +351,7 @@ struct WaterBarChartView: View {
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(10)
             } else {
-                BarChart(
+                WaterBarChart(
                     currentActiveItem: $currentActiveItem,
                     plotWidth: $plotWidth,
                     waterData: waterData,
@@ -417,5 +418,5 @@ struct WaterBarChartView: View {
 }
 
 #Preview {
-    SleepCapsuleChartView()
+    WaterBarChartView()
 }

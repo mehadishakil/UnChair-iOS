@@ -11,11 +11,11 @@ import FirebaseAuth
 
 class FirestoreService: ObservableObject {
     private let db = Firestore.firestore()
-
+    
     private var userId: String? {
         return Auth.auth().currentUser?.uid
     }
-
+    
     // Fetch existing data for the user
     func fetchUserData(completion: @escaping (Result<[String: Any], Error>) -> Void) {
         guard let userId = userId else {
@@ -23,7 +23,7 @@ class FirestoreService: ObservableObject {
             completion(.failure(NSError(domain: "FirestoreService", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])))
             return
         }
-
+        
         db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
             if let error = error {
                 completion(.failure(error))
@@ -39,7 +39,7 @@ class FirestoreService: ObservableObject {
             completion(.success(data))
         }
     }
-
+    
     // Check if a document exists for the current date
     func documentExists(for date: String, completion: @escaping (Bool) -> Void) {
         guard let userId = userId else {
@@ -47,12 +47,12 @@ class FirestoreService: ObservableObject {
             completion(false)
             return
         }
-
+        
         db.collection("users").document(userId).collection("health_data").document(date).getDocument { snapshot, _ in
             completion(snapshot?.exists ?? false)
         }
     }
-
+    
     // Create a new document for the current date
     func createDocument(for date: String, initialData: [String: Any], completion: @escaping (Error?) -> Void) {
         guard let userId = userId else {
@@ -60,12 +60,12 @@ class FirestoreService: ObservableObject {
             completion(NSError(domain: "FirestoreService", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"]))
             return
         }
-
+        
         db.collection("users").document(userId).collection("health_data").document(date).setData(initialData) { error in
             completion(error)
         }
     }
-
+    
     // Sync data for the current date
     func syncData(for date: String, updatedData: [String: Any], completion: @escaping (Error?) -> Void) {
         guard let userId = userId else {
@@ -73,107 +73,61 @@ class FirestoreService: ObservableObject {
             completion(NSError(domain: "FirestoreService", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"]))
             return
         }
-
+        
         db.collection("users").document(userId).collection("health_data").document(date).setData(updatedData, merge: true) { error in
             completion(error)
         }
     }
     
-
-//    func fetchWaterData(completion: @escaping ([WaterChartModel]) -> Void) {
-//        guard let userId = userId else {
-//            print("No authenticated user available.")
-//            completion([])
-//            return
-//        }
-//        
-//        db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
-//            if let error = error {
-//                print("Error fetching water data: \(error.localizedDescription)")
-//                completion([])
-//                return
-//            }
-//            
-//            guard let documents = snapshot?.documents else {
-//                completion([])
-//                return
-//            }
-//            
-//            var waterData: [WaterChartModel] = []
-//            let formatter = DateFormatter()
-//            formatter.dateFormat = "yyyy_MM_dd"
-//            
-//            for document in documents {
-//                let data = document.data()
-//                // Remove the prefix "daily_log_" from the document id.
-//                let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
-//                if let waterIntake = data["waterIntake"] as? Double,
-//                   let date = formatter.date(from: dateString) {
-//                    let model = WaterChartModel(date: date, consumption: waterIntake)
-//                    //print(model.consumption)
-//                    waterData.append(model)
-//                }
-//            }
-//            
-//            // Sort by date in ascending order.
-//            waterData.sort { $0.date < $1.date }
-//            
-//            // Fill missing dates for the selected period.
-//            // You can adjust the period parameter ("Week", "Month", or "Year") as needed.
-//            // let filledData = self.fillMissingWaterDates(for: waterData, period: period)
-//            completion(waterData)
-//            // print(filledData.count)
-//        }
-//    }
-//    
-    
-    
-    
     
     func fetchWaterData(completion: @escaping ([WaterChartModel]) -> Void) {
-            guard let userId = userId else {
-                print("No authenticated user available.")
-                completion([])
-                return
-            }
-            
-            db.collection("users").document(userId).collection("health_data")
-                .getDocuments { snapshot, error in
-                    if let error = error {
-                        print("Error fetching water data: \(error.localizedDescription)")
-                        completion([])
-                        return
-                    }
-                    
-                    guard let documents = snapshot?.documents else {
-                        completion([])
-                        return
-                    }
-                    
-                    var waterData: [WaterChartModel] = []
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy_MM_dd"
-                    
-                    for document in documents {
-                        let data = document.data()
-                        // Remove the prefix "daily_log_" from the document id.
-                        let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
-                        if let waterIntake = data["waterIntake"] as? Double,
-                           let date = formatter.date(from: dateString) {
-                            let model = WaterChartModel(
-                                id: document.documentID,
-                                date: date,
-                                consumption: waterIntake
-                            )
-                            waterData.append(model)
-                        }
-                    }
-                    
-                    // Sort by date in ascending order.
-                    waterData.sort { $0.date < $1.date }
-                    completion(waterData)
-                }
+        guard let userId = userId else {
+            print("No authenticated user available.")
+            completion([])
+            return
         }
+        
+        db.collection("users").document(userId).collection("health_data")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching water data: \(error.localizedDescription)")
+                    completion([])
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+                
+                var waterData: [WaterChartModel] = []
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy_MM_dd"
+                
+                for document in documents {
+                    let data = document.data()
+                    // Remove the prefix "daily_log_" from the document id.
+                    let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+                    if let waterIntake = data["waterIntake"] as? Double,
+                       let date = formatter.date(from: dateString) {
+                        let model = WaterChartModel(
+                            id: document.documentID,
+                            date: date,
+                            consumption: waterIntake
+                        )
+                        waterData.append(model)
+                    }
+                }
+                
+                // Sort by date in ascending order.
+                waterData.sort { $0.date < $1.date }
+                completion(waterData)
+            }
+    }
+    
+    
+    
+    
     
     
     func fetchStepsData(completion: @escaping ([StepsChartModel]) -> Void) {
@@ -183,42 +137,43 @@ class FirestoreService: ObservableObject {
             return
         }
         
-        db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error fetching steps data: \(error.localizedDescription)")
-                completion([])
-                return
-            }
-            
-            guard let documents = snapshot?.documents else {
-                completion([])
-                return
-            }
-            
-            var stepsData: [StepsChartModel] = []
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy_MM_dd"
-            
-            for document in documents {
-                let data = document.data()
-                // Remove the prefix "daily_log_" from the document id.
-                let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
-                if let steps = data["stepsTaken"] as? Int,
-                   let date = formatter.date(from: dateString) {
-                    let model = StepsChartModel(date: date, steps: steps)
-                    //print(model.steps)
-                    stepsData.append(model)
+        db.collection("users").document(userId).collection("health_data")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching water data: \(error.localizedDescription)")
+                    completion([])
+                    return
                 }
+                
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+                
+                var stepsData: [StepsChartModel] = []
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy_MM_dd"
+                
+                for document in documents {
+                    let data = document.data()
+                    // Remove the prefix "daily_log_" from the document id.
+                    let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+                    if let stepsTaken = data["stepsTaken"] as? Int,
+                       let date = formatter.date(from: dateString) {
+                        let model = StepsChartModel(
+                            id: document.documentID,
+                            date: date,
+                            steps: stepsTaken
+                        )
+                        stepsData.append(model)
+                    }
+                }
+                
+                // Sort by date in ascending order.
+                stepsData.sort { $0.date < $1.date }
+                completion(stepsData)
             }
-            
-            stepsData.sort { $0.date < $1.date }
-            
-            // Fill in missing dates. For example, if you want a weekly chart:
-            let completeData = self.fillMissingStepsDates(for: stepsData, period: "Week")
-            completion(completeData)
-        }
     }
-
     
     
     
@@ -263,49 +218,145 @@ class FirestoreService: ObservableObject {
             completion(sleepData)
         }
     }
-
     
     
-
     
-    
-    private func fillMissingStepsDates(for data: [StepsChartModel], period: String) -> [StepsChartModel] {
-        let calendar = Calendar.current
-        let now = Date()
-        var startDate: Date
-        
-        // Determine the start date based on the selected period.
-        switch period {
-        case "Week":
-            startDate = calendar.date(byAdding: .day, value: -6, to: now)!
-        case "Month":
-            startDate = calendar.date(byAdding: .day, value: -29, to: now)!
-        case "Year":
-            startDate = calendar.date(byAdding: .day, value: -364, to: now)!
-        default:
-            startDate = data.first?.date ?? now
+    func fetchMeditationData(completion: @escaping ([MeditationChartModel]) -> Void) {
+        guard let userId = userId else {
+            print("No authenticated user available.")
+            completion([])
+            return
         }
         
-        var completeData: [StepsChartModel] = []
-        var currentDate = startDate
-        
-        // Loop through each day in the range.
-        while currentDate <= now {
-            if let existing = data.first(where: { calendar.isDate($0.date, inSameDayAs: currentDate) }) {
-                completeData.append(existing)
-            } else {
-                // If no data exists for this day, create a default record.
-                completeData.append(StepsChartModel(date: currentDate, steps: 0))
+        db.collection("users").document(userId).collection("health_data")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching water data: \(error.localizedDescription)")
+                    completion([])
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+                
+                var meditationData: [MeditationChartModel] = []
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy_MM_dd"
+                
+                for document in documents {
+                    let data = document.data()
+                    // Remove the prefix "daily_log_" from the document id.
+                    let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+                    if let duration = data["meditationDuration"] as? Double,
+                       let date = formatter.date(from: dateString) {
+                        let model = MeditationChartModel(
+                            id: document.documentID,
+                            date: date,
+                            duration: duration
+                        )
+                        meditationData.append(model)
+                    }
+                }
+                
+                // Sort by date in ascending order.
+                meditationData.sort { $0.date < $1.date }
+                completion(meditationData)
             }
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+    }
+    
+    
+    
+    
+    func fetchExerciseData(completion: @escaping ([ExerciseChartModel]) -> Void) {
+        guard let userId = userId else {
+            print("No authenticated user available.")
+            completion([])
+            return
         }
         
-        // Ensure the final data is sorted.
-        completeData.sort { $0.date < $1.date }
-        return completeData
+        db.collection("users").document(userId).collection("health_data")
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    print("Error fetching exercise data: \(error.localizedDescription)")
+                    completion([])
+                    return
+                }
+                
+                guard let documents = snapshot?.documents else {
+                    completion([])
+                    return
+                }
+                
+                var exerciseData: [ExerciseChartModel] = []
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy_MM_dd"  // e.g. "2023_05_12"
+                
+                for document in documents {
+                    let data = document.data()
+                    
+                    // Remove "daily_log_" prefix from the document ID to parse the date.
+                    let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+                    
+                    // 1) Parse the date from the document ID
+                    // 2) Check if `exerciseTime` exists and is a [String: Any]
+                    if let date = formatter.date(from: dateString),
+                       let exerciseTime = data["exerciseTime"] as? [String: Any] {
+                        
+                        var breakEntries: [BreakEntry] = []
+                        
+                        // Convert each key-value pair in `exerciseTime` to a BreakEntry
+                        for (key, value) in exerciseTime {
+                            // Convert numeric values to Double
+                            let breakValue: Double
+                            if let intValue = value as? Int {
+                                breakValue = Double(intValue)
+                            } else if let doubleValue = value as? Double {
+                                breakValue = doubleValue
+                            } else {
+                                continue  // Skip if we can't parse the value as numeric
+                            }
+                            
+                            // Optional: transform "long_break" → "Long Break", etc.
+                            let breakType = self.transformBreakKey(key)
+                            
+                            let entry = BreakEntry(breakType: breakType, breakValue: breakValue)
+                            breakEntries.append(entry)
+                        }
+                        
+                        let model = ExerciseChartModel(
+                            id: document.documentID,
+                            date: date,
+                            breakEntries: breakEntries
+                        )
+                        exerciseData.append(model)
+                    }
+                }
+                
+                // Sort by date in ascending order.
+                exerciseData.sort { $0.date < $1.date }
+                completion(exerciseData)
+            }
     }
 
+    // MARK: - Helper
+    /// Transforms keys like "long_break" → "Long Break" for user-friendly display.
+    private func transformBreakKey(_ key: String) -> String {
+        switch key {
+        case "long_break":   return "Long Break"
+        case "medium_break": return "Medium Break"
+        case "quick_break":  return "Quick Break"
+        case "short_break":  return "Short Break"
+        default:             return key // Fallback to the raw key
+        }
+    }
 
+    
+    
+    
+    
+    
     
     private func fillMissingSleepDates(for data: [SleepChartModel], period: String) -> [SleepChartModel] {
         let calendar = Calendar.current
@@ -342,6 +393,6 @@ class FirestoreService: ObservableObject {
         completeData.sort { $0.date < $1.date }
         return completeData
     }
-
-
+    
+    
 }

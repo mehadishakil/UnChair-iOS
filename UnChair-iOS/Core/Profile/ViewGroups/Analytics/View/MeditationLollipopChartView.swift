@@ -1,18 +1,17 @@
 //
-//  StepsBarChartView.swift
+//  MeditationLollipopChartView.swift
 //  UnChair-iOS
 //
-//  Created by Mehadi Hasan on 1/8/24.
+//  Created by Mehadi Hasan on 8/4/25.
 //
 
 import SwiftUI
+import SwiftData
 
-struct StepsLineChartView: View {
-    
-    @Environment(\.modelContext) var modelContext
+struct MeditationLollipopChartView: View {
     @State private var currentTab: String = "Week"
-    @State private var stepsData: [StepsChartModel] = []
-    @State private var currentActiveItem: StepsChartModel?
+    @State private var meditationData: [MeditationChartModel] = []
+    @State private var currentActiveItem: MeditationChartModel?
     @State private var plotWidth: CGFloat = 0
     @StateObject private var firestoreService = FirestoreService()
     
@@ -21,22 +20,22 @@ struct StepsLineChartView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "figure.walk")
+                        Image(systemName: "brain.head.profile")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
-                            .foregroundColor(.blue)
-                        Text("Steps")
+                            .foregroundColor(.pink)
+                        Text("Meditation")
                             .fontWeight(.semibold)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.pink)
                     }
                     
-                    let nonZeroData = stepsData.filter { $0.steps > 0 }
-                    let totalValue = nonZeroData.reduce(0) { $0 + $1.steps }
-                    let average = nonZeroData.isEmpty ? 0 : totalValue / nonZeroData.count
+                    // Calculate average of non-zero values only
+                    let nonZeroData = meditationData.filter { $0.duration > 0 }
+                    let totalValue = nonZeroData.reduce(0.0) { $0 + $1.duration }
+                    let average = nonZeroData.isEmpty ? 0 : totalValue / Double(nonZeroData.count)
                     
-                    
-                    Text("Avg \(average) steps")
+                    Text("Avg \(average, specifier: "%.1f") min")
                         .font(.caption2)
                         .foregroundColor(.gray)
                 }
@@ -53,17 +52,18 @@ struct StepsLineChartView: View {
                     fetchData(for: newValue)
                 }
             }
-            if stepsData.isEmpty {
-                Text("No data available")
+            
+            if meditationData.isEmpty {
+                Text("No meditation data available")
                     .frame(height: 180)
                     .frame(maxWidth: .infinity)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(10)
             } else {
-                StepsLineChart(
+                MeditationLollipopChart(
                     currentActiveItem: $currentActiveItem,
                     plotWidth: $plotWidth,
-                    stepsData: stepsData,
+                    meditationData: meditationData,
                     currentTab: $currentTab
                 )
                 .frame(minHeight: 180)
@@ -77,21 +77,18 @@ struct StepsLineChartView: View {
             fetchData(for: currentTab)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .navigationTitle("Steps Chart")
-        
-        
     }
     
     private func fetchData(for period: String) {
-        firestoreService.fetchStepsData() { fetchedData in
+        firestoreService.fetchMeditationData() { fetchedData in
             DispatchQueue.main.async {
-                let filledData = fillMissingStepsDates(for: fetchedData, period: period)
-                self.stepsData = filledData
+                let filledData = fillMissingMeditationDates(for: fetchedData, period: period)
+                self.meditationData = filledData
             }
         }
     }
     
-    private func fillMissingStepsDates(for data: [StepsChartModel], period: String) -> [StepsChartModel] {
+    private func fillMissingMeditationDates(for data: [MeditationChartModel], period: String) -> [MeditationChartModel] {
         let calendar = Calendar.current
         let now = Date()
         var startDate: Date
@@ -108,7 +105,7 @@ struct StepsLineChartView: View {
             startDate = data.first?.date ?? now
         }
         
-        var completeData: [StepsChartModel] = []
+        var completeData: [MeditationChartModel] = []
         var currentDate = startDate
         
         // Loop through each day in the range.
@@ -117,7 +114,7 @@ struct StepsLineChartView: View {
                 completeData.append(existing)
             } else {
                 // If no data exists for this day, create a default record.
-                completeData.append(StepsChartModel(date: currentDate, steps: 0))
+                completeData.append(MeditationChartModel(id: UUID().uuidString, date: currentDate, duration: 0))
             }
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
         }
@@ -126,9 +123,8 @@ struct StepsLineChartView: View {
         completeData.sort { $0.date < $1.date }
         return completeData
     }
-    
 }
 
 #Preview {
-    StepsLineChartView()
+    MeditationLollipopChartView()
 }

@@ -26,3 +26,11 @@ struct BreakEntry: Codable {
     var breakType: String // e.g., "Quick Break", "Short Break"
     var breakValue: Double
 }
+
+
+struct ExerciseBreakDataPoint: Identifiable, Hashable {
+    var id = UUID()
+    var date: Date
+    var breakType: String
+    var breakValue: Double
+}
