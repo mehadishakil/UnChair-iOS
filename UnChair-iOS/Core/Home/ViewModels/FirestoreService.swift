@@ -80,52 +80,100 @@ class FirestoreService: ObservableObject {
     }
     
 
-    func fetchWaterData(completion: @escaping ([WaterChartModel]) -> Void) {
-        guard let userId = userId else {
-            print("No authenticated user available.")
-            completion([])
-            return
-        }
-        
-        db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
-            if let error = error {
-                print("Error fetching water data: \(error.localizedDescription)")
-                completion([])
-                return
-            }
-            
-            guard let documents = snapshot?.documents else {
-                completion([])
-                return
-            }
-            
-            var waterData: [WaterChartModel] = []
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy_MM_dd"
-            
-            for document in documents {
-                let data = document.data()
-                // Remove the prefix "daily_log_" from the document id.
-                let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
-                if let waterIntake = data["waterIntake"] as? Double,
-                   let date = formatter.date(from: dateString) {
-                    let model = WaterChartModel(date: date, consumption: waterIntake)
-                    //print(model.consumption)
-                    waterData.append(model)
-                }
-            }
-            
-            // Sort by date in ascending order.
-            waterData.sort { $0.date < $1.date }
-            
-            // Fill missing dates for the selected period.
-            // You can adjust the period parameter ("Week", "Month", or "Year") as needed.
-            // let filledData = self.fillMissingWaterDates(for: waterData, period: period)
-            completion(waterData)
-            // print(filledData.count)
-        }
-    }
+//    func fetchWaterData(completion: @escaping ([WaterChartModel]) -> Void) {
+//        guard let userId = userId else {
+//            print("No authenticated user available.")
+//            completion([])
+//            return
+//        }
+//        
+//        db.collection("users").document(userId).collection("health_data").getDocuments { snapshot, error in
+//            if let error = error {
+//                print("Error fetching water data: \(error.localizedDescription)")
+//                completion([])
+//                return
+//            }
+//            
+//            guard let documents = snapshot?.documents else {
+//                completion([])
+//                return
+//            }
+//            
+//            var waterData: [WaterChartModel] = []
+//            let formatter = DateFormatter()
+//            formatter.dateFormat = "yyyy_MM_dd"
+//            
+//            for document in documents {
+//                let data = document.data()
+//                // Remove the prefix "daily_log_" from the document id.
+//                let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+//                if let waterIntake = data["waterIntake"] as? Double,
+//                   let date = formatter.date(from: dateString) {
+//                    let model = WaterChartModel(date: date, consumption: waterIntake)
+//                    //print(model.consumption)
+//                    waterData.append(model)
+//                }
+//            }
+//            
+//            // Sort by date in ascending order.
+//            waterData.sort { $0.date < $1.date }
+//            
+//            // Fill missing dates for the selected period.
+//            // You can adjust the period parameter ("Week", "Month", or "Year") as needed.
+//            // let filledData = self.fillMissingWaterDates(for: waterData, period: period)
+//            completion(waterData)
+//            // print(filledData.count)
+//        }
+//    }
+//    
     
+    
+    
+    
+    func fetchWaterData(completion: @escaping ([WaterChartModel]) -> Void) {
+            guard let userId = userId else {
+                print("No authenticated user available.")
+                completion([])
+                return
+            }
+            
+            db.collection("users").document(userId).collection("health_data")
+                .getDocuments { snapshot, error in
+                    if let error = error {
+                        print("Error fetching water data: \(error.localizedDescription)")
+                        completion([])
+                        return
+                    }
+                    
+                    guard let documents = snapshot?.documents else {
+                        completion([])
+                        return
+                    }
+                    
+                    var waterData: [WaterChartModel] = []
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy_MM_dd"
+                    
+                    for document in documents {
+                        let data = document.data()
+                        // Remove the prefix "daily_log_" from the document id.
+                        let dateString = document.documentID.replacingOccurrences(of: "daily_log_", with: "")
+                        if let waterIntake = data["waterIntake"] as? Double,
+                           let date = formatter.date(from: dateString) {
+                            let model = WaterChartModel(
+                                id: document.documentID,
+                                date: date,
+                                consumption: waterIntake
+                            )
+                            waterData.append(model)
+                        }
+                    }
+                    
+                    // Sort by date in ascending order.
+                    waterData.sort { $0.date < $1.date }
+                    completion(waterData)
+                }
+        }
     
     
     func fetchStepsData(completion: @escaping ([StepsChartModel]) -> Void) {

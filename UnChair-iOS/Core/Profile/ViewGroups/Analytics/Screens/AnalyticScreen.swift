@@ -22,6 +22,12 @@ struct AnalyticScreen: View {
 //                
 //                ExerciseBarChartView()
 //                    .padding()
+                
+//                Sample()
+//                    .padding()
+                
+                LollipopMeditationChart()
+                    .padding()
             }
         }
     }
