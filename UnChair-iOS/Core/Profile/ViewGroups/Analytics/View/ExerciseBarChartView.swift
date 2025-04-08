@@ -50,7 +50,7 @@ struct ExerciseBarChartView: View {
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {
-            //addSamples()
+        
             fetchData(for: currentTab)
             
             print("Fetched Exercise Data: \(String(describing: exerciseData))")
@@ -59,57 +59,7 @@ struct ExerciseBarChartView: View {
         .navigationTitle("Exercise Chart")
     }
     
-    
-//    private func addSamples() {
-//        var sampleData: [ExerciseChartModel] = []
-//        
-//        // Loop over the past 365 days
-//        for dayOffset in 0..<365 {
-//            // Generate random values for each break type
-//            let randomQuickBreak = Double.random(in: 3000...4000)
-//            let randomShortBreak = Double.random(in: 2000...3000)
-//            let randomMediumBreak = Double.random(in: 1000...2000)
-//            let randomLongBreak = Double.random(in: 500...1000)
-//            
-//            // Create an array of BreakEntry instances
-//            let breakEntries = [
-//                BreakEntry(breakType: "Quick Break", breakValue: randomQuickBreak),
-//                BreakEntry(breakType: "Short Break", breakValue: randomShortBreak),
-//                BreakEntry(breakType: "Medium Break", breakValue: randomMediumBreak),
-//                BreakEntry(breakType: "Long Break", breakValue: randomLongBreak)
-//            ]
-//            
-//            // Calculate the date by subtracting the offset from the current date
-//            let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
-//            
-//            // Create a new ExerciseChartModel object
-//            let sample = ExerciseChartModel(id: UUID().uuidString,
-//                                            date: date,
-//                                            breakEntries: breakEntries,
-//                                            lastUpdated: Date(),
-//                                            isSynced: false)
-//            
-//            // Append the sample to the array
-//            sampleData.append(sample)
-//        }
-//        
-//        // Sort the sampleData by date in ascending order (oldest to newest)
-//        sampleData.sort { $0.date < $1.date }
-//        
-//        // Insert sorted samples into the model context
-//        for sample in sampleData {
-//            modelContext.insert(sample)
-//        }
-//        
-//        do {
-//            // Save the context after inserting all the samples
-//            try modelContext.save()
-//            print("Samples for the last 365 days added and sorted by date successfully.")
-//        } catch {
-//            print("Error saving samples: \(error)")
-//        }
-//    }
-    
+     
     private func fetchData(for period: String) {
         let dataFetcher = DataFetcher(modelContext: modelContext)
 //        switch period {

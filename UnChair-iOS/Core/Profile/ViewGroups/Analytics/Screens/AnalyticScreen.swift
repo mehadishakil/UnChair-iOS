@@ -20,8 +20,8 @@ struct AnalyticScreen: View {
                 SleepCapsuleChartView()
                     .padding()
 //                
-//                ExerciseBarChartView()
-//                    .padding()
+                ExerciseMultiLineChartView()
+                    .padding()
                 
 //                Sample()
 //                    .padding()

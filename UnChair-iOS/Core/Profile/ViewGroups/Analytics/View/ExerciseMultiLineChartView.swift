@@ -125,8 +125,29 @@
 //}
 
 
-import SwiftUI
-import SwiftData
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //struct ExerciseMultiLineChartView: View {
 //    
@@ -252,6 +273,8 @@ import SwiftData
 
 
 
+import SwiftUI
+import SwiftData
 
 struct ExerciseMultiLineChartView: View {
     @Environment(\.modelContext) var modelContext
@@ -322,6 +345,7 @@ struct ExerciseMultiLineChartView: View {
             DispatchQueue.main.async {
                 let filledData = fillMissingExerciseDates(for: fetchedData, period: period)
                 self.exerciseData = filledData
+                print("data size is \(exerciseData.count)")
             }
         }
     }
@@ -330,6 +354,9 @@ struct ExerciseMultiLineChartView: View {
         let calendar = Calendar.current
         let now = Date()
         var startDate: Date
+        
+        // Get all unique break types from the existing data
+        let allBreakTypes = getAllBreakTypes(from: data)
         
         // Determine the start date based on the selected period.
         switch period {
@@ -349,21 +376,60 @@ struct ExerciseMultiLineChartView: View {
         // Loop through each day in the range.
         while currentDate <= now {
             if let existing = data.first(where: { calendar.isDate($0.date, inSameDayAs: currentDate) }) {
-                completeData.append(existing)
+                // Make sure all break types are represented
+                let existingBreakTypes = Set(existing.breakEntries.map { $0.breakType })
+                var updatedBreakEntries = existing.breakEntries
+                
+                // Add missing break types with value 0
+                for breakType in allBreakTypes {
+                    if !existingBreakTypes.contains(breakType) {
+                        updatedBreakEntries.append(BreakEntry(breakType: breakType, breakValue: 0))
+                    }
+                }
+                
+                let updatedModel = ExerciseChartModel(
+                    id: existing.id,
+                    date: existing.date,
+                    breakEntries: updatedBreakEntries
+                )
+                completeData.append(updatedModel)
             } else {
-                // Create a default record with no break entries.
-                completeData.append(ExerciseChartModel(date: currentDate, breakEntries: []))
+                // Create a default record with all break types at value 0
+                let defaultBreakEntries = allBreakTypes.map { BreakEntry(breakType: $0, breakValue: 0) }
+                completeData.append(ExerciseChartModel(
+                    id: "default-\(currentDate.timeIntervalSince1970)",
+                    date: currentDate,
+                    breakEntries: defaultBreakEntries
+                ))
             }
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
         }
         
-        // Ensure the final data is sorted.
+        // Ensure the final data is sorted
         completeData.sort { $0.date < $1.date }
         return completeData
     }
+    
+    // Helper method to get all unique break types from data
+    private func getAllBreakTypes(from data: [ExerciseChartModel]) -> [String] {
+        // Extract all unique break types
+        var breakTypes = Set<String>()
+        for model in data {
+            for entry in model.breakEntries {
+                breakTypes.insert(entry.breakType)
+            }
+        }
+        
+        // If no data exists yet, add default break types
+        if breakTypes.isEmpty {
+            breakTypes = ["Long Break", "Medium Break", "Quick Break", "Short Break"]
+        }
+        
+        return Array(breakTypes).sorted()
+    }
 }
-
 
 #Preview {
     WaterBarChartView()
 }
+

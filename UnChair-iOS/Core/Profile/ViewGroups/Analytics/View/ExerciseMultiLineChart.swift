@@ -7,171 +7,9 @@
 import SwiftUI
 import Charts
 
-//struct ExerciseMultiLineChart : View {
-//    @State private var rawSelectedDate: Date?
-//    @Binding var currentActiveItem: ExerciseChartModel?
-//    @Binding var plotWidth: CGFloat
-//    var exerciseData: [ExerciseChartModel]
-//    @Binding var currentTab: String
-//    @Environment(\.colorScheme) var colorScheme
-//    @State private var monthlyAggregatedExerciseData: [ExerciseChartModel] = []
-//
-//    
-//    var selectedViewItem: ExerciseChartModel? {
-//        guard let rawSelectedDate else { return nil }
-//        
-//        // Different granularity based on the tab
-//        let granularity: Calendar.Component = currentTab == "Year" ? .month : .day
-//        
-//        return exerciseChartData.first {
-//            Calendar.current.isDate(rawSelectedDate, equalTo: $0.date, toGranularity: granularity)
-//        }
-//    }
-//    
-//    private var exerciseChartData: [ExerciseChartModel] {
-//        switch currentTab {
-//        case "Week":
-//            return exerciseData.suffix(7)
-//        case "Month":
-//            return exerciseData.suffix(30)
-//        case "Year":
-//            return monthlyAggregatedExerciseData
-//        default:
-//            return exerciseData
-//        }
-//    }
-//    
-//    var body: some View {
-//        VStack {
-//            Chart {
-//                if let selectedItem = selectedViewItem {
-//                    let component: Calendar.Component = currentTab == "Year" ? .month : .day
-//                    RuleMark(x: .value("Selected", selectedItem.date, unit: component))
-//                        .foregroundStyle(.secondary.opacity(0.3))
-//                        .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-//                            VStack{
-//                                if currentTab == "Year" {
-//                                    Text(selectedItem.date, format: .dateTime.month(.wide))
-//                                        .bold()
-//                                } else {
-//                                    Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-//                                        .bold()
-//                                }
-//                                
-//                                Text("\(selectedItem.consumption, specifier: "%.1f")")
-//                                    .font(.title3.bold())
-//                            }
-//                            .foregroundStyle(.white)
-//                            .padding(12)
-//                            .frame(width: 120)
-//                            .background(RoundedRectangle(cornerRadius: 10).fill(.pink.gradient))
-//                        }
-//                }
-//                
-//                RuleMark(y: .value("Goal", 3000))
-//                    .foregroundStyle(Color.mint)
-//                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
-//                    .annotation(alignment: .leading){
-//                        Text("Goal")
-//                            .font(.caption)
-//                            .foregroundColor(.secondary)
-//                    }
-//                
-//                ForEach(exerciseChartData) { data in
-//                    data.forEach { exercise in
-//                        LineMark(
-//                            x: .value("Date", data.date, unit: currentTab == "Year" ? .month : .day),
-//                            y: .value("Value", exercise.breakValue)
-//                        )
-//                    }
-//                    .cornerRadius(4)
-//                    .foregroundStyle(Color.pink.gradient)
-//                    .opacity(rawSelectedDate == nil || Calendar.current.isDate(water.date,
-//                             equalTo: selectedViewItem?.date ?? Date(),
-//                             toGranularity: currentTab == "Year" ? .month : .day) ? 1.0 : 0.3)
-//                }
-//            }
-//            .frame(height: 180)
-//            .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
-//            .onChange(of: waterData) { oldData, newData in
-//                if currentTab == "Year" {
-//                    monthlyAggregatedWaterData = aggregateByMonth(newData).suffix(12)
-//                }
-//            }
-//            .chartXAxis {
-//                if currentTab == "Year" {
-//                    AxisMarks(values: .stride(by: .month)) { value in
-//                        if let date = value.as(Date.self) {
-//                            AxisValueLabel {
-//                                Text(date, format: .dateTime.month(.narrow))
-//                            }
-//                            AxisTick()
-//                            AxisGridLine()
-//                        }
-//                    }
-//                } else if currentTab == "Week" {
-//                    AxisMarks(values: .stride(by: .day)) { value in
-//                        if let date = value.as(Date.self) {
-//                            AxisValueLabel {
-//                                Text(date, format: .dateTime.weekday(.abbreviated))
-//                            }
-//                            AxisTick()
-//                            AxisGridLine()
-//                        }
-//                    }
-//                } else if currentTab == "Month" {
-//                    AxisMarks(values: .stride(by: .day, count: 5)) { value in
-//                        if let date = value.as(Date.self) {
-//                            AxisValueLabel {
-//                                Text(date, format: .dateTime.day())
-//                            }
-//                            AxisTick()
-//                            AxisGridLine()
-//                        }
-//                    }
-//                }
-//            }
-//            .chartYAxis{
-//                AxisMarks { value in
-//                    AxisValueLabel()
-//                    AxisGridLine()
-//                }
-//            }
-//        }
-//        .padding()
-//    }
-//    
-//    private func aggregateByMonth(_ data: [WaterChartModel]) -> [WaterChartModel] {
-//        let calendar = Calendar.current
-//        
-//        let groupedData = Dictionary(grouping: data) { item in
-//            let components = calendar.dateComponents([.year, .month], from: item.date)
-//            return components
-//        }
-//        
-//        return groupedData.map { (components, items) in
-//            let firstDayComponents = DateComponents(year: components.year, month: components.month, day: 1)
-//            let firstDay = calendar.date(from: firstDayComponents) ?? Date()
-//            
-//            let nonZeroItems = items.filter { $0.consumption > 0 }
-//            let totalConsumption = nonZeroItems.reduce(0) { $0 + $1.consumption }
-//            let averageConsumption = nonZeroItems.isEmpty ? 0 : totalConsumption / Double(nonZeroItems.count)
-//            
-//            return WaterChartModel(
-//                id: "month-\(components.year ?? 0)-\(components.month ?? 0)",
-//                date: firstDay,
-//                consumption: averageConsumption
-//            )
-//        }
-//        .sorted { $0.date < $1.date }
-//    }
-//}
-
-
-
-
 struct ExerciseMultiLineChart: View {
     @State private var rawSelectedDate: Date?
+    @State private var tappedBreakType: String?
     @Binding var currentActiveItem: ExerciseChartModel?
     @Binding var plotWidth: CGFloat
     var exerciseData: [ExerciseChartModel]
@@ -179,11 +17,10 @@ struct ExerciseMultiLineChart: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var monthlyAggregatedExerciseData: [ExerciseChartModel] = []
     
-    /// For the annotation, pick a selected exercise chart model based on the rawSelectedDate.
     var selectedViewItem: ExerciseChartModel? {
         guard let rawSelectedDate else { return nil }
         
-        // Use .month granularity for Year, otherwise .day.
+        // Different granularity based on the tab
         let granularity: Calendar.Component = currentTab == "Year" ? .month : .day
         
         return exerciseChartData.first {
@@ -191,7 +28,6 @@ struct ExerciseMultiLineChart: View {
         }
     }
     
-    /// Data used for the chart – either the full exerciseData or aggregated monthly.
     private var exerciseChartData: [ExerciseChartModel] {
         switch currentTab {
         case "Week":
@@ -205,27 +41,89 @@ struct ExerciseMultiLineChart: View {
         }
     }
     
-    /// Flatten the exercise data so that each break entry becomes its own data point.
-    private var flattenedExerciseData: [ExerciseBreakDataPoint] {
-        exerciseChartData.flatMap { model in
-            model.breakEntries.map { entry in
-                ExerciseBreakDataPoint(date: model.date,
-                                       breakType: entry.breakType,
-                                       breakValue: entry.breakValue)
+    // Get all unique break types regardless of data
+    private var allBreakTypes: [String] {
+        var types = Set<String>()
+        for model in exerciseData {
+            for entry in model.breakEntries {
+                types.insert(entry.breakType)
             }
+        }
+        
+        // Add default break types if none exist
+        if types.isEmpty {
+            types = ["Long Break", "Medium Break", "Quick Break", "Short Break"]
+        }
+        
+        return Array(types).sorted()
+    }
+    
+    // Create organized data points by break type
+    private var organizedDataPoints: [String: [ExerciseBreakDataPoint]] {
+        var organized: [String: [ExerciseBreakDataPoint]] = [:]
+        
+        // Initialize with empty arrays for all break types
+        for breakType in allBreakTypes {
+            organized[breakType] = []
+        }
+        
+        // Add all data points
+        for model in exerciseChartData {
+            // Organize by break type
+            let date = model.date
+            let existingBreakTypes = model.breakEntries.map { $0.breakType }
+            
+            // Add data for existing break entries
+            for entry in model.breakEntries {
+                let point = ExerciseBreakDataPoint(
+                    date: date,
+                    breakType: entry.breakType,
+                    breakValue: entry.breakValue
+                )
+                organized[entry.breakType, default: []].append(point)
+            }
+            
+            // Ensure all break types have a data point for this date
+            for breakType in allBreakTypes {
+                if !existingBreakTypes.contains(breakType) {
+                    let point = ExerciseBreakDataPoint(
+                        date: date,
+                        breakType: breakType,
+                        breakValue: 0
+                    )
+                    organized[breakType, default: []].append(point)
+                }
+            }
+        }
+        
+        // Sort data points by date for each break type
+        for breakType in organized.keys {
+            organized[breakType] = organized[breakType]?.sorted(by: { $0.date < $1.date }) ?? []
+        }
+        
+        return organized
+    }
+    
+    // Define colors for each break type
+    private func colorForBreakType(_ type: String) -> Color {
+        switch type {
+        case "Long Break": return .blue
+        case "Medium Break": return .green
+        case "Quick Break": return .orange
+        case "Short Break": return .purple
+        default: return .pink
         }
     }
     
     var body: some View {
         VStack {
             Chart {
-                // Annotation for the selected date.
                 if let selectedItem = selectedViewItem {
-                    let unit: Calendar.Component = currentTab == "Year" ? .month : .day
-                    RuleMark(x: .value("Selected", selectedItem.date, unit: unit))
+                    let component: Calendar.Component = currentTab == "Year" ? .month : .day
+                    RuleMark(x: .value("Selected", selectedItem.date, unit: component))
                         .foregroundStyle(.secondary.opacity(0.3))
                         .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                            VStack {
+                            VStack(alignment: .leading) {
                                 if currentTab == "Year" {
                                     Text(selectedItem.date, format: .dateTime.month(.wide))
                                         .bold()
@@ -233,50 +131,78 @@ struct ExerciseMultiLineChart: View {
                                     Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
                                         .bold()
                                 }
-                                // Display the total break time for that day or month.
-                                Text("\(selectedItem.totalBreakTime, specifier: "%.1f")")
-                                    .font(.title3.bold())
+                                
+                                ForEach(selectedItem.breakEntries.sorted(by: { $0.breakType < $1.breakType }), id: \.breakType) { entry in
+                                    HStack {
+                                        Circle()
+                                            .fill(colorForBreakType(entry.breakType))
+                                            .frame(width: 8, height: 8)
+                                        
+                                        Text("\(entry.breakType): \(entry.breakValue, specifier: "%.1f") min")
+                                            .font(.caption)
+                                    }
+                                }
                             }
                             .foregroundStyle(.white)
                             .padding(12)
-                            .frame(width: 120)
+                            .frame(width: 180)
                             .background(RoundedRectangle(cornerRadius: 10).fill(.pink.gradient))
                         }
                 }
                 
-                // Optional goal line.
-                RuleMark(y: .value("Goal", 3000))
-                    .foregroundStyle(Color.mint)
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
-                    .annotation(alignment: .leading) {
-                        Text("Goal")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+//                RuleMark(y: .value("Goal", 30))
+//                    .foregroundStyle(Color.mint)
+//                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+//                    .annotation(alignment: .leading) {
+//                        Text("Goal")
+//                            .font(.caption)
+//                            .foregroundColor(.secondary)
+//                    }
                 
-                // Plot the data – one line per break type.
-                ForEach(Set(flattenedExerciseData.map { $0.breakType }), id: \.self) { breakType in
-                    // Filter data points for this break type.
-                    let series = flattenedExerciseData.filter { $0.breakType == breakType }
+                // Chart lines grouped by break type
+                ForEach(allBreakTypes, id: \.self) { breakType in
+                    let dataPoints = organizedDataPoints[breakType] ?? []
                     
-                    // Plot a line connecting all data points for this break type.
-                    ForEach(series) { dataPoint in
+                    ForEach(dataPoints) { point in
                         LineMark(
-                            x: .value("Date", dataPoint.date, unit: currentTab == "Year" ? .month : .day),
-                            y: .value("Value", dataPoint.breakValue)
+                            x: .value("Date", point.date, unit: currentTab == "Year" ? .month : .day),
+                            y: .value("Value", point.breakValue)
                         )
-                        .foregroundStyle(by: .value("Break Type", dataPoint.breakType))
-                        .lineStyle(StrokeStyle(lineWidth: 2))
+                        .foregroundStyle(colorForBreakType(breakType))
+                        .lineStyle(StrokeStyle(lineWidth: breakType == tappedBreakType ? 4 : 2))
+                        .interpolationMethod(.catmullRom)
+                        .symbol {
+                            Circle()
+                                .fill(colorForBreakType(breakType))
+                                .frame(width: breakType == tappedBreakType ? 10 : 6)
+                        }
+                        .symbolSize(breakType == tappedBreakType ? 100 : 50)
+                        .opacity(tappedBreakType == nil || breakType == tappedBreakType ? 1.0 : 0.3)
                     }
-                    
-                    // Also plot a dot at each data point.
-                    ForEach(series) { dataPoint in
-                        PointMark(
-                            x: .value("Date", dataPoint.date, unit: currentTab == "Year" ? .month : .day),
-                            y: .value("Value", dataPoint.breakValue)
-                        )
-                        .foregroundStyle(by: .value("Break Type", dataPoint.breakType))
-                        .symbol(Circle())
+                    .foregroundStyle(by: .value("Break Type", breakType))
+                }
+            }
+            .chartForegroundStyleScale(domain: allBreakTypes, range: allBreakTypes.map { colorForBreakType($0) })
+            .chartLegend(position: .bottom, alignment: .center, spacing: 20) {
+                HStack(spacing: 10) {
+                    ForEach(allBreakTypes, id: \.self) { type in
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(colorForBreakType(type))
+                                .frame(width: 8, height: 8)
+                            
+                            Text(type)
+                                .font(.caption)
+                                .onTapGesture {
+                                    withAnimation {
+                                        if tappedBreakType == type {
+                                            tappedBreakType = nil
+                                        } else {
+                                            tappedBreakType = type
+                                        }
+                                    }
+                                }
+                        }
                     }
                 }
             }
@@ -285,6 +211,11 @@ struct ExerciseMultiLineChart: View {
             .onChange(of: exerciseData) { oldData, newData in
                 if currentTab == "Year" {
                     monthlyAggregatedExerciseData = aggregateByMonth(newData).suffix(12)
+                }
+            }
+            .onChange(of: currentTab) { oldValue, newValue in
+                if newValue == "Year" {
+                    monthlyAggregatedExerciseData = aggregateByMonth(exerciseData).suffix(12)
                 }
             }
             .chartXAxis {
@@ -321,43 +252,89 @@ struct ExerciseMultiLineChart: View {
                 }
             }
             .chartYAxis {
-                AxisMarks { _ in
-                    AxisGridLine()
+                AxisMarks { value in
                     AxisValueLabel()
+                    AxisGridLine()
                 }
             }
         }
         .padding()
+        .onAppear {
+            if currentTab == "Year" {
+                monthlyAggregatedExerciseData = aggregateByMonth(exerciseData).suffix(12)
+            }
+        }
     }
     
-    // MARK: - Aggregation Helper
-    
-    /// Aggregate the exercise data by month.
-    /// For each month, for each break type, we average non-zero values.
     private func aggregateByMonth(_ data: [ExerciseChartModel]) -> [ExerciseChartModel] {
         let calendar = Calendar.current
-        let groupedData = Dictionary(grouping: data) { model in
-            calendar.dateComponents([.year, .month], from: model.date)
+        
+        let groupedData = Dictionary(grouping: data) { item in
+            let components = calendar.dateComponents([.year, .month], from: item.date)
+            return components
         }
         
-        return groupedData.map { (components, models) in
+        return groupedData.map { (components, items) in
             let firstDayComponents = DateComponents(year: components.year, month: components.month, day: 1)
             let firstDay = calendar.date(from: firstDayComponents) ?? Date()
             
-            // Aggregate break entries for each break type.
-            var aggregatedEntries: [BreakEntry] = []
-            let breakTypes = Set(models.flatMap { $0.breakEntries.map { $0.breakType } })
-            for type in breakTypes {
-                let values = models.compactMap { model in
-                    model.breakEntries.first(where: { $0.breakType == type })?.breakValue
+            // Create a dictionary to hold aggregated values for each break type
+            var aggregatedBreaks: [String: Double] = [:]
+            var breakTypeCounts: [String: Int] = [:]
+            
+            // Get all unique break types from this month's data
+            var allMonthBreakTypes = Set<String>()
+            
+            // Collect all break entries
+            for item in items {
+                for entry in item.breakEntries {
+                    allMonthBreakTypes.insert(entry.breakType)
+                    
+                    if aggregatedBreaks[entry.breakType] == nil {
+                        aggregatedBreaks[entry.breakType] = 0
+                        breakTypeCounts[entry.breakType] = 0
+                    }
+                    
+                    aggregatedBreaks[entry.breakType]! += entry.breakValue
+                    breakTypeCounts[entry.breakType]! += 1
                 }
-                let nonZeroValues = values.filter { $0 > 0 }
-                let average = nonZeroValues.isEmpty ? 0 : nonZeroValues.reduce(0, +) / Double(nonZeroValues.count)
-                aggregatedEntries.append(BreakEntry(breakType: type, breakValue: average))
             }
             
-            return ExerciseChartModel(date: firstDay, breakEntries: aggregatedEntries)
+            // Calculate averages
+            var aggregatedEntries: [BreakEntry] = []
+            for (breakType, totalValue) in aggregatedBreaks {
+                let count = breakTypeCounts[breakType] ?? 1
+                let averageValue = totalValue / Double(count)
+                aggregatedEntries.append(BreakEntry(breakType: breakType, breakValue: averageValue))
+            }
+            
+            // Add any missing break types from the full dataset with 0 values
+            for breakType in allBreakTypes {
+                if !allMonthBreakTypes.contains(breakType) {
+                    aggregatedEntries.append(BreakEntry(breakType: breakType, breakValue: 0))
+                }
+            }
+            
+            return ExerciseChartModel(
+                id: "month-\(components.year ?? 0)-\(components.month ?? 0)",
+                date: firstDay,
+                breakEntries: aggregatedEntries
+            )
         }
         .sorted { $0.date < $1.date }
+    }
+}
+
+// Make BreakEntry conform to Identifiable, Hashable for use in ForEach
+extension BreakEntry: Identifiable, Hashable {
+    var id: String { breakType }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(breakType)
+        hasher.combine(breakValue)
+    }
+    
+    static func == (lhs: BreakEntry, rhs: BreakEntry) -> Bool {
+        return lhs.breakType == rhs.breakType && lhs.breakValue == rhs.breakValue
     }
 }
