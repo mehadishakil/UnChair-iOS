@@ -127,9 +127,6 @@ class FirestoreService: ObservableObject {
     
     
     
-    
-    
-    
     func fetchStepsData(completion: @escaping ([StepsChartModel]) -> Void) {
         guard let userId = userId else {
             print("No authenticated user available.")

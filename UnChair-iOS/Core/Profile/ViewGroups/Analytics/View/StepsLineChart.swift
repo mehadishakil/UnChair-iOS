@@ -255,8 +255,8 @@ struct StepsLineChart: View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.month(.narrow))
                             }
-                            AxisTick()
-                            AxisGridLine()
+//                            AxisTick()
+//                            AxisGridLine()
                         }
                     }
                 } else if currentTab == "Week" {
@@ -265,8 +265,8 @@ struct StepsLineChart: View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.weekday(.abbreviated))
                             }
-                            AxisTick()
-                            AxisGridLine()
+//                            AxisTick()
+//                            AxisGridLine()
                         }
                     }
                 } else if currentTab == "Month" {
@@ -275,8 +275,8 @@ struct StepsLineChart: View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.day())
                             }
-                            AxisTick()
-                            AxisGridLine()
+//                            AxisTick()
+//                            AxisGridLine()
                         }
                     }
                 }

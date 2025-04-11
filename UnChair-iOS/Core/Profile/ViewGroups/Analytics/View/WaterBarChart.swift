@@ -208,8 +208,8 @@ struct WaterBarChart : View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.month(.narrow))
                             }
-                            AxisTick()
-                            AxisGridLine()
+//                            AxisTick()
+//                            AxisGridLine()
                         }
                     }
                 } else if currentTab == "Week" {
@@ -218,8 +218,8 @@ struct WaterBarChart : View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.weekday(.abbreviated))
                             }
-                            AxisTick()
-                            AxisGridLine()
+//                            AxisTick()
+//                            AxisGridLine()
                         }
                     }
                 } else if currentTab == "Month" {
@@ -228,8 +228,8 @@ struct WaterBarChart : View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.day())
                             }
-                            AxisTick()
-                            AxisGridLine()
+//                            AxisTick()
+//                            AxisGridLine()
                         }
                     }
                 }
@@ -269,17 +269,3 @@ struct WaterBarChart : View {
         .sorted { $0.date < $1.date }
     }
 }
-
-
-//struct ViewMonth: Identifiable {
-//    let id = UUID()
-//    let date: Date
-//    let viewCount: Int
-//}
-
-//extension Date {
-//    static func from(year: Int, month: Int, day: Int) -> Date {
-//        let components = DateComponents(year: year, month: month, day: day)
-//        return Calendar.current.date(from: components)!
-//    }
-//}

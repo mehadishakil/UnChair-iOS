@@ -392,6 +392,8 @@ import SwiftUI
 
 struct SleepCapsuleChart: View {
     @State private var currentActiveItem: SleepChartModel?
+    @State private var dragLocation: CGPoint = .zero
+    @State private var isDragging: Bool = false
     var sleepData: [SleepChartModel]
     @Binding var currentTab: String
     @Environment(\.colorScheme) var colorScheme
@@ -432,25 +434,58 @@ struct SleepCapsuleChart: View {
                         // Use fixed width based on the tab
                         .frame(width: getItemWidth(geo: geo))
                         .frame(height: geo.size.height)
-                        .onTapGesture {
+                        .contentShape(Rectangle()) // Ensure the whole area is tappable
+                    }
+                }
+                .padding(.horizontal, 10)
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            isDragging = true
+                            dragLocation = value.location
+                            updateActiveItemBasedOnDrag(geo: geo)
+                            
+                            // Cancel any pending dismissal when dragging starts or continues
                             dismissTask?.cancel()
-                            currentActiveItem = data
+                        }
+                        .onEnded { _ in
+                            isDragging = false
+                            
+                            // Set up automatic dismissal after dragging ends
+                            dismissTask?.cancel()
                             let task = DispatchWorkItem {
                                 DispatchQueue.main.async {
-                                    if currentActiveItem?.id == data.id {
+                                    if !isDragging {
                                         currentActiveItem = nil
                                     }
                                 }
                             }
                             dismissTask = task
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: task)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2, execute: task)
                         }
-                    }
-                }
-                .padding(.horizontal, 10)
+                )
             }
         }
         .frame(height: 180)
+    }
+    
+    // Update the active item based on drag position
+    private func updateActiveItemBasedOnDrag(geo: GeometryProxy) {
+        let availableWidth = geo.size.width - 20 // Account for horizontal padding
+        let spacing = getSpacing()
+        let itemWidth = getItemWidth(geo: geo)
+        let totalItemWidth = itemWidth + spacing
+        
+        // Calculate the relative position within the chart area
+        let relativeX = max(0, min(dragLocation.x - 10, availableWidth))
+        
+        // Calculate which item index this corresponds to
+        let itemIndex = Int(relativeX / totalItemWidth)
+        
+        // Ensure the index is within bounds
+        if itemIndex >= 0 && itemIndex < displayData.count {
+            currentActiveItem = displayData[itemIndex]
+        }
     }
     
     // Get spacing between capsules based on current tab
@@ -571,14 +606,17 @@ struct CapsuleItem: View {
                         .lineLimit(1)
                         .fixedSize(horizontal: true, vertical: false)
                         .multilineTextAlignment(.center)
+                        .transition(.opacity.combined(with: .scale))
                     
                     Rectangle()
                         .fill(Color.gray)
                         .frame(width: 1, height: 15)
                         .opacity(0.6)
+                        .transition(.opacity)
                 }
                 Spacer()
             }
+            .animation(.easeInOut(duration: 0.2), value: isActive)
             
             VStack {
                 Spacer()
@@ -593,6 +631,7 @@ struct CapsuleItem: View {
                             .fill(Color.white)
                             .frame(width: min(capsuleWidth - 2, 8), height: min(capsuleWidth - 2, 8))
                             .padding(.top, 3)
+                            .transition(.scale)
                     }
                 }
                 Spacer()

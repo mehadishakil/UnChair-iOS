@@ -28,9 +28,9 @@ struct BreakEntry: Codable {
 }
 
 
-struct ExerciseBreakDataPoint: Identifiable, Hashable {
-    var id = UUID()
-    var date: Date
-    var breakType: String
-    var breakValue: Double
-}
+//struct ExerciseBreakDataPoint: Identifiable, Hashable {
+//    var id = UUID()
+//    var date: Date
+//    var breakType: String
+//    var breakValue: Double
+//}

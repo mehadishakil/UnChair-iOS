@@ -150,15 +150,6 @@ struct ExerciseMultiLineChart: View {
                         }
                 }
                 
-//                RuleMark(y: .value("Goal", 30))
-//                    .foregroundStyle(Color.mint)
-//                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
-//                    .annotation(alignment: .leading) {
-//                        Text("Goal")
-//                            .font(.caption)
-//                            .foregroundColor(.secondary)
-//                    }
-                
                 // Chart lines grouped by break type
                 ForEach(allBreakTypes, id: \.self) { breakType in
                     let dataPoints = organizedDataPoints[breakType] ?? []
@@ -183,37 +174,16 @@ struct ExerciseMultiLineChart: View {
                 }
             }
             .chartForegroundStyleScale(domain: allBreakTypes, range: allBreakTypes.map { colorForBreakType($0) })
-            .chartLegend(position: .bottom, alignment: .center, spacing: 20) {
-                HStack(spacing: 10) {
-                    ForEach(allBreakTypes, id: \.self) { type in
-                        HStack(spacing: 4) {
-                            Circle()
-                                .fill(colorForBreakType(type))
-                                .frame(width: 8, height: 8)
-                            
-                            Text(type)
-                                .font(.caption)
-                                .onTapGesture {
-                                    withAnimation {
-                                        if tappedBreakType == type {
-                                            tappedBreakType = nil
-                                        } else {
-                                            tappedBreakType = type
-                                        }
-                                    }
-                                }
-                        }
-                    }
-                }
-            }
+            // Remove the default legend and use our custom legend below
+            .chartLegend(.hidden)
             .frame(height: 180)
             .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
-            .onChange(of: exerciseData) { oldData, newData in
+            .onChange(of: exerciseData) { _, newData in
                 if currentTab == "Year" {
                     monthlyAggregatedExerciseData = aggregateByMonth(newData).suffix(12)
                 }
             }
-            .onChange(of: currentTab) { oldValue, newValue in
+            .onChange(of: currentTab) { _, newValue in
                 if newValue == "Year" {
                     monthlyAggregatedExerciseData = aggregateByMonth(exerciseData).suffix(12)
                 }
@@ -225,8 +195,6 @@ struct ExerciseMultiLineChart: View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.month(.narrow))
                             }
-                            AxisTick()
-                            AxisGridLine()
                         }
                     }
                 } else if currentTab == "Week" {
@@ -235,8 +203,6 @@ struct ExerciseMultiLineChart: View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.weekday(.abbreviated))
                             }
-                            AxisTick()
-                            AxisGridLine()
                         }
                     }
                 } else if currentTab == "Month" {
@@ -245,8 +211,6 @@ struct ExerciseMultiLineChart: View {
                             AxisValueLabel {
                                 Text(date, format: .dateTime.day())
                             }
-                            AxisTick()
-                            AxisGridLine()
                         }
                     }
                 }
@@ -257,11 +221,62 @@ struct ExerciseMultiLineChart: View {
                     AxisGridLine()
                 }
             }
+            
+            // Custom legend implementation
+            VStack() {
+                HStack {
+                    HStack() {
+                        legendItem(for: allBreakTypes.first ?? "Long Break")
+                        if allBreakTypes.count > 3 {
+                            Spacer()
+                            legendItem(for: allBreakTypes[1])
+                            Spacer()
+                            legendItem(for: allBreakTypes[2])
+                            Spacer()
+                            legendItem(for: allBreakTypes[3])
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    Spacer()
+                }
+                
+            }
+            .padding(.top, 4)
         }
-        .padding()
+        .padding(.horizontal) // Remove .padding() to prevent unnecessary spacing
         .onAppear {
-            if currentTab == "Year" {
+            // Ensure the data is loaded when component appears
+            if currentTab == "Year" && monthlyAggregatedExerciseData.isEmpty {
                 monthlyAggregatedExerciseData = aggregateByMonth(exerciseData).suffix(12)
+            }
+        }
+    }
+    
+    // Custom legend item for better control
+    private func legendItem(for breakType: String) -> some View {
+        HStack(spacing: 4) {
+            Circle()
+                .fill(colorForBreakType(breakType))
+                .frame(width: 8, height: 8)
+            
+            Text(breakType)
+                .font(.caption)
+                .lineLimit(2)
+        }
+        .padding(.vertical, 2)
+        .padding(.horizontal, 6)
+        .background(
+            RoundedRectangle(cornerRadius: 4)
+                .fill(tappedBreakType == breakType ?
+                      Color.gray.opacity(0.2) : Color.clear)
+        )
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                if tappedBreakType == breakType {
+                    tappedBreakType = nil
+                } else {
+                    tappedBreakType = breakType
+                }
             }
         }
     }
@@ -323,6 +338,14 @@ struct ExerciseMultiLineChart: View {
         }
         .sorted { $0.date < $1.date }
     }
+}
+
+// Helper struct to identify data points for charting
+struct ExerciseBreakDataPoint: Identifiable {
+    var id: String { "\(date.timeIntervalSince1970)-\(breakType)" }
+    var date: Date
+    var breakType: String
+    var breakValue: Double
 }
 
 // Make BreakEntry conform to Identifiable, Hashable for use in ForEach
