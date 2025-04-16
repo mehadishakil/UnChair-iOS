@@ -28,7 +28,7 @@ struct ContentView: View {
             AnalyticScreen()
                 .tabItem { Image(systemName: "chart.bar.xaxis") }
             
-            ProfileScreen(selectedDuration: $selectedDuration)
+            SettingsScreen(selectedDuration: $selectedDuration)
                 .tabItem { Image(systemName: "person") }
         }
         .edgesIgnoringSafeArea(.all)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TimeDuration: Equatable {
+struct TimeDuration: Codable, Equatable {
     var hours: Int
     var minutes: Int
     

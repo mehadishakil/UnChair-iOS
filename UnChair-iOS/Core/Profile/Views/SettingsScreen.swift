@@ -6,17 +6,20 @@
 //
 
 import SwiftUI
+import PhotosUI
+import FirebaseAuth
+import FirebaseFirestore
 
 enum Language: String, CaseIterable, Identifiable {
     case English = "English"
     case Bangla = "Bangla"
     case Arabic = "Arabic"
-    var id: String { self.rawValue}
+    var id: String { self.rawValue }
 }
 
-
-struct SettingScreen: View {
+struct SettingsScreen: View {
     
+    @Binding var selectedDuration: TimeDuration
     @State private var language : Language = .English
     @State private var isNotificationEnabled = true
     @State private var isDarkOn = true
@@ -25,30 +28,62 @@ struct SettingScreen: View {
     @State private var endTime = Calendar
         .current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
     @State private var changeTheme: Bool = false
-    @Binding var selectedDuration: TimeDuration
-    @AppStorage("userTheme") private var userTheme: Theme = .systemDefault
     @Environment(\.colorScheme) private var scheme
+    @State var show = false
+    @AppStorage("userTheme") private var userTheme: Theme = .system
+    @EnvironmentObject var authController: AuthController
+    @State private var full_name: String = ""
+    @State private var email: String = ""
+    var db = Firestore.firestore()
+    
     
     var body: some View {
-        NavigationStack{
-            Form{
-                // user profile
-                Section{
+        NavigationView {
+            Form {
+                // User profile section
+                Section {
                     NavigationLink(destination: EditProfile()) {
-                        HStack{
-                            Image(.mehadiHasan)
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .aspectRatio(contentMode: .fit)
-                                .clipShape(Circle())
-                                .padding(1)
+                        HStack {
+                            if let user = Auth.auth().currentUser, let profileImageURL = user.photoURL {
+                                
+                                AsyncImage(url: URL(string: profileImageURL.absoluteString)) { phase in
+                                    switch phase {
+                                    case .failure:
+                                        Image(systemName: "person.circle.fill")
+                                            .resizable()
+                                            .frame(width: 50, height: 50)
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(Circle())
+                                            .padding(1)
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .frame(width: 50, height: 50)
+                                            .aspectRatio(contentMode: .fit)
+                                            .clipShape(Circle())
+                                            .padding(1)
+                                    default:
+                                        ProgressView()
+                                    }
+                                }
+                                
+                                
+                            } else {
+                                VStack {
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                        .aspectRatio(contentMode: .fit)
+                                        .clipShape(Circle())
+                                        .padding(1)
+                                }}
                             
-                            VStack(alignment: .leading){
-                                Text("Mehadi Hasan")
+                            VStack(alignment: .leading) {
+                                Text(full_name)
                                     .font(.system(.headline))
-                                Text("mehadishakil469@gmail.com")
+                                Text(email)
                                     .font(.system(.caption))
-                                    .foregroundColor(Color.black)
+                                    
                             }.padding(1)
                             
                             Spacer()
@@ -56,35 +91,38 @@ struct SettingScreen: View {
                     }
                 }
                 
-                Section(header: Text("Personalization")){
-                    HStack{
+                Section(header: Text("Personalization")) {
+                    HStack {
                         Image(systemName: "bell")
-                        Toggle(isOn: $isNotificationEnabled){
+                        Toggle(isOn: $isNotificationEnabled) {
                             Text("Notification")
                         }
                     }
                     
                     HStack {
                         Button(action: {
-                            changeTheme.toggle()
+                            show.toggle()
                         }) {
                             HStack {
                                 Image(systemName: "circle.lefthalf.filled")
+                                    .foregroundColor(.primary)
                                 Text("Appearance")
+                                    .foregroundColor(.primary)
                                 Spacer()
                                 Image(systemName: "chevron.right")
+                                    .foregroundColor(.gray)
                             }
                         }
-                    }
-                    .sheet(isPresented: $changeTheme) {
-                        ThemeChangeView()
-                            .presentationDetents([.height(410)])
+                        .sheet(isPresented: $show) {
+                            DLMode(show: $show, scheme: scheme)
+                                .presentationDetents([.height(280)])
+                                .presentationBackground(.clear)
+                        }
                     }
                     
-                    
-                    HStack{
+                    HStack {
                         Image(systemName: "globe")
-                        Picker("Language", selection: $language){
+                        Picker("Language", selection: $language) {
                             Text("English").tag(Language.English)
                             Text("Bangla").tag(Language.Bangla)
                             Text("Arabic").tag(Language.Arabic)
@@ -93,9 +131,7 @@ struct SettingScreen: View {
                     
                     ActiveHour()
                     
-                    
-                    BreakTime(selectedDuration: $selectedDuration)
-                    
+                    BreakTime()
                 }
                 
                 Section(header: Text("Accessibility & Advanced")) {
@@ -162,26 +198,45 @@ struct SettingScreen: View {
                             Spacer()
                         }
                     }
-                    
                 }
                 
-                Button{
-                    
+                Button {
+                    do {
+                        try authController.signOut()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 } label: {
                     Text("Sign Out")
                         .foregroundColor(.primary)
                 }
-                
             }
         }
         .preferredColorScheme(userTheme.colorScheme)
+        .onAppear {
+            fetchUserData()
+        }
+    }
+    
+    
+    private func fetchUserData() {
+        if let currentUser = Auth.auth().currentUser {
+            Task {
+                do {
+                    if let userData = try await UserManager.shared.fetchUserData(uid: currentUser.uid) {
+                        full_name = userData["name"] as? String ?? ""
+                        email = userData["email"] as? String ?? ""
+                    }
+                } catch {
+                    print("Error loading user data: \(error)")
+                }
+            }
+        }
     }
 }
 
-
-
 #Preview {
-    SettingScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
+    SettingsScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
 }
 
 

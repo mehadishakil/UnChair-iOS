@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct SedentaryTime: View {
-    
+    @StateObject private var settings = SettingsManager.shared
     @State private var notificationScheduled = false
     @Binding var notificationPermissionGranted: Bool
     @Binding var selectedDuration: TimeDuration
-    @State var startTime = Date.now
-    @State var timeElapsed : Int = 0
-    @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var timeElapsed: Int = 0
+    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         HStack(){
@@ -29,23 +29,25 @@ struct SedentaryTime: View {
             VStack(alignment : .center){
                 Text("Sedentary Time")
                     .font(.headline)
-                    
                 
                 Text("\(formattedTime(timeElapsed))")
                     .font(.title3)
-                    .onReceive(timer){ firedDate in
-                        timeElapsed = Int(firedDate.timeIntervalSince(startTime))
+                    .onReceive(timer) { _ in
+                        updateTimeElapsed()
                     }
                 Button{
-                    startTime = Date.now
+                    resetTimer()
                 }label: {
                     Text("Reset")
                 }.buttonStyle(.bordered)
             }
             Spacer()
         }
-        .onReceive(timer) { firedDate in
-            timeElapsed = Int(firedDate.timeIntervalSince(startTime))
+        .onAppear {
+            updateTimeElapsed()
+        }
+        .onReceive(timer) { _ in
+            updateTimeElapsed()
             if notificationPermissionGranted {
                 performScheduleNotification()
             }
@@ -54,7 +56,46 @@ struct SedentaryTime: View {
         .background(.ultraThinMaterial)
         .cornerRadius(15)
         .shadow(radius: 3)
+    }
+    
+    private func updateTimeElapsed() {
+        let now = Date()
+        let calendar = Calendar.current
         
+        // Get current time components
+        let currentComponents = calendar.dateComponents([.hour, .minute], from: now)
+        let currentHour = currentComponents.hour ?? 0
+        let currentMinute = currentComponents.minute ?? 0
+        
+        // Get start time components
+        let startComponents = calendar.dateComponents([.hour, .minute], from: settings.startTime)
+        let startHour = startComponents.hour ?? 0
+        let startMinute = startComponents.minute ?? 0
+        
+        // Get end time components
+        let endComponents = calendar.dateComponents([.hour, .minute], from: settings.endTime)
+        let endHour = endComponents.hour ?? 0
+        let endMinute = endComponents.minute ?? 0
+        
+        // Check if current time is within work hours
+        let currentTimeInMinutes = currentHour * 60 + currentMinute
+        let startTimeInMinutes = startHour * 60 + startMinute
+        let endTimeInMinutes = endHour * 60 + endMinute
+        
+        if currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes {
+            // Calculate elapsed time since start of work hours
+            let startOfDay = Date()
+            let workStart = calendar.date(bySettingHour: startHour, minute: startMinute, second: 0, of: startOfDay)!
+            timeElapsed = Int(now.timeIntervalSince(workStart))
+        } else {
+            // Outside work hours
+            timeElapsed = 0
+        }
+    }
+    
+    private func resetTimer() {
+        timeElapsed = 0
+        notificationScheduled = false
     }
     
     func performScheduleNotification() {
@@ -104,18 +145,12 @@ struct SedentaryTime: View {
     }
 }
 
-
-
-
-
 func formattedTime(_ totalSeconds: Int) -> String {
     let hours = totalSeconds / 3600
     let min = (totalSeconds % 3600) / 60
     let sec = totalSeconds % 60
     return String(format: "%02d:%02d:%02d", hours, min, sec)
 }
-
-
 
 #Preview {
     SedentaryTime(notificationPermissionGranted: .constant(false) ,selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))

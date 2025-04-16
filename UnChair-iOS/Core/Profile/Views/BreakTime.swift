@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BreakTime: View {
-    @Binding var selectedDuration: TimeDuration
+    @StateObject private var settings = SettingsManager.shared
     @State private var isTimePickerPresented = false
     
     var body: some View {
@@ -22,7 +22,7 @@ struct BreakTime: View {
             Button(action: {
                 isTimePickerPresented = true
             }) {
-                Text("\(selectedDuration.hours) hr \(selectedDuration.minutes) min")
+                Text("\(settings.breakDuration.hours) hr \(settings.breakDuration.minutes) min")
                     .padding(6)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(5)
@@ -30,7 +30,7 @@ struct BreakTime: View {
                     .fontWeight(.semibold)
             }
             .sheet(isPresented: $isTimePickerPresented) {
-                CustomTimePicker(selectedDuration: $selectedDuration)
+                CustomTimePicker(selectedDuration: $settings.breakDuration)
                     .presentationDetents([.fraction(0.5), .medium])
             }
         }

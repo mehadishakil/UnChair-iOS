@@ -8,18 +8,14 @@
 import SwiftUI
 
 struct ActiveHour: View {
-    @State private var startTime: Date
-    @State private var endTime: Date
+    @StateObject private var settings = SettingsManager.shared
     @State private var tempStartTime: Date
     @State private var tempEndTime: Date
     @State private var isStartTimePickerPresented = false
     
     init() {
-        let calendar = Calendar.current
-        _startTime = State(initialValue: calendar.date(bySettingHour: 8, minute: 30, second: 0, of: Date())!)
-        _endTime = State(initialValue: calendar.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!)
-        _tempStartTime = State(initialValue: calendar.date(bySettingHour: 8, minute: 30, second: 0, of: Date())!)
-        _tempEndTime = State(initialValue: calendar.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!)
+        _tempStartTime = State(initialValue: SettingsManager.shared.startTime)
+        _tempEndTime = State(initialValue: SettingsManager.shared.endTime)
     }
     
     var body: some View {
@@ -31,23 +27,21 @@ struct ActiveHour: View {
             Spacer()
             
             Button(action: {
-                tempStartTime = startTime
-                tempEndTime = endTime
+                tempStartTime = settings.startTime
+                tempEndTime = settings.endTime
                 isStartTimePickerPresented = true
             }) {
                 HStack{
-                    Text("\(formattedTime(startTime))")
+                    Text("\(formattedTime(settings.startTime))")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                     Text("to")
                         .foregroundColor(.gray)
                         .font(.subheadline)
                         .fontWeight(.semibold)
-
-                    Text("\(formattedTime(endTime))")
+                    Text("\(formattedTime(settings.endTime))")
                         .font(.subheadline)
                         .fontWeight(.semibold)
-
                 }
                 .padding(6)
                 .background(Color.gray.opacity(0.2))
@@ -55,8 +49,8 @@ struct ActiveHour: View {
             }
             .sheet(isPresented: $isStartTimePickerPresented) {
                 TimePickerView(startTime: $tempStartTime, endTime: $tempEndTime, onSave: {
-                    startTime = tempStartTime
-                    endTime = tempEndTime
+                    settings.startTime = tempStartTime
+                    settings.endTime = tempEndTime
                 })
                 .presentationDetents([.fraction(0.7), .large])
                 .presentationDragIndicator(.visible)
