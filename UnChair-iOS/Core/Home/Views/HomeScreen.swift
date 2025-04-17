@@ -8,44 +8,50 @@
 import SwiftUI
 
 struct HomeScreen: View {
-    
     @Binding var selectedDuration: TimeDuration
     @State private var notificationPermissionGranted = false
     @EnvironmentObject var healthViewModel: HealthDataViewModel
     
     var body: some View {
         NavigationStack{
-            ScrollView{
-                ZStack{
-                    Color.backgroundtheme.opacity(0.7)
-                    
-                    
-                    VStack{
-                        HeaderView()
-                        HCalendarView().padding(.bottom)
-                        SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted ,selectedDuration: $selectedDuration).padding()
-                        DailyTracking()
+            ScrollViewReader { proxy in
+                ScrollView{
+                    ZStack{
+                        Color.backgroundtheme.opacity(0.7)
+                        VStack{
+                            HeaderView()
+                            HCalendarView().padding(.bottom)
                             
-                        
-                        Spacer()
-                        BreakSectionView()
-                            .padding(.bottom)
-                        
-                        CalmCorner()
-                        
-                    }}
-                .onAppear {
-                                requestNotificationPermission()
-                                healthViewModel.refreshData()
+                            SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted ,selectedDuration: $selectedDuration)
+                            {
+                                withAnimation {
+                                    proxy.scrollTo("breakSection", anchor: .top)
+                                }
                             }
-                            .refreshable {
-                                healthViewModel.refreshData()
-                            }
+                            .padding()
+                            
+                            DailyTracking()
+                            
+                            Spacer()
+                            
+                            BreakSectionView()
+                                .id("breakSection")
+                            
+                            CalmCorner()
+                        }}
+                    .onAppear {
+                        requestNotificationPermission()
+                        healthViewModel.refreshData()
+                    }
+                    .refreshable {
+                        healthViewModel.refreshData()
+                    }
+                }
             }
         }
         
     }
-        
+    
     
     
     func requestNotificationPermission() {
@@ -60,7 +66,7 @@ struct HomeScreen: View {
             }
         }
     }
-
+    
 }
 
 #Preview {

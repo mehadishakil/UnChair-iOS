@@ -68,23 +68,19 @@ struct ActiveHour: View {
 struct TimePickerView: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var startTime: Date
-    @Binding var endTime: Date
-    var onSave: () -> Void
-    @State private var durationHours: Int = 0
+    @Binding var endTime:   Date
+    @State private var durationHours:   Int = 0
     @State private var durationMinutes: Int = 0
     @State private var isSelectingStartTime: Bool = true
-    
-    init(startTime: Binding<Date>, endTime: Binding<Date>, onSave: @escaping () -> Void) {
+    var onSave: () -> Void
+    init(startTime: Binding<Date>, endTime:   Binding<Date>, onSave:    @escaping () -> Void)
+    {
         self._startTime = startTime
-        self._endTime = endTime
-        self.onSave = onSave
-        
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.hour, .minute], from: startTime.wrappedValue, to: endTime.wrappedValue)
-        self._durationHours = State(initialValue: components.hour ?? 0)
-        self._durationMinutes = State(initialValue: components.minute ?? 0)
+        self._endTime   = endTime
+        self.onSave     = onSave
     }
-
+    
+    
     var body: some View {
         NavigationView {
             VStack(alignment: .leading) {
@@ -186,6 +182,10 @@ struct TimePickerView: View {
                 }
             )
         }
+        .onAppear {
+            // recalc immediately when the sheet shows up
+            updateDuration()
+        }
     }
     
     private func formattedTime(_ date: Date) -> String {
@@ -196,15 +196,23 @@ struct TimePickerView: View {
     
     private func updateDuration() {
         let calendar = Calendar.current
-        let components = calendar.dateComponents([.hour, .minute], from: startTime, to: endTime)
-        durationHours = components.hour ?? 0
-        durationMinutes = components.minute ?? 0
         
-        // Ensure end time is always after start time
+        // If the user really did pick an earlier time-of-day,
+        // assume they meant “next day”
+        let actualEnd: Date
         if endTime < startTime {
-            endTime = startTime.addingTimeInterval(3600) // Set to 1 hour later if end time is before start time
+            actualEnd = calendar.date(byAdding: .day, value: 1, to: endTime)!
+        } else {
+            actualEnd = endTime
         }
+        
+        let components = calendar.dateComponents([.hour, .minute],
+                                                 from: startTime,
+                                                 to: actualEnd)
+        durationHours   = components.hour   ?? 0
+        durationMinutes = components.minute ?? 0
     }
+    
 }
 
 #Preview {

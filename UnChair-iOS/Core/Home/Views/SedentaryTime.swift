@@ -15,6 +15,13 @@ struct SedentaryTime: View {
     @Binding var selectedDuration: TimeDuration
     @State private var timeElapsed: Int = 0
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    let onTakeBreak: () -> Void
+    init(notificationPermissionGranted: Binding<Bool>, selectedDuration: Binding<TimeDuration>, onTakeBreak: @escaping () -> Void)
+    {
+        self._notificationPermissionGranted = notificationPermissionGranted
+        self._selectedDuration             = selectedDuration
+        self.onTakeBreak                   = onTakeBreak
+    }
     
     var body: some View {
         HStack(){
@@ -32,13 +39,10 @@ struct SedentaryTime: View {
                 
                 Text("\(formattedTime(timeElapsed))")
                     .font(.title3)
-                    .onReceive(timer) { _ in
-                        updateTimeElapsed()
-                    }
                 Button{
-                    resetTimer()
+                    onTakeBreak()
                 }label: {
-                    Text("Reset")
+                    Text("Take a Break")
                 }.buttonStyle(.bordered)
             }
             Spacer()
@@ -59,39 +63,41 @@ struct SedentaryTime: View {
     }
     
     private func updateTimeElapsed() {
-        let now = Date()
         let calendar = Calendar.current
-        
-        // Get current time components
-        let currentComponents = calendar.dateComponents([.hour, .minute], from: now)
-        let currentHour = currentComponents.hour ?? 0
-        let currentMinute = currentComponents.minute ?? 0
-        
-        // Get start time components
-        let startComponents = calendar.dateComponents([.hour, .minute], from: settings.startTime)
-        let startHour = startComponents.hour ?? 0
-        let startMinute = startComponents.minute ?? 0
-        
-        // Get end time components
-        let endComponents = calendar.dateComponents([.hour, .minute], from: settings.endTime)
-        let endHour = endComponents.hour ?? 0
-        let endMinute = endComponents.minute ?? 0
-        
-        // Check if current time is within work hours
-        let currentTimeInMinutes = currentHour * 60 + currentMinute
-        let startTimeInMinutes = startHour * 60 + startMinute
-        let endTimeInMinutes = endHour * 60 + endMinute
-        
-        if currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes {
-            // Calculate elapsed time since start of work hours
-            let startOfDay = Date()
-            let workStart = calendar.date(bySettingHour: startHour, minute: startMinute, second: 0, of: startOfDay)!
-            timeElapsed = Int(now.timeIntervalSince(workStart))
+        let now      = Date()
+        let nowComps = calendar.dateComponents([.hour, .minute, .second], from: now)
+        let currentSecs = (nowComps.hour! * 3600)
+                        + (nowComps.minute! * 60)
+                        +  nowComps.second!
+
+        // start/end in seconds‑of‑day
+        let startComps = calendar.dateComponents([.hour, .minute], from: settings.startTime)
+        let endComps   = calendar.dateComponents([.hour, .minute], from: settings.endTime)
+        let startSecs = (startComps.hour! * 3600) + (startComps.minute! * 60)
+        let endSecs   = (endComps.hour!   * 3600) + (endComps.minute!   * 60)
+
+        var elapsed = 0
+
+        if startSecs <= endSecs {
+            // no midnight wrap
+            if currentSecs >= startSecs && currentSecs <= endSecs {
+                elapsed = currentSecs - startSecs
+            }
         } else {
-            // Outside work hours
-            timeElapsed = 0
+            // wraps past midnight
+            if currentSecs >= startSecs {
+                // later the same evening
+                elapsed = currentSecs - startSecs
+            } else if currentSecs <= endSecs {
+                // after midnight
+                elapsed = (24 * 3600 - startSecs) + currentSecs
+            }
         }
+
+        timeElapsed = max(elapsed, 0)
     }
+
+
     
     private func resetTimer() {
         timeElapsed = 0
@@ -152,6 +158,6 @@ func formattedTime(_ totalSeconds: Int) -> String {
     return String(format: "%02d:%02d:%02d", hours, min, sec)
 }
 
-#Preview {
-    SedentaryTime(notificationPermissionGranted: .constant(false) ,selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
-}
+//#Preview {
+//    SedentaryTime(notificationPermissionGranted: .constant(false) ,selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
+//}
