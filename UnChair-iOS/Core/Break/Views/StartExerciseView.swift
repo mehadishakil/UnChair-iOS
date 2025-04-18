@@ -158,11 +158,22 @@ struct StartExerciseView: View {
             }
         } else {
             SoundManager.instance.allExerciseFinishBeep()
-            updateExerciseRecord()
-            resetExercise()
-            presentationMode.wrappedValue.dismiss()
+            finishExercise()
         }
     }
+    
+    
+    
+    private func finishExercise() {
+        // Save last break time when exercise session completes
+        UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "lastBreakTime")
+        UserDefaults.standard.set(Calendar.current.dateComponents([.year, .month, .day], from: Date()).day, forKey: "lastBreakDay")
+        
+        updateExerciseRecord()
+        resetExercise()
+        presentationMode.wrappedValue.dismiss()
+    }
+
     
     
     
