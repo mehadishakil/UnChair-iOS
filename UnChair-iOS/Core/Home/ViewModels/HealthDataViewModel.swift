@@ -48,23 +48,21 @@ class HealthDataViewModel: ObservableObject {
         
         Task {
             do {
-                async let waterTask = try healthService.fetchTodaysWaterData(for: userId, date: Date())
-                async let sleepTask = try healthService.fetchTodaysSleepData(for: userId, date: Date())
-                async let stepsTask = try healthService.fetchTodaySteps()
-                
-                // Wait for all tasks to complete
-                let (water, sleep) = await try (waterTask, sleepTask)
-                
-                // Update UI on main thread
+                async let waterTask  = try healthService.fetchTodaysWaterData(for: userId, date: Date())
+                async let sleepTask  = try healthService.fetchTodaysSleepData(for: userId, date: Date())
+                async let stepsTask  = try healthService.fetchTodaySteps()    // or fetchTodaySteps(for: userId, date: Date())
+
+                let (water, sleep, steps) = await try (waterTask, sleepTask, stepsTask)
+
                 await MainActor.run {
-                    self.waterIntake = water ?? 0
-                    self.sleepHours = sleep ?? 0
-                    // self.stepCount = steps ?? healthService.getStepsCount() ?? 0
-                    self.isLoading = false
-                    
-                    // Ensure data is synced to Firestore
+                    self.waterIntake = water  ?? 0
+                    self.sleepHours  = sleep  ?? 0
+                    self.stepCount   = steps  ?? 0
+                    self.isLoading   = false
+
                     self.syncDataToFirestore()
                 }
+
             } catch {
                 print("Error loading health data: \(error.localizedDescription)")
                 await MainActor.run {

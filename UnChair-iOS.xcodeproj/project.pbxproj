@@ -24,6 +24,7 @@
 		E84115082DA1A1B200CB21DF /* WaterBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84115072DA1A1B000CB21DF /* WaterBarChart.swift */; };
 		E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844B82A2C108B30006D54E4 /* SedentaryTime.swift */; };
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
+		E85889352DB349E900883430 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85889342DB349E900883430 /* NotificationManager.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
 		E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDED2D30F2BC00F62142 /* FirebaseFirestore */; };
 		E866CDF02D30F2DC00F62142 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDEF2D30F2DC00F62142 /* FirebaseStorage */; };
@@ -100,6 +101,7 @@
 		E84115072DA1A1B000CB21DF /* WaterBarChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterBarChart.swift; sourceTree = "<group>"; };
 		E844B82A2C108B30006D54E4 /* SedentaryTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedentaryTime.swift; sourceTree = "<group>"; };
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
+		E85889342DB349E900883430 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
 		E866CDFB2D3143F500F62142 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserData.swift; path = "UnChair-iOS/Core/Authentication/UserData.swift"; sourceTree = SOURCE_ROOT; };
 		E866CE032D3151D900F62142 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -261,6 +263,7 @@
 		E8783CC32BFD923D0085A899 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E85889342DB349E900883430 /* NotificationManager.swift */,
 				E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */,
 				E8FB19A22D882CF600A5CF82 /* HealthDataViewModel.swift */,
 				E8DB22832D71EECC001172B5 /* HealthDataService.swift */,
@@ -557,6 +560,7 @@
 				E82A72782DA47DEA005EA6A6 /* ExerciseMultiLineChart.swift in Sources */,
 				E8C01E0E2CFE17F00073C616 /* AppDelegate.swift in Sources */,
 				E8AFBAA32C9C45B200AEE292 /* SleepCapsuleChart.swift in Sources */,
+				E85889352DB349E900883430 /* NotificationManager.swift in Sources */,
 				E8AFBAA22C9C45B200AEE292 /* ExerciseBarChartView.swift in Sources */,
 				E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */,
 				E8AFBAA72C9C45B200AEE292 /* ExerciseBarChart.swift in Sources */,

@@ -30,8 +30,11 @@ struct BreakTime: View {
                     .fontWeight(.semibold)
             }
             .sheet(isPresented: $isTimePickerPresented) {
-                CustomTimePicker(selectedDuration: $settings.breakDuration)
-                    .presentationDetents([.fraction(0.5), .medium])
+                CustomTimePicker(selectedDuration: $settings.breakDuration, onDismiss: {
+                    // Notify that break settings changed
+                    NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
+                })
+                .presentationDetents([.fraction(0.5), .medium])
             }
         }
     }
@@ -41,6 +44,7 @@ struct BreakTime: View {
 struct CustomTimePicker: View {
     @Binding var selectedDuration: TimeDuration
     @Environment(\.presentationMode) var presentationMode
+    let onDismiss: () -> Void
     
     let hourRange = 0...12
     let minuteRange = 0...59
@@ -75,12 +79,12 @@ struct CustomTimePicker: View {
             
             Button("Done") {
                 presentationMode.wrappedValue.dismiss()
+                onDismiss()
             }
             .padding()
         }
     }
 }
-
 
 #Preview {
     ContentView()
