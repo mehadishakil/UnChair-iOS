@@ -178,40 +178,51 @@ struct StartExerciseView: View {
     
     
     /// Updates the exercise record in Firestore using the break's title as key.
-        private func updateExerciseRecord() {
-            // Ensure the user is authenticated.
-            guard let user = Auth.auth().currentUser else {
-                print("User not authenticated; cannot update exercise record.")
-                return
-            }
-            
-            // Calculate total exercise time in minutes.
-            let totalExerciseSeconds = totalDuration
-            let exerciseMinutes = totalExerciseSeconds / 60
-            
-            // Derive the key from the break title (for example, "Quick Break" -> "quick_break").
-            let breakKey = breakItem.title.lowercased().replacingOccurrences(of: " ", with: "_")
-            let exerciseRecord: [String: Int] = [breakKey: exerciseMinutes]
-            
-            // Use your HealthDataService to update the record in Firestore.
-            let healthDataService = HealthDataService()
-            Task {
-                do {
-                    try await healthDataService.updateDailyHealthData(
-                        for: user.uid,
-                        date: Date(),
-                        waterIntake: nil,
-                        stepsTaken: nil,
-                        sleepDuration: nil,
-                        meditationDuration: nil,
-                        exerciseTime: exerciseRecord
-                    )
-                    print("Exercise record updated successfully for key: \(breakKey)")
-                } catch {
-                    print("Failed to update exercise record: \(error.localizedDescription)")
-                }
+    private func updateExerciseRecord() {
+        guard let user = Auth.auth().currentUser else {
+            print("User not authenticated; cannot update exercise record.")
+            return
+        }
+        
+        // Calculate total exercise time in minutes
+        let totalExerciseSeconds = totalDuration
+        let exerciseMinutes = totalExerciseSeconds / 60
+        
+        // Derive the key from the break title
+        let breakKey = breakItem.title.lowercased().replacingOccurrences(of: " ", with: "_")
+        
+        // Use your HealthDataService to update the record in Firestore
+        let healthDataService = HealthDataService()
+        
+        Task {
+            do {
+                // First fetch the current exercise data
+                let currentExerciseData = try await healthDataService.fetchTodaysExerciseData(for: user.uid, date: Date()) ?? [:]
+                
+                // Calculate the new value by adding to existing value
+                let currentMinutes = currentExerciseData[breakKey] ?? 0
+                let updatedMinutes = currentMinutes + exerciseMinutes
+                
+                // Create updated exercise dictionary
+                var updatedExerciseData = currentExerciseData
+                updatedExerciseData[breakKey] = updatedMinutes
+                
+                // Update the database with accumulated value
+                try await healthDataService.updateDailyHealthData(
+                    for: user.uid,
+                    date: Date(),
+                    waterIntake: nil,
+                    stepsTaken: nil,
+                    sleepDuration: nil,
+                    meditationDuration: nil,
+                    exerciseTime: updatedExerciseData
+                )
+                print("Exercise record updated successfully for \(breakKey): \(updatedMinutes) min (added \(exerciseMinutes) min)")
+            } catch {
+                print("Failed to update exercise record: \(error.localizedDescription)")
             }
         }
+    }
     
     
 

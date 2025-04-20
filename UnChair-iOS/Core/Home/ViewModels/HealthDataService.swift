@@ -155,4 +155,24 @@ class HealthDataService {
             return nil
         }
     }
+    
+    func fetchTodaysExerciseData(for userId: String, date: Date) async throws -> [String: Int]? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy_MM_dd"
+        let dateString = dateFormatter.string(from: date)
+        let documentName = "daily_log_\(dateString)"
+
+        let logRef = db.collection("users")
+            .document(userId)
+            .collection("health_data")
+            .document(documentName)
+        
+        let document = try await logRef.getDocument()
+        
+        if let data = document.data(), let exerciseTime = data["exerciseTime"] as? [String: Int] {
+            return exerciseTime
+        } else {
+            return nil
+        }
+    }
 }
