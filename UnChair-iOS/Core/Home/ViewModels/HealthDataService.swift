@@ -40,6 +40,7 @@ class HealthDataService {
         waterIntake: Int?,
         stepsTaken: Int?,
         sleepDuration: Float?,
+        meditationDuration: Int?,
         exerciseTime: [String: Int]?
     ) async throws {
         let dateFormatter = DateFormatter()
@@ -62,6 +63,9 @@ class HealthDataService {
         }
         if let sleep = sleepDuration {
             updatedData["sleepDuration"] = sleep
+        }
+        if let meditation = meditationDuration {
+            updatedData["meditationDuration"] = meditation
         }
         if let exercise = exerciseTime {
             updatedData["exerciseTime"] = exercise
@@ -129,5 +133,26 @@ class HealthDataService {
         healthStore!.execute(query)
         
         return todayStepCount
+    }
+    
+    func fetchTodaysMeditationData(for userId: String, date: Date) async throws -> Int? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy_MM_dd"
+        let dateString = dateFormatter.string(from: date)
+        let documentName = "daily_log_\(dateString)"
+
+        let logRef = db.collection("users")
+            .document(userId)
+            .collection("health_data")
+            .document(documentName)
+        
+
+        let document = try await logRef.getDocument()
+        
+        if let data = document.data(), let waterIntake = data["meditationDuration"] as? Int {
+            return waterIntake
+        } else {
+            return nil
+        }
     }
 }

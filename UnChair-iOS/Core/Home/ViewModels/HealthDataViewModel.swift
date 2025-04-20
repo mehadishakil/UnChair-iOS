@@ -14,6 +14,7 @@ class HealthDataViewModel: ObservableObject {
     @Published var waterIntake: Int = 0
     @Published var sleepHours: Float = 0
     @Published var stepCount: Int = 0
+    @Published var meditationDuration: Int = 0
     @Published var isLoading: Bool = true
     @Published var dailyData: [String: Any] = [:]
     
@@ -51,13 +52,15 @@ class HealthDataViewModel: ObservableObject {
                 async let waterTask  = try healthService.fetchTodaysWaterData(for: userId, date: Date())
                 async let sleepTask  = try healthService.fetchTodaysSleepData(for: userId, date: Date())
                 async let stepsTask  = try healthService.fetchTodaySteps()    // or fetchTodaySteps(for: userId, date: Date())
+                async let meditationTask  = try healthService.fetchTodaysMeditationData(for: userId, date: Date())    // or fetchTodaySteps(for: userId, date: Date())
 
-                let (water, sleep, steps) = await try (waterTask, sleepTask, stepsTask)
+                let (water, sleep, steps, meditation) = await try (waterTask, sleepTask, stepsTask, meditationTask)
 
                 await MainActor.run {
                     self.waterIntake = water  ?? 0
                     self.sleepHours  = sleep  ?? 0
                     self.stepCount   = steps  ?? 0
+                    self.meditationDuration = meditation ?? 0
                     self.isLoading   = false
 
                     self.syncDataToFirestore()
@@ -120,6 +123,7 @@ class HealthDataViewModel: ObservableObject {
             "steps": stepCount,
             "waterConsumption": waterIntake,
             "sleep": sleepHours,
+            "meditationDuration": meditationDuration,
             "activities": [],
             "lastUpdated": Date()
         ]
@@ -141,6 +145,7 @@ class HealthDataViewModel: ObservableObject {
             "steps": stepCount,
             "waterConsumption": waterIntake,
             "sleep": sleepHours,
+            "meditationDuration" : meditationDuration,
             "lastUpdated": Date()
         ]
         
@@ -167,6 +172,7 @@ class HealthDataViewModel: ObservableObject {
                         waterIntake: amount,
                         stepsTaken: nil,
                         sleepDuration: nil,
+                        meditationDuration: nil,
                         exerciseTime: nil
                     )
                     syncDataToFirestore()
@@ -189,6 +195,7 @@ class HealthDataViewModel: ObservableObject {
                         waterIntake: nil,
                         stepsTaken: nil,
                         sleepDuration: hours,
+                        meditationDuration: nil,
                         exerciseTime: nil
                     )
                     syncDataToFirestore()
@@ -211,6 +218,7 @@ class HealthDataViewModel: ObservableObject {
                         waterIntake: nil,
                         stepsTaken: steps,
                         sleepDuration: nil,
+                        meditationDuration: nil,
                         exerciseTime: nil
                     )
                     syncDataToFirestore()
@@ -220,6 +228,35 @@ class HealthDataViewModel: ObservableObject {
             }
         }
     }
+    
+    func updateMeditationDuration(_ duration: Int) {
+        // Add to the current value instead of replacing it
+        self.meditationDuration += duration
+        
+        Task {
+            do {
+                if let userId = userId {
+                    // First fetch the current value
+                    let currentDuration = try await healthService.fetchTodaysMeditationData(for: userId, date: Date()) ?? 0
+                    
+                    // Then update with current + new value
+                    try await healthService.updateDailyHealthData(
+                        for: userId,
+                        date: Date(),
+                        waterIntake: nil,
+                        stepsTaken: nil,
+                        sleepDuration: nil,
+                        meditationDuration: currentDuration + duration,
+                        exerciseTime: nil
+                    )
+                    syncDataToFirestore()
+                }
+            } catch {
+                print("Error updating meditation duration: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     
     func refreshData() {
         loadAllData()

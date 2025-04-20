@@ -203,6 +203,7 @@ struct StartExerciseView: View {
                         waterIntake: nil,
                         stepsTaken: nil,
                         sleepDuration: nil,
+                        meditationDuration: nil,
                         exerciseTime: exerciseRecord
                     )
                     print("Exercise record updated successfully for key: \(breakKey)")

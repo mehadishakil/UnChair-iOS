@@ -263,6 +263,7 @@
 		E8783CC32BFD923D0085A899 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E8E6CD5F2DAFAB89006C959A /* SettingsManager.swift */,
 				E85889342DB349E900883430 /* NotificationManager.swift */,
 				E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */,
 				E8FB19A22D882CF600A5CF82 /* HealthDataViewModel.swift */,
@@ -315,7 +316,6 @@
 		E8783CC92BFD929A0085A899 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E8E6CD5F2DAFAB89006C959A /* SettingsManager.swift */,
 				E8BB4E352BFD0AEF00C1459C /* SettingsScreen.swift */,
 				E8AFFFD72C32B3750002815E /* ActiveHour.swift */,
 				E8B812352C33ECC400698849 /* EditProfile.swift */,
