@@ -24,7 +24,7 @@
 		E844B82B2C108B30006D54E4 /* SedentaryTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E844B82A2C108B30006D54E4 /* SedentaryTime.swift */; };
 		E847C0F22DB82F2A005BED49 /* BreakItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847C0F12DB82F2A005BED49 /* BreakItem.swift */; };
 		E847C0F42DB82F3A005BED49 /* BreakDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847C0F32DB82F3A005BED49 /* BreakDetailsView.swift */; };
-		E847C0F62DB8306B005BED49 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847C0F52DB8306B005BED49 /* BreakSectionView.swift */; };
+		E847C0F82DB83111005BED49 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847C0F72DB83111005BED49 /* BreakSectionView.swift */; };
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
 		E85889352DB349E900883430 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85889342DB349E900883430 /* NotificationManager.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
@@ -103,7 +103,7 @@
 		E844B82A2C108B30006D54E4 /* SedentaryTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SedentaryTime.swift; sourceTree = "<group>"; };
 		E847C0F12DB82F2A005BED49 /* BreakItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakItem.swift; sourceTree = "<group>"; };
 		E847C0F32DB82F3A005BED49 /* BreakDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakDetailsView.swift; sourceTree = "<group>"; };
-		E847C0F52DB8306B005BED49 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
+		E847C0F72DB83111005BED49 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
 		E85889342DB349E900883430 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
@@ -282,8 +282,8 @@
 			children = (
 				E847C0F32DB82F3A005BED49 /* BreakDetailsView.swift */,
 				E847C0F12DB82F2A005BED49 /* BreakItem.swift */,
-				E847C0F52DB8306B005BED49 /* BreakSectionView.swift */,
 				E844B82A2C108B30006D54E4 /* SedentaryTime.swift */,
+				E847C0F72DB83111005BED49 /* BreakSectionView.swift */,
 				E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */,
 				E8A84F792C2D39F400900714 /* HCalendarView.swift */,
 				E802683E2C317E0900F026F1 /* HeaderView.swift */,
@@ -570,7 +570,7 @@
 				E85889352DB349E900883430 /* NotificationManager.swift in Sources */,
 				E8AFBAA22C9C45B200AEE292 /* ExerciseBarChartView.swift in Sources */,
 				E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */,
-				E847C0F62DB8306B005BED49 /* BreakSectionView.swift in Sources */,
+				E847C0F82DB83111005BED49 /* BreakSectionView.swift in Sources */,
 				E8AFBAA72C9C45B200AEE292 /* ExerciseBarChart.swift in Sources */,
 				E8DB22842D71EECC001172B5 /* HealthDataService.swift in Sources */,
 				E84115062DA1649600CB21DF /* ExerciseMultiLineChartView.swift in Sources */,

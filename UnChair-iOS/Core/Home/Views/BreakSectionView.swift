@@ -1,52 +1,50 @@
 //
-//  BreakSectionView.swift
+//  BreakSectionView 2.swift
 //  UnChair-iOS
 //
-//  Created by Mehadi Hasan on 30/6/24.
+//  Created by Mehadi Hasan on 23/4/25.
 //
+
 
 import SwiftUI
 
 struct BreakSectionView: View {
+    
+    @State var hasScrolled = false
+    @Namespace var namespace
+    @State var show = false
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
+        ZStack{
+            Color("Background").ignoresSafeArea()
             
-            Text("Take a Break")
-                .font(.title2)
-                .fontWeight(.semibold)
-                .foregroundColor(.primary)
-            
-            ForEach(breakList) { index in
-                NavigationLink(destination: DetailsBreakView(breakItem: index)) {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(index.title)
-                                .font(.headline)
-                                .fontWeight(.bold)
-                            Text(index.overview)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                                .multilineTextAlignment(.leading)
-                                .fixedSize(horizontal: false, vertical: true)
+            ScrollView {
+                
+                if !show {
+                    BreakItem(namespace: namespace, show: $show, breakItem: breakList[0])
+                        .onTapGesture {
+                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                show.toggle()
+                            }
                         }
-                        Spacer()
-                        Text("\(index.duration/60) min")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                    }
-                    .padding()
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(10)
-                    .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)                    
                 }
             }
-            
+            .coordinateSpace(name: "scroll")
+            .safeAreaInset(edge: .top, content: {    Color.clear.frame(height: 70)
+            })
+            if show {
+                BreakDetailsView(namespace: namespace, show: $show)
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            show.toggle()
+                        }
+                    }
+            }
         }
-        .padding()
-        .cornerRadius(15)
     }
+    
+    
 }
-
 
 
 #Preview {
