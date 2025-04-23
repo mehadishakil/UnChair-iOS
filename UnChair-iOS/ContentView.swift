@@ -10,7 +10,6 @@ import FirebaseAuth
 import FirebaseFirestore
 
 struct ContentView: View {
-    @State private var tabBarVisible = true
     @State private var selectedDuration = TimeDuration(hours: 0, minutes: 1)
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @EnvironmentObject private var authController: AuthController
@@ -19,25 +18,23 @@ struct ContentView: View {
     var body: some View {
         TabView {
             HomeScreen(selectedDuration: $selectedDuration)
-                .tabItem { Image(systemName: "house") }
-                .onAppear {
-                    // Refresh data when returning to this tab
-                    healthViewModel.refreshData()
-                }
-            
+                .tabItem { Label("Home", systemImage: "house") }
+                .onAppear { healthViewModel.refreshData() }
+
             AnalyticScreen()
-                .tabItem { Image(systemName: "chart.bar.xaxis") }
-            
+                .tabItem { Label("Analytics", systemImage: "chart.bar.xaxis") }
+
+
             SettingsScreen(selectedDuration: $selectedDuration)
-                .tabItem { Image(systemName: "person") }
+                .tabItem { Label("Library", systemImage: "gearshape.fill") }
         }
-        .edgesIgnoringSafeArea(.all)
+        .background(.ultraThinMaterial)
+        .edgesIgnoringSafeArea(.bottom)
         .tint(.primary)
         .preferredColorScheme(userTheme.colorScheme)
         .onAppear {
-            // Initial data load when ContentView appears
-            if let userId = authController.currentUser?.uid {
-                healthViewModel.setUserId(userId)
+            if let uid = authController.currentUser?.uid {
+                healthViewModel.setUserId(uid)
             }
         }
     }

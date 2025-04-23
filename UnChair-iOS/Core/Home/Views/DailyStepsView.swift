@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DailyStepsView: View {
     @EnvironmentObject private var healthViewModel: HealthDataViewModel
-     
+    
     var body: some View {
         StepsCardView {
             VStack(spacing: 16) {
@@ -23,7 +23,7 @@ struct DailyStepsView: View {
                 VStack(spacing: 8) {
                     Text("\(healthViewModel.stepCount)")
                         .font(.system(size: 24, weight: .bold))
- 
+                    
                     Text("Steps")
                         .font(.system(size: 16, weight: .bold))
                 }
@@ -33,16 +33,22 @@ struct DailyStepsView: View {
             .cornerRadius(15)
         }
         .shadow(radius: 1)
+        .onDisappear {
+            if healthViewModel.stepCount != 0 {
+                healthViewModel.updateStepCount(healthViewModel.stepCount)
+            }
+            
+        }
     }
 }
 
 struct StepsCardView<Content: View>: View {
     var content: Content
-
+    
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-
+    
     var body: some View {
         content
             .cornerRadius(12)
@@ -57,7 +63,7 @@ struct StepsCardView<Content: View>: View {
 //struct DailyStepsView: View {
 //    @EnvironmentObject var manager: HealthManager
 //    @EnvironmentObject var authController: AuthController  // Inject AuthController
-//     
+//
 //    var body: some View {
 //        StepsCardView {
 //            VStack(spacing: 16) {
@@ -67,11 +73,11 @@ struct StepsCardView<Content: View>: View {
 //                    .frame(height: 40)
 //                    .padding()
 //                    .frame(maxWidth: .infinity, alignment: .center)
-//                
+//
 //                VStack(spacing: 8) {
 //                    Text("\(manager.todayStepCount)")
 //                        .font(.system(size: 24, weight: .bold))
-// 
+//
 //                    Text("Steps")
 //                        .font(.system(size: 16, weight: .bold))
 //                }
