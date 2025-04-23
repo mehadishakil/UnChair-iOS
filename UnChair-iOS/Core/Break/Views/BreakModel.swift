@@ -71,7 +71,7 @@ let breakList: [Break] = [
     Break(
         title: "Quick Break",
         image: "quickbreakimage",
-        overview: "2-minute neck, shoulder, and ankle stretches to relieve tension.",
+        overview: "neck, shoulder, and ankle stretches to relieve tension.",
         description: "A quick session focusing on neck, shoulders, and ankle stretches to quickly relieve tension and improve circulation.",
         duration: 120,
         exercises: Array(exercises.prefix(5))
@@ -79,14 +79,14 @@ let breakList: [Break] = [
     Break(
         title: "Short Break", 
         image: "shortbreakimage",
-        overview: "5-minute stretches for wrists, back, legs, and eyes.",
+        overview: "wrists, back, legs, and eyes stretches to refresh the mind.",
         description: "A brief yet effective series of stretches for wrists, back, legs, and eyes to reduce strain and refresh the mind.",
         duration: 300, 
         exercises: Array(exercises[5...10])
     ),
     Break(title: "Medium Break",
           image: "mediumbreakimage",
-          overview: "10-minute standing and seated exercises with deep breathing.",
+          overview: "standing and seated exercises with deep breathing for relaxation.",
           description: "A combination of standing and seated exercises targeting legs, shoulders, and back, paired with deep breathing for relaxation.",
           duration: 600,
           exercises: Array(exercises[11...18])
@@ -94,7 +94,7 @@ let breakList: [Break] = [
     Break(
         title: "Long Break",
         image: "longbreakimage",
-        overview: "20-minute routine of walking, stretching, and mindfulness.",
+        overview: "walking, stretching, and mindfulness for sustained productivity.",
         description: "A comprehensive routine including walking, stretching, and mindfulness exercises to revitalize your body and mind for sustained productivity.",
         duration: 1200,
         exercises: Array(exercises[19...28])

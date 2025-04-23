@@ -112,7 +112,7 @@ struct BreakItem: View {
             }
             .foregroundStyle(.white)
             .background(
-                Image("shortbreakimage")
+                Image(breakItem.image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .matchedGeometryEffect(id: "background\(breakItem.id)", in: namespace)
@@ -122,7 +122,7 @@ struct BreakItem: View {
                     .matchedGeometryEffect(id: "mask\(breakItem.id)", in: namespace)
             )
             .frame(height: 200)
-            .padding(20)
+            .padding(.horizontal, 20)
         }
     }
 

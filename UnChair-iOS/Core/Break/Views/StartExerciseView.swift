@@ -12,7 +12,7 @@ import FirebaseAuth
 class SoundManager {
     static let instance = SoundManager()
     var player: AVAudioPlayer?
-
+    
     func nextExerciseBeep() {
         guard let url = Bundle.main.url(forResource: "single_beep", withExtension: "mp3") else {
             return
@@ -24,7 +24,7 @@ class SoundManager {
             print("Error playing sound: \(error.localizedDescription)")
         }
     }
-
+    
     func allExerciseFinishBeep() {
         guard let url = Bundle.main.url(forResource: "count_down", withExtension: "mp3") else {
             return
@@ -48,92 +48,124 @@ struct StartExerciseView: View {
     let breakItem: Break
     var exercises: [Exercise] { breakItem.exercises }
     @Environment(\.presentationMode) var presentationMode
-
+    @Environment(\.dismiss) var dismiss
+    
     var totalDuration: Int {
         exercises.reduce(0) { $0 + $1.duration }
     }
-
+    
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
+    
     var body: some View {
-        VStack {
-            Spacer()
-
-            Text(timeString(from: totalElapsedTime))
-                .font(.system(size: 40, weight: .bold, design: .monospaced))
-                .padding(.top, 20)
-
-            Spacer()
-
-            Image(exercises[currentExerciseIndex].image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
+        ZStack{
+            VStack {
+                Spacer()
                 
-
-            Spacer()
-
-            Text(exercises[currentExerciseIndex].name)
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.bottom, 10)
-                .multilineTextAlignment(.center)
-
-            Text(exercises[currentExerciseIndex].description)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-                .padding(.bottom, 20)
-
-            Text("\(remainingTime(for: exercises[currentExerciseIndex])) sec")
-                .font(.subheadline)
-                .padding(.bottom, 20)
-                .bold()
-
-            Spacer()
-
-            if showControlButtons {
-                HStack(spacing: 20) {
-                    Button(action: resetExercise) {
-                        Text("Reset")
-                            .foregroundColor(.white)
-                            .frame(width: 100, height: 50)
-                            .background(.secondary)
+                Text(timeString(from: totalElapsedTime))
+                    .font(.system(size: 40, weight: .bold, design: .monospaced))
+                    .padding(.top, 20)
+                
+                Spacer()
+                
+                Image(exercises[currentExerciseIndex].image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 100, height: 100)
+                
+                
+                Spacer()
+                
+                Text(exercises[currentExerciseIndex].name)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.bottom, 10)
+                    .multilineTextAlignment(.center)
+                
+                Text(exercises[currentExerciseIndex].description)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                    .padding(.bottom, 20)
+                
+                Text("\(remainingTime(for: exercises[currentExerciseIndex])) sec")
+                    .font(.subheadline)
+                    .padding(.bottom, 20)
+                    .bold()
+                
+                Spacer()
+                
+                if showControlButtons {
+                    HStack(spacing: 20) {
+                        Button(action: resetExercise) {
+                            Text("Reset")
+                                .foregroundColor(.white)
+                                .frame(width: 100, height: 50)
+                                .background(.secondary)
+                                .cornerRadius(25)
+                        }
+                        
+                        Button(action: {
+                            isPaused.toggle()
+                            timerRunning.toggle()
+                        }) {
+                            Text(isPaused ? "Resume" : "Pause")
+                                .foregroundColor(.white)
+                                .frame(width: 100, height: 50)
+                                .background(.secondary)
+                                .cornerRadius(25)
+                        }
+                    }
+                } else {
+                    Button(action: startExercise) {
+                        Text("Start Now")
+                            .foregroundColor(.whiteblack)
+                            .frame(width: 200, height: 50)
+                            .background(.primary)
                             .cornerRadius(25)
                     }
-
-                    Button(action: {
-                        isPaused.toggle()
-                        timerRunning.toggle()
-                    }) {
-                        Text(isPaused ? "Resume" : "Pause")
-                            .foregroundColor(.white)
-                            .frame(width: 100, height: 50)
-                            .background(.secondary)
-                            .cornerRadius(25)
-                    }
-                }
-            } else {
-                Button(action: startExercise) {
-                    Text("Start Now")
-                        .foregroundColor(.whiteblack)
-                        .frame(width: 200, height: 50)
-                        .background(.primary)
-                        .cornerRadius(25)
                 }
             }
+            .padding(.bottom, 40)
+            .onReceive(timer) { _ in
+                guard timerRunning else { return }
+                updateTimer()
+            }
+            
+            
+            
+            VStack {
+                HStack {
+                    Button(action: {
+                        // Use the best available dismissal method
+                        if #available(iOS 15.0, *) {
+                            dismiss()
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.body.weight(.bold))
+                            .foregroundColor(.primary)
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: Circle())
+                    }
+                    .padding(.leading, 20)
+                    
+                    Spacer()
+                }
+                .padding(.top, 10)
+                
+                Spacer()
+            }
         }
-        .padding(.bottom, 40)
-        .onReceive(timer) { _ in
-            guard timerRunning else { return }
-            updateTimer()
-        }
+        
+        
     }
-
+    
     private func startExercise() {
         timerRunning = true
         showControlButtons = true
     }
-
+    
     private func resetExercise() {
         timerRunning = false
         showControlButtons = false
@@ -142,11 +174,11 @@ struct StartExerciseView: View {
         elapsedTime = 0
         currentExerciseIndex = 0
     }
-
+    
     private func updateTimer() {
         if totalElapsedTime < totalDuration {
             totalElapsedTime += 1
-
+            
             if elapsedTime < exercises[currentExerciseIndex].duration {
                 elapsedTime += 1
             } else {
@@ -173,7 +205,7 @@ struct StartExerciseView: View {
         resetExercise()
         presentationMode.wrappedValue.dismiss()
     }
-
+    
     
     
     
@@ -184,30 +216,23 @@ struct StartExerciseView: View {
             return
         }
         
-        // Calculate total exercise time in minutes
         let totalExerciseSeconds = totalDuration
         let exerciseMinutes = totalExerciseSeconds / 60
         
-        // Derive the key from the break title
         let breakKey = breakItem.title.lowercased().replacingOccurrences(of: " ", with: "_")
         
-        // Use your HealthDataService to update the record in Firestore
         let healthDataService = HealthDataService()
         
         Task {
             do {
-                // First fetch the current exercise data
                 let currentExerciseData = try await healthDataService.fetchTodaysExerciseData(for: user.uid, date: Date()) ?? [:]
                 
-                // Calculate the new value by adding to existing value
                 let currentMinutes = currentExerciseData[breakKey] ?? 0
                 let updatedMinutes = currentMinutes + exerciseMinutes
                 
-                // Create updated exercise dictionary
                 var updatedExerciseData = currentExerciseData
                 updatedExerciseData[breakKey] = updatedMinutes
                 
-                // Update the database with accumulated value
                 try await healthDataService.updateDailyHealthData(
                     for: user.uid,
                     date: Date(),
@@ -225,11 +250,11 @@ struct StartExerciseView: View {
     }
     
     
-
+    
     private func remainingTime(for exercise: Exercise) -> Int {
         return exercise.duration - elapsedTime
     }
-
+    
     private func timeString(from seconds: Int) -> String {
         let minutes = seconds / 60
         let remainingSeconds = seconds % 60

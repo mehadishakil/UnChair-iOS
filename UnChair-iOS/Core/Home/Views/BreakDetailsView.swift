@@ -153,24 +153,25 @@ struct BreakDetailsView: View {
     var namespace: Namespace.ID
     @Binding var show: Bool
     var breakItem: Break
+    @State private var navigateToExercise = false
     
     var body: some View {
         ZStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    // Header image section
                     headerSection
                     
-                    // Content section
                     contentSection
                 }
             }
             .ignoresSafeArea()
             
-            // Close button
             closeButton
         }
         .background(Color(Color.primary).opacity(0.25))
+        .fullScreenCover(isPresented: $navigateToExercise) {
+                    StartExerciseView(breakItem: breakItem)
+                }
     }
     
     var headerSection: some View {
@@ -237,17 +238,19 @@ struct BreakDetailsView: View {
                 }
             }
             
-            NavigationLink(destination: StartExerciseView(breakItem: breakItem)) {
-                Text("Next")
-                    .font(.title3)
-                    .bold()
-                    .foregroundColor(.whiteblack)
-                    .padding(.vertical)
-                    .frame(maxWidth: .infinity)
-                    .background(.primary)
-                    .cornerRadius(10)
-            }
-            .padding(.vertical, 20)
+            Button {
+                           navigateToExercise = true
+                       } label: {
+                           Text("Next")
+                               .font(.title3)
+                               .bold()
+                               .foregroundColor(.whiteblack)
+                               .padding(.vertical)
+                               .frame(maxWidth: .infinity)
+                               .background(.primary)
+                               .cornerRadius(10)
+                       }
+                       .padding(.vertical, 20)
         }
         .padding(20)
         .background(
