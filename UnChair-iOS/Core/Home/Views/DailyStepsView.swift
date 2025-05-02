@@ -19,6 +19,7 @@ struct DailyStepsView: View {
                     .frame(height: 40)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
+                    
                 
                 VStack(spacing: 8) {
                     Text("\(healthViewModel.stepCount)")

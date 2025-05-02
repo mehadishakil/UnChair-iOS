@@ -70,12 +70,12 @@ import SwiftUI
 //        }
 //}
 //
-//struct BreakItem_Previews: PreviewProvider {
-//    @Namespace static var namespace
-//    static var previews: some View {
-//        BreakItem(namespace: namespace, show: .constant(true), breakItem: breakList[0])
-//    }
-//}
+struct BreakItem_Previews: PreviewProvider {
+    @Namespace static var namespace
+    static var previews: some View {
+        BreakItem(namespace: namespace, show: .constant(true), breakItem: breakList[0])
+    }
+}
 
 
 struct BreakItem: View {
@@ -89,26 +89,26 @@ struct BreakItem: View {
                 Spacer()
                 VStack(alignment: .leading, spacing: 4) {
                     Text(breakItem.title)
-                        .font(.largeTitle)
+                        .font(.title)
                         .matchedGeometryEffect(id: "title\(breakItem.id)", in: namespace)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    Text("APPROX \(formatDuration(seconds: breakItem.duration))")
-                        .font(.footnote.weight(.semibold))
+                    Text("Approx. \(formatDuration(seconds: breakItem.duration))")
+                        .font(.caption)
+                        .fontWeight(.medium)
                         .matchedGeometryEffect(id: "subtitle\(breakItem.id)", in: namespace)
 
                     Text(breakItem.overview)
-                        .font(.footnote)
+                        .font(.caption)
                         .matchedGeometryEffect(id: "text\(breakItem.id)", in: namespace)
                 }
                 .padding(20)
-                .background(
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .mask(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                        .blur(radius: 80)
-                        .matchedGeometryEffect(id: "blur\(breakItem.id)", in: namespace)
-                )
+//                .background(
+//                    Rectangle()
+//                        .fill(.ultraThinMaterial)
+//                        .mask(RoundedRectangle(cornerRadius: 12, style: .continuous))
+//                        .matchedGeometryEffect(id: "blur\(breakItem.id)", in: namespace)
+//                )
             }
             .foregroundStyle(.white)
             .background(
@@ -118,10 +118,10 @@ struct BreakItem: View {
                     .matchedGeometryEffect(id: "background\(breakItem.id)", in: namespace)
             )
             .mask(
-                RoundedRectangle(cornerRadius: 30, style: .continuous)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .matchedGeometryEffect(id: "mask\(breakItem.id)", in: namespace)
             )
-            .frame(height: 200)
+            .frame(height: 150)
             .padding(.horizontal, 20)
         }
     }

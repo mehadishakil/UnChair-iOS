@@ -37,7 +37,7 @@ struct DailySleepView: View {
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .center)
             .background(.ultraThinMaterial)
-            .cornerRadius(12)
+            .cornerRadius(14)
             .onTapGesture {
                 showSleepPicker.toggle()
             }

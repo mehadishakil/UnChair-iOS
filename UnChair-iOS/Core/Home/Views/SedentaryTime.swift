@@ -187,7 +187,7 @@ struct SedentaryTime: View {
             
             VStack(alignment: .center) {
                 Text("Sedentary Time")
-                    .font(.headline)
+                    .font(.title3)
                 
                 Text("\(formattedTime(timeElapsed))")
                     .font(.title3)
@@ -198,7 +198,9 @@ struct SedentaryTime: View {
                     onTakeBreak()
                 } label: {
                     Text("Take a Break")
-                }.buttonStyle(.bordered)
+                }
+                .buttonStyle(.bordered)
+
             }
             Spacer()
         }

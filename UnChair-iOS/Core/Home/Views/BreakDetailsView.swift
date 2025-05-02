@@ -11,7 +11,7 @@ import SwiftUI
 //struct BreakDetailsView: View {
 //    var namespace: Namespace.ID
 //    @Binding var show: Bool
-//    
+//
 //    var body: some View {
 //        ScrollView {
 //            VStack {
@@ -32,23 +32,23 @@ import SwiftUI
 //            }
 //            .overlay(
 //                VStack(alignment: .leading, spacing: 12) {
-//                    
+//
 //                    Text("Short Break")
 //                        .font(.largeTitle)
 //                        .matchedGeometryEffect(id: "title", in: namespace)
 //                        .frame(maxWidth: .infinity, alignment: .leading)
-//                    
+//
 //                    Text("Approx 2 mins".uppercased())
 //                        .font(.footnote.weight(.semibold))
 //                        .matchedGeometryEffect(id: "subtitle", in: namespace)
-//                    
+//
 //                    Text("Build an iOS app for iOS 15 with custom layouts, animations and ...")
 //                        .font(.footnote)
 //                        .matchedGeometryEffect(id: "text", in: namespace)
-//                    
-//                    
+//
+//
 ////                    Divider()
-////                    
+////
 ////                    HStack{
 ////                        Image("mehadi_hasan")
 ////                            .resizable()
@@ -60,10 +60,10 @@ import SwiftUI
 ////                                    RoundedRectangle(cornerRadius: 18, style: .continuous)
 ////                                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
 ////                                )
-////                        
+////
 ////                        Text("This is Mehadi Hasan")
 ////                            .font(.footnote)
-////                        
+////
 ////                    }
 //                }
 //                    .padding(20)
@@ -170,8 +170,8 @@ struct BreakDetailsView: View {
         }
         .background(Color(Color.primary).opacity(0.25))
         .fullScreenCover(isPresented: $navigateToExercise) {
-                    StartExerciseView(breakItem: breakItem)
-                }
+            StartExerciseView(breakItem: breakItem)
+        }
     }
     
     var headerSection: some View {
@@ -218,10 +218,12 @@ struct BreakDetailsView: View {
                 HStack {
                     Image(exercise.image)
                         .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: 44, height: 44)
                         .cornerRadius(10)
                         .padding(8)
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    // apply a material blur behind each image if desired
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     
                     VStack(alignment: .leading) {
                         Text(exercise.name)
@@ -239,18 +241,18 @@ struct BreakDetailsView: View {
             }
             
             Button {
-                           navigateToExercise = true
-                       } label: {
-                           Text("Next")
-                               .font(.title3)
-                               .bold()
-                               .foregroundColor(.whiteblack)
-                               .padding(.vertical)
-                               .frame(maxWidth: .infinity)
-                               .background(.primary)
-                               .cornerRadius(10)
-                       }
-                       .padding(.vertical, 20)
+                navigateToExercise = true
+            } label: {
+                Text("Next")
+                    .font(.title3)
+                    .bold()
+                    .foregroundColor(.whiteblack)
+                    .padding(.vertical)
+                    .frame(maxWidth: .infinity)
+                    .background(.primary)
+                    .cornerRadius(10)
+            }
+            .padding(.vertical, 20)
         }
         .padding(20)
         .background(
