@@ -11,6 +11,7 @@
 		E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */; };
 		E81E099F2CFA381700FFF547 /* DLMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81E099E2CFA381700FFF547 /* DLMode.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
+		E828853D2DC6AA7E00EEAE8F /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E828853C2DC6AA7E00EEAE8F /* GlassCard.swift */; };
 		E82A72702DA3EDF3005EA6A6 /* PointLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A726F2DA3EDF3005EA6A6 /* PointLineChart.swift */; };
 		E82A72722DA472DE005EA6A6 /* MeditationLollipopChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A72712DA472DE005EA6A6 /* MeditationLollipopChart.swift */; };
 		E82A72742DA47354005EA6A6 /* MeditationLollipopChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82A72732DA47354005EA6A6 /* MeditationLollipopChartView.swift */; };
@@ -90,6 +91,7 @@
 		E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onBoardingPage.swift; sourceTree = "<group>"; };
 		E81E099E2CFA381700FFF547 /* DLMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLMode.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
+		E828853C2DC6AA7E00EEAE8F /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
 		E82A726F2DA3EDF3005EA6A6 /* PointLineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointLineChart.swift; sourceTree = "<group>"; };
 		E82A72712DA472DE005EA6A6 /* MeditationLollipopChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeditationLollipopChart.swift; sourceTree = "<group>"; };
 		E82A72732DA47354005EA6A6 /* MeditationLollipopChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeditationLollipopChartView.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */,
 				E83A7EF02C68DFBC00709773 /* CalmCorner.swift */,
 				E83A7EF22C68E35F00709773 /* Meditation.swift */,
+				E828853C2DC6AA7E00EEAE8F /* GlassCard.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -551,6 +554,7 @@
 				E8AFBAA62C9C45B200AEE292 /* WaterBarChart2.swift in Sources */,
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8AFBAAB2C9C45D600AEE292 /* ExerciseChartModel.swift in Sources */,
+				E828853D2DC6AA7E00EEAE8F /* GlassCard.swift in Sources */,
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
 				E8AFBAA82C9C45B200AEE292 /* StepsLineChartView.swift in Sources */,
 				E82A72762DA47530005EA6A6 /* MeditationChartModel.swift in Sources */,

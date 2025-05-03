@@ -8,39 +8,28 @@
 import SwiftUI
 
 struct DailyStepsView: View {
-    @EnvironmentObject private var healthViewModel: HealthDataViewModel
-    
-    var body: some View {
-        StepsCardView {
-            VStack(spacing: 16) {
-                Image(systemName: "figure.walk")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 40)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    
-                
-                VStack(spacing: 8) {
-                    Text("\(healthViewModel.stepCount)")
-                        .font(.system(size: 24, weight: .bold))
-                    
-                    Text("Steps")
-                        .font(.system(size: 16, weight: .bold))
-                }
-            }
-            .padding()
-            .background(.ultraThinMaterial)
-            .cornerRadius(15)
-        }
-        .shadow(radius: 1)
-        .onDisappear {
-            if healthViewModel.stepCount != 0 {
-                healthViewModel.updateStepCount(healthViewModel.stepCount)
-            }
-            
-        }
+  @EnvironmentObject private var healthVM: HealthDataViewModel
+
+  var body: some View {
+    GlassCard {
+      VStack(spacing: 16) {
+        Image(systemName: "figure.walk")
+          .font(.system(size: 40))
+          .frame(maxWidth: .infinity, alignment: .center)
+          .foregroundStyle(Color.primary.opacity(0.8))
+        Text("\(healthVM.stepCount)")
+          .font(.system(.title, weight: .bold))
+        Text("Steps")
+          .font(.system(.subheadline, weight: .medium))
+          .foregroundColor(.secondary)
+      }
     }
+    .onDisappear {
+      if healthVM.stepCount > 0 {
+        healthVM.updateStepCount(healthVM.stepCount)
+      }
+    }
+  }
 }
 
 struct StepsCardView<Content: View>: View {
@@ -56,75 +45,6 @@ struct StepsCardView<Content: View>: View {
             .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
     }
 }
-
-
-//
-//import SwiftUI
-//
-//struct DailyStepsView: View {
-//    @EnvironmentObject var manager: HealthManager
-//    @EnvironmentObject var authController: AuthController  // Inject AuthController
-//
-//    var body: some View {
-//        StepsCardView {
-//            VStack(spacing: 16) {
-//                Image(systemName: "figure.walk")
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(height: 40)
-//                    .padding()
-//                    .frame(maxWidth: .infinity, alignment: .center)
-//
-//                VStack(spacing: 8) {
-//                    Text("\(manager.todayStepCount)")
-//                        .font(.system(size: 24, weight: .bold))
-//
-//                    Text("Steps")
-//                        .font(.system(size: 16, weight: .bold))
-//                }
-//            }
-//            .padding()
-//            .background(.ultraThinMaterial)
-//            .cornerRadius(15)
-//        }
-//        .shadow(radius: 1)
-//        .onDisappear {
-//            // When the view disappears, update steps in Firestore.
-//            Task {
-//                do {
-//                    let service = HealthDataService()
-//                    if let userId = authController.currentUser?.uid {
-//                        try await service.updateDailyHealthData(
-//                            for: userId,
-//                            date: Date(),
-//                            waterIntake: nil,
-//                            stepsTaken: manager.todayStepCount,
-//                            sleepDuration: nil,
-//                            exerciseTime: nil
-//                        )
-//                    }
-//                } catch {
-//                    print("Error updating daily water data: \(error.localizedDescription)")
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//
-//struct StepsCardView<Content: View>: View {
-//    var content: Content
-//
-//    init(@ViewBuilder content: () -> Content) {
-//        self.content = content()
-//    }
-//
-//    var body: some View {
-//        content
-//            .cornerRadius(12)
-//            .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
-//    }
-//}
 
 #Preview {
     DailyStepsView()

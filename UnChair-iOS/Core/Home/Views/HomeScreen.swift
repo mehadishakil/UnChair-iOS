@@ -28,14 +28,15 @@ struct HomeScreen: View {
                                 HeaderView()
                                 HCalendarView()
                                     .padding(.bottom)
-                                
-                                SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted,
-                                              selectedDuration: $selectedDuration) {
-                                    withAnimation {
-                                        proxy.scrollTo("breakSection", anchor: .top)
+                                GlassCard{
+                                    SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted,
+                                                  selectedDuration: $selectedDuration) {
+                                        withAnimation {
+                                            proxy.scrollTo("breakSection", anchor: .top)
+                                        }
                                     }
                                 }
-                                              .padding()
+                                .padding()
                                 
                                 DailyTracking()
                                 
@@ -65,10 +66,13 @@ struct HomeScreen: View {
     
     var breakSectionView: some View {
         VStack(alignment: .leading, spacing: 0) {
+//            Text("Take a break")
+//                .font(.footnote.weight(.semibold))
+//                .foregroundColor(.secondary)
+//                .padding(.horizontal, 20)
             Text("Take a break")
-                .font(.footnote.weight(.semibold))
-                .foregroundColor(.secondary)
-                .padding(.horizontal, 20)
+              .font(.title2).fontWeight(.semibold)
+              .padding(.horizontal, 20)
             
             GeometryReader { outer in
                 let containerSize = outer.size
@@ -82,7 +86,7 @@ struct HomeScreen: View {
                                 
                                 Image(item.image)
                                     .resizable()
-                                    .aspectRatio(contentMode: .fit)
+                                    .aspectRatio(contentMode: .fill)
                                     .offset(x: -minX)
                                     .frame(width: cardSize.width * 2.5)
                                     .frame(width: cardSize.width, height: cardSize.height)
@@ -128,10 +132,6 @@ struct HomeScreen: View {
                 Text("\(item.title)")
                     .font(.title)
                     .bold()
-                
-//                    Text("Approx. \(formatDuration(seconds: item.duration))")
-//                        .font(.caption)
-//                        .fontWeight(.semibold)
                 
                 Text("\(item.overview)")
                     .font(.footnote)

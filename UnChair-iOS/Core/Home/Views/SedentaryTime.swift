@@ -236,10 +236,6 @@ struct SedentaryTime: View {
         .onReceive(timer) { _ in
             updateTimeElapsed()
         }
-        .padding()
-        .background(.ultraThinMaterial)
-        .cornerRadius(15)
-        .shadow(radius: 3)
     }
     
     private func updateTimeElapsed() {

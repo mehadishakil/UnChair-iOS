@@ -8,50 +8,64 @@
 import SwiftUI
 
 struct DailySleepView: View {
-    @State private var showSleepPicker = false
-    @EnvironmentObject private var healthViewModel: HealthDataViewModel
+  @EnvironmentObject private var healthVM: HealthDataViewModel
+  @State private var showPicker = false
 
-    var body: some View {
-        CardView {
-            VStack(spacing: 16) {
-                Image(systemName: "bed.double")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 30)
-                    .padding(4)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                
-                VStack(spacing: 4) {
-                    HStack(alignment: .center, spacing: 8) {
-                        Text(String(format: "%.1f", healthViewModel.sleepHours))
-                            .font(.system(size: 24, weight: .bold))
+  var body: some View {
+    ZStack {
+      RoundedRectangle(cornerRadius: 20, style: .continuous)
+        .fill(
+          LinearGradient(
+            colors: [
+              Color.blue.opacity(0.5),
+              Color.purple.opacity(0.5)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+          )
+        )
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 5)
 
-                        Text("h")
-                            .font(.system(size: 24, weight: .bold))
-                            .padding(.bottom, 2)
-                    }
-                    Text("Sleep")
-                        .font(.system(size: 16, weight: .bold))
-                }
-            }
-            .padding(12)
+      Button {
+        showPicker.toggle()
+      } label: {
+        VStack(spacing: 12) {
+          Image(systemName: "bed.double.fill")
+            .font(.system(size: 30))
+            .foregroundStyle(Color.white.opacity(0.9))
             .frame(maxWidth: .infinity, alignment: .center)
-            .background(.ultraThinMaterial)
-            .cornerRadius(14)
-            .onTapGesture {
-                showSleepPicker.toggle()
-            }
-            .sheet(isPresented: $showSleepPicker) {
-                SleepPickerView(sleep: healthViewModel.sleepHours, onUpdate: { newValue in
-                    healthViewModel.updateSleepHours(newValue)
-                })
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-            }
+
+          HStack(alignment: .firstTextBaseline, spacing: 4) {
+            Text(String(format: "%.1f", healthVM.sleepHours))
+              .font(.system(.title, weight: .bold))
+              .foregroundColor(.white)
+            Text("h")
+              .font(.system(.title2, weight: .bold))
+              .foregroundColor(.white)
+              .baselineOffset(-2)
+          }
+
+          Text("Sleep")
+            .font(.system(.subheadline, weight: .medium))
+            .foregroundColor(.white.opacity(0.8))
         }
-        .shadow(radius: 1)
+        .padding(.vertical, 20)
+      }
+      .buttonStyle(PlainButtonStyle())
     }
+    .frame(maxWidth: .infinity)
+    .sheet(isPresented: $showPicker) {
+      SleepPickerView(sleep: healthVM.sleepHours) { newVal in
+        healthVM.updateSleepHours(newVal)
+      }
+      .presentationDetents([.medium, .large])
+      .presentationDragIndicator(.visible)
+    }
+  }
 }
+
 
 struct SleepPickerView: View {
     @State private var selectedSleepIndex: Int
