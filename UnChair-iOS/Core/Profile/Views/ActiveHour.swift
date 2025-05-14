@@ -44,15 +44,16 @@ struct ActiveHour: View {
                         .fontWeight(.semibold)
                 }
                 .padding(6)
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(5)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
             }
             .sheet(isPresented: $isStartTimePickerPresented) {
                 TimePickerView(startTime: $tempStartTime, endTime: $tempEndTime, onSave: {
                     settings.startTime = tempStartTime
                     settings.endTime = tempEndTime
                 })
-                .presentationDetents([.fraction(0.7), .large])
+                .presentationDetents([.fraction(0.65), .large])
                 .presentationDragIndicator(.visible)
             }
         }
@@ -65,155 +66,128 @@ struct ActiveHour: View {
     }
 }
 
+
 struct TimePickerView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
     @Binding var startTime: Date
-    @Binding var endTime:   Date
-    @State private var durationHours:   Int = 0
+    @Binding var endTime: Date
+    @State private var durationHours: Int = 0
     @State private var durationMinutes: Int = 0
-    @State private var isSelectingStartTime: Bool = true
-    var onSave: () -> Void
-    init(startTime: Binding<Date>, endTime:   Binding<Date>, onSave:    @escaping () -> Void)
-    {
-        self._startTime = startTime
-        self._endTime   = endTime
-        self.onSave     = onSave
-    }
-    
-    
+    @State private var selectingStart = true
+
+    let onSave: () -> Void
+
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading) {
-                Text("How long?")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .padding(.top, 12)
-                
-                HStack {
-                    Image(systemName: "clock")
-                    
-                    Text("Duration")
-                        .font(.subheadline)
-                    Spacer()
-                    Text("\(durationHours) h \(durationMinutes) m")
-                        .font(.subheadline)
-                        .padding(6)
-                        .cornerRadius(5)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(Color.purple, lineWidth: 1)
-                        )
-                }
-                .padding(.bottom, 24)
-                
-                Text("When?")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .padding(.bottom, 6)
-                
-                HStack {
-                    Image(systemName: "clock")
-                    
-                    Text("At time")
-                        .font(.subheadline)
-                }
-                .padding(.bottom, 20)
-                
-                HStack {
-                    Button(action: {
-                        isSelectingStartTime = true
-                    }) {
-                        HStack {
-                            Image(systemName: "clock")
-                            Text("Start:")
-                                .font(.callout)
-                            Text("\(formattedTime(startTime))")
-                        }
-                        .padding(6)
-                        .cornerRadius(5)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(isSelectingStartTime ? Color.purple : Color.gray.opacity(0.3), lineWidth: 2)
-                        )
-                    }
-                    
-                    Spacer()
-                    
-                    Image(systemName: "arrow.right")
-                        .foregroundColor(.gray)
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        isSelectingStartTime = false
-                    }) {
-                        HStack {
-                            Image(systemName: "clock")
-                            Text("End:")
-                                .font(.callout)
-                            Text("\(formattedTime(endTime))")
-                        }
-                        .padding(6)
-                        .cornerRadius(5)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5)
-                                .stroke(isSelectingStartTime ? Color.gray.opacity(0.3) : Color.purple, lineWidth: 2)
-                        )
-                    }
-                }
-                
-                DatePicker("", selection: isSelectingStartTime ? $startTime : $endTime, displayedComponents: .hourAndMinute)
-                    .datePickerStyle(WheelDatePickerStyle())
-                    .onChange(of: startTime) { _, _ in
-                        updateDuration()
-                    }
-                    .onChange(of: endTime) { _, _ in
-                        updateDuration()
-                    }
+        VStack(spacing: 24) {
+
+            Text("Set Time Range")
+                .font(.title2.weight(.bold))
+
+            // Start / End pickers
+            HStack(spacing: 16) {
+                timeField(
+                    icon: "clock",
+                    label: "Start",
+                    time: startTime,
+                    isActive: selectingStart
+                )
+                .onTapGesture { selectingStart = true }
+
+                timeField(
+                    icon: "clock.fill",
+                    label: "End",
+                    time: endTime,
+                    isActive: !selectingStart
+                )
+                .onTapGesture { selectingStart = false }
+            }
+
+            // Duration display
+            HStack {
+                Text("Duration")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text("\(durationHours) h \(durationMinutes) m")
+                    .font(.body.weight(.bold))
             }
             .padding()
-            .navigationBarItems(
-                leading: Button("Cancel") {
-                    presentationMode.wrappedValue.dismiss()
-                },
-                trailing: Button("Save") {
-                    onSave()
-                    presentationMode.wrappedValue.dismiss()
-                }
+            .background(Color.secondary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            // Time wheel
+            DatePicker(
+                "",
+                selection: selectingStart ? $startTime : $endTime,
+                displayedComponents: .hourAndMinute
             )
+            .datePickerStyle(.wheel)
+            .labelsHidden()
+            .background(.ultraThinMaterial)
+            .frame(height: 150)        // <- whatever height you like
+            .clipped()
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .onChange(of: startTime) { _ in updateDuration() }
+            .onChange(of: endTime)   { _ in updateDuration() }
+
+            
+
+            // Save button
+            Button {
+                onSave()
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Text("Save")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.purple)
+                    .foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            }
         }
-        .onAppear {
-            // recalc immediately when the sheet shows up
-            updateDuration()
-        }
+        .padding()
+        .onAppear { updateDuration() }
     }
-    
+
+    @ViewBuilder
+    private func timeField(icon: String, label: String, time: Date, isActive: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Label(label, systemImage: icon)
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Text(formattedTime(time))
+                .font(.headline.weight(.semibold))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(.ultraThinMaterial)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(isActive ? Color.purple : Color.gray.opacity(0.3), lineWidth: 2)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
     private func formattedTime(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
+        let f = DateFormatter()
+        f.timeStyle = .short
+        return f.string(from: date)
     }
-    
+
     private func updateDuration() {
-        let calendar = Calendar.current
-        
-        // If the user really did pick an earlier time-of-day,
-        // assume they meant “next day”
-        let actualEnd: Date
-        if endTime < startTime {
-            actualEnd = calendar.date(byAdding: .day, value: 1, to: endTime)!
-        } else {
-            actualEnd = endTime
-        }
-        
-        let components = calendar.dateComponents([.hour, .minute],
-                                                 from: startTime,
-                                                 to: actualEnd)
-        durationHours   = components.hour   ?? 0
-        durationMinutes = components.minute ?? 0
+        let cal = Calendar.current
+        let actualEnd = endTime < startTime
+            ? cal.date(byAdding: .day, value: 1, to: endTime)!
+            : endTime
+
+        let comps = cal.dateComponents([.hour, .minute], from: startTime, to: actualEnd)
+        durationHours   = comps.hour ?? 0
+        durationMinutes = comps.minute ?? 0
     }
-    
 }
+
 
 #Preview {
     ActiveHour()

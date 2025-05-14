@@ -9,83 +9,123 @@ import SwiftUI
 
 struct BreakTime: View {
     @StateObject private var settings = SettingsManager.shared
-    @State private var isTimePickerPresented = false
-    
+    @State private var tempDuration: TimeDuration
+    @State private var isPickerPresented = false
+
+    init() {
+        _tempDuration = State(initialValue: SettingsManager.shared.breakDuration)
+    }
+
     var body: some View {
         HStack {
             Image(systemName: "timer")
-            
+
             Text("Break Time")
-            
+
             Spacer()
-            
-            Button(action: {
-                isTimePickerPresented = true
-            }) {
+
+            Button {
+                tempDuration = settings.breakDuration
+                isPickerPresented = true
+            } label: {
                 Text("\(settings.breakDuration.hours) hr \(settings.breakDuration.minutes) min")
                     .padding(6)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(5)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .font(.subheadline.weight(.semibold))
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
-            .sheet(isPresented: $isTimePickerPresented) {
-                CustomTimePicker(selectedDuration: $settings.breakDuration, onDismiss: {
-                    // Notify that break settings changed
+            .sheet(isPresented: $isPickerPresented) {
+                BreakDurationPicker(
+                    duration: $tempDuration
+                ) {
+                    settings.breakDuration = tempDuration
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
-                })
-                .presentationDetents([.fraction(0.5), .medium])
+                }
+                .presentationDetents([.fraction(0.55), .medium])
+                .presentationDragIndicator(.hidden)
             }
         }
     }
 }
 
+struct BreakDurationPicker: View {
+    @Binding var duration: TimeDuration
+    @Environment(\.presentationMode) private var presentationMode
+    let onSave: () -> Void
 
-struct CustomTimePicker: View {
-    @Binding var selectedDuration: TimeDuration
-    @Environment(\.presentationMode) var presentationMode
-    let onDismiss: () -> Void
-    
-    let hourRange = 0...12
-    let minuteRange = 0...59
-    
+    // picker ranges
+    private let hours = Array(0...12)
+    private let minutes = Array(0...59)
+
     var body: some View {
-        VStack {
-            Text("How often do you want to take break?")
-                .font(.headline)
-                .padding()
-                .padding(.top, 20)
-            
-            HStack {
-                Picker("Hours", selection: $selectedDuration.hours) {
-                    ForEach(hourRange, id: \.self) { hour in
-                        Text("\(hour) hr").tag(hour)
-                    }
-                }
-                .pickerStyle(WheelPickerStyle())
-                .frame(width: 100)
-                
-                Picker("Minutes", selection: $selectedDuration.minutes) {
-                    ForEach(minuteRange, id: \.self) { minute in
-                        Text("\(minute) min").tag(minute)
-                    }
-                }
-                .pickerStyle(WheelPickerStyle())
-                .frame(width: 100)
+        VStack(spacing: 24) {
+            // custom handle
+            Capsule()
+                .frame(width: 40, height: 5)
+                .foregroundColor(.gray.opacity(0.3))
+                .padding(.top, 8)
+
+            Text("Focus Time")
+                .font(.title3.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+
+            // wheel pickers
+            HStack(spacing: 32) {
+                wheelPicker(selection: $duration.hours, data: hours, label: "hr")
+                wheelPicker(selection: $duration.minutes, data: minutes, label: "min")
             }
-            
-            Text("\(selectedDuration.hours) hr \(selectedDuration.minutes) min")
+
+            // live preview
+            Text("\(duration.hours) hr \(duration.minutes) min")
+                .font(.headline.weight(.bold))
                 .padding()
-            
-            Button("Done") {
+                .background(Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            Spacer()
+
+            // save button
+            Button {
+                onSave()
                 presentationMode.wrappedValue.dismiss()
-                onDismiss()
+            } label: {
+                Text("Done")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.purple)
+                    .foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
-            .padding()
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
+        VStack(spacing: 8) {
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Picker("", selection: selection) {
+                ForEach(data, id: \.self) { value in
+                    Text("\(value)")
+                        .tag(value)
+                }
+            }
+            .pickerStyle(.wheel)
+            .frame(width: 80, height: 100)
+            .clipped()
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
 }
 
 #Preview {
-    ContentView()
+    BreakTime()
 }
+
+
