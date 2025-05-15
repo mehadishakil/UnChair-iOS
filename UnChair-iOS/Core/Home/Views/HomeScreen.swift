@@ -65,14 +65,10 @@ struct HomeScreen: View {
     }
     
     var breakSectionView: some View {
-        VStack(alignment: .leading, spacing: 0) {
-//            Text("Take a break")
-//                .font(.footnote.weight(.semibold))
-//                .foregroundColor(.secondary)
-//                .padding(.horizontal, 20)
+        VStack(alignment: .leading, spacing: 16) {
             Text("Take a break")
-              .font(.title2).fontWeight(.semibold)
-              .padding(.horizontal, 20)
+                .font(.title2.weight(.semibold))
+                .padding(.horizontal, 20)
             
             GeometryReader { outer in
                 let containerSize = outer.size
@@ -87,15 +83,13 @@ struct HomeScreen: View {
                                 Image(item.image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
+                                    .frame(width: cardSize.width, height: 170)
                                     .offset(x: -minX)
-                                    .frame(width: cardSize.width * 2.5)
-                                    .frame(width: cardSize.width, height: cardSize.height)
                                     .overlay(content: {
                                         OverlayView(item: item)
                                     })
                                     .clipShape(.rect(cornerRadius: 20))
-                                    .shadow(color: .black.opacity(0.15), radius: 8, x: 5, y: 10)
-                                    .contentShape(Rectangle()) // Ensure the entire area is tappable
+                                    .contentShape(Rectangle())
                                     .onTapGesture {
                                         selectedBreak = item
                                         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
@@ -105,7 +99,7 @@ struct HomeScreen: View {
                             }
                             .frame(
                                 width: containerSize.width - 30,
-                                height: containerSize.height - 50
+                                height: containerSize.height
                             )
                             .scrollTransition(.interactive, axis: .horizontal) { view, phase in
                                 view.scaleEffect(phase.isIdentity ? 1 : 0.94)
@@ -119,7 +113,7 @@ struct HomeScreen: View {
                 .scrollTargetBehavior(.viewAligned)
                 .scrollIndicators(.hidden)
             }
-            .frame(height: 230)
+            .frame(height: 170)
         }
     }
     

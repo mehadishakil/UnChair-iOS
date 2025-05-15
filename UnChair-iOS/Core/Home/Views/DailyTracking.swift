@@ -11,10 +11,9 @@ struct DailyTracking: View {
     @EnvironmentObject var healthViewModel: HealthDataViewModel
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
+        VStack(alignment: .leading, spacing: 16) {
             Text("Daily Tracking")
-              .font(.title2).fontWeight(.semibold)
-              .padding(.horizontal, 20)
+                .font(.title2.weight(.semibold))
             
             HStack(spacing: 15) {
                 DailyStepsView()

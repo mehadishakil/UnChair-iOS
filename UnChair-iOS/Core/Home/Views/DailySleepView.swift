@@ -51,11 +51,13 @@ struct DailySleepView: View {
             .font(.system(.subheadline, weight: .medium))
             .foregroundColor(.white.opacity(0.8))
         }
-        .padding(.vertical, 20)
       }
       .buttonStyle(PlainButtonStyle())
     }
+    .frame(height: 170)
     .frame(maxWidth: .infinity)
+    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+    .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 5)
     .sheet(isPresented: $showPicker) {
       SleepPickerView(sleep: healthVM.sleepHours) { newVal in
         healthVM.updateSleepHours(newVal)
