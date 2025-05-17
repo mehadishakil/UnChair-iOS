@@ -17,22 +17,9 @@ struct DailyWaterView: View {
   var body: some View {
       ZStack{
           RoundedRectangle(cornerRadius: 20, style: .continuous)
-            .fill(
-                Color.blue
-//              LinearGradient(
-//                colors: [
-//                  Color.blue.opacity(0.5),
-//                  Color.blue.opacity(0.2),
-//                ],
-//                startPoint: .topLeading,
-//                endPoint: .bottomTrailing
-//              )
-            )
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 5)
+              .fill(Color.blue.opacity(0.5))
           
-        GlassCard {
+        
           Button {
               showWaterPicker.toggle()
           } label: {
@@ -49,7 +36,6 @@ struct DailyWaterView: View {
             .presentationDragIndicator(.visible)
         }
       }
-  }
 }
 
 struct CircularProgressBar: View {
@@ -62,19 +48,22 @@ struct CircularProgressBar: View {
         ZStack {
             Circle()
                 .stroke(Color.white.opacity(0.7), lineWidth: 10)
+                .padding()
             
             Circle()
                 .trim(from: 0, to: min(progress, 1.0))
                 .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round))
                 .foregroundColor(.blue)
                 .rotationEffect(.degrees(-90))
+                .padding()
             
             if current > target {
                 Circle()
                     .trim(from: 0, to: excessProgress)
-                    .stroke(style: StrokeStyle(lineWidth: 15, lineCap: .round)) // Bolder line
+                    .stroke(style: StrokeStyle(lineWidth: 15, lineCap: .round))
                     .foregroundColor(.blue)
                     .rotationEffect(.degrees(-90))
+                    .padding()
             }
             
             VStack {
@@ -83,15 +72,12 @@ struct CircularProgressBar: View {
                     .scaledToFit()
                     .frame(height: 30)
                     .foregroundColor(.blue).opacity(0.8)
-                Text("Drink Target")
-                    .font(.system(size: 14).weight(.semibold))
+                Text("Drinking")
+                    .font(.system(size: 14))
                     .foregroundColor(.white)
 
                 HStack {
-                    Text("\(current)")
-                        .font(.system(size: 14).weight(.semibold))
-                        .foregroundColor(.white)
-                    Text("/ \(target)ml")
+                    Text("\(current) ml")
                         .font(.system(size: 14).weight(.semibold))
                         .foregroundColor(.white)
                 }

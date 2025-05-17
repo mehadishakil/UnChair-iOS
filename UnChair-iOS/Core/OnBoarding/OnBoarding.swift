@@ -23,7 +23,6 @@ struct OnBoarding: View {
             ContentView()
         }.animation(.none)
     }
-    
 }
 
 

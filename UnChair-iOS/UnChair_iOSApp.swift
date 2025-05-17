@@ -33,7 +33,6 @@ struct UnChair_iOSApp: App {
                 .environmentObject(healthViewModel)
                 .onChange(of: scenePhase) { _, newPhase in
                     if newPhase == .active {
-                        // When app becomes active, check if we need to reschedule
                         NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
                         NotificationManager.shared.scheduleNextBreakNotification()
                     }

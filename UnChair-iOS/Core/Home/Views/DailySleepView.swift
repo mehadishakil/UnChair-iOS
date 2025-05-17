@@ -38,13 +38,9 @@ struct DailySleepView: View {
             .frame(maxWidth: .infinity, alignment: .center)
 
           HStack(alignment: .firstTextBaseline, spacing: 4) {
-            Text(String(format: "%.1f", healthVM.sleepHours))
+            Text(String(format: "%.1f", healthVM.sleepHours)+" h")
               .font(.system(.title, weight: .bold))
               .foregroundColor(.white)
-            Text("h")
-              .font(.system(.title2, weight: .bold))
-              .foregroundColor(.white)
-              .baselineOffset(-2)
           }
 
           Text("Sleep")
