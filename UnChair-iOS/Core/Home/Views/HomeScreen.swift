@@ -38,6 +38,7 @@ struct HomeScreen: View {
                                 }
                                 .padding()
                                 
+                                
                                 DailyTracking()
                                 
                                 

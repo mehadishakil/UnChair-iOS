@@ -30,6 +30,7 @@ struct DailyStepsView: View {
                 .font(.system(.subheadline, weight: .medium))
                 .foregroundColor(.white)
             }
+            .padding()
           }
           .onDisappear {
             if healthVM.stepCount > 0 {

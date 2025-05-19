@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import RevenueCat
+import RevenueCatUI
 
 struct MainView: View {
     
@@ -24,6 +26,7 @@ struct MainView: View {
                             healthViewModel.setUserId(userId)
                         }
                     }
+                    .presentPaywallIfNeeded(requiredEntitlementIdentifier: "pro")
             case .unauthenticated:
                 Authentication()
             }

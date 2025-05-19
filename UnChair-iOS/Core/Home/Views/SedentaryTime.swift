@@ -23,60 +23,90 @@ struct SedentaryTime: View {
     }
     
     var body: some View {
-        HStack() {
-            Spacer()
+        ZStack {
+            LinearGradient(
+                        colors: [Color.purple.opacity(0.6), Color.blue.opacity(0.6)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous)) // Match GlassCard
+                    .ignoresSafeArea()
             
-            Image(systemName: "hourglass.tophalf.filled")
-                .resizable()
-                .frame(width: 90, height: 130)
-            
-            Spacer()
-            
-            VStack(alignment: .center) {
-                Text("Sedentary Time")
-                    .font(.title3)
+            HStack() {
+                Spacer()
                 
-                Text("\(formattedTime(timeElapsed))")
-                    .font(.title3)
-                Button {
-                    NotificationManager.shared.saveLastBreakTime()
-                    NotificationManager.shared.scheduleNextBreakNotification()
-                    onTakeBreak()
-                } label: {
-                    Text("Take a Break")
-                }
-                .buttonStyle(.bordered)
+                Image(systemName: "hourglass.tophalf.filled")
+                    .resizable()
+                    .frame(width: 90, height: 130)
+                    .foregroundColor(.white)
+                
+                Spacer()
+                
+                VStack(alignment: .center) {
+                    Text("Sedentary Time")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                    
+                    Text("\(formattedTime(timeElapsed))")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                    Button {
+                        NotificationManager.shared.saveLastBreakTime()
+                        NotificationManager.shared.scheduleNextBreakNotification()
+                        onTakeBreak()
+                    } label: {
+                        Text("Take a Break")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            // 1) Frosted material background behind the padded text
+                            .background(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(.ultraThinMaterial)
+                            )
+                            // 2) Optional subtle white border
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                            )
+                    }
+                    .buttonStyle(.plain)     // remove the default bordered style
 
+
+                }
+                Spacer()
             }
-            Spacer()
-        }
-        .onAppear {
-            NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
-            updateTimeElapsed()
-            
-            NotificationCenter.default.addObserver(
-                forName: .breakNotificationTapped,
-                object: nil,
-                queue: .main
-            ) { _ in
+            .padding()
+            .onAppear {
+                NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
+                updateTimeElapsed()
+                
+                NotificationCenter.default.addObserver(
+                    forName: .breakNotificationTapped,
+                    object: nil,
+                    queue: .main
+                ) { _ in
+                    updateTimeElapsed()
+                }
+                
+                NotificationCenter.default.addObserver(
+                    forName: .breakSettingsChanged,
+                    object: nil,
+                    queue: .main
+                ) { _ in
+                    NotificationManager.shared.scheduleNextBreakNotification()
+                }
+            }
+            .onDisappear {
+                NotificationCenter.default.removeObserver(self)
+            }
+            .onReceive(timer) { _ in
                 updateTimeElapsed()
             }
-            
-            NotificationCenter.default.addObserver(
-                forName: .breakSettingsChanged,
-                object: nil,
-                queue: .main
-            ) { _ in
-                NotificationManager.shared.scheduleNextBreakNotification()
+
+        }
             }
-        }
-        .onDisappear {
-            NotificationCenter.default.removeObserver(self)
-        }
-        .onReceive(timer) { _ in
-            updateTimeElapsed()
-        }
-    }
     
     private func updateTimeElapsed() {
         let now = Date()

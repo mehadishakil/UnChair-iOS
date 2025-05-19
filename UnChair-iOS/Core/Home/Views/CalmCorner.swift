@@ -116,7 +116,7 @@ struct TimeSelectionView: View {
                     .frame(minWidth: 80)
                 
                 AdjustmentButton(systemImage: "plus.circle.fill") {
-                    selectedTime = min(60, selectedTime + 1)
+                selectedTime = min(60, selectedTime + 1)
                 }
             }
             

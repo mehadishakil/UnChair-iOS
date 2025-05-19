@@ -11,6 +11,8 @@ import FirebaseCore
 import GoogleSignIn
 import FirebaseFirestore
 import UserNotifications
+import RevenueCat
+import FirebaseAuth
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     
@@ -32,6 +34,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                 print("Notification permission denied")
             }
         }
+        
+        Purchases.logLevel = .debug
+        Purchases.configure(
+            withAPIKey: Secrets.apiKey,
+            appUserID: Auth.auth().currentUser?.uid
+        )
         
         return true
     }

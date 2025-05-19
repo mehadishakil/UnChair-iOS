@@ -27,6 +27,7 @@
 		E847C0F42DB82F3A005BED49 /* BreakDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847C0F32DB82F3A005BED49 /* BreakDetailsView.swift */; };
 		E847C0F82DB83111005BED49 /* BreakSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847C0F72DB83111005BED49 /* BreakSectionView.swift */; };
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
+		E84B469B2DDBA5C500108CCC /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84B469A2DDBA5C500108CCC /* Secrets.swift */; };
 		E85889352DB349E900883430 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85889342DB349E900883430 /* NotificationManager.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
 		E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDED2D30F2BC00F62142 /* FirebaseFirestore */; };
@@ -110,6 +111,7 @@
 		E847C0F32DB82F3A005BED49 /* BreakDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakDetailsView.swift; sourceTree = "<group>"; };
 		E847C0F72DB83111005BED49 /* BreakSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakSectionView.swift; sourceTree = "<group>"; };
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
+		E84B469A2DDBA5C500108CCC /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		E85889342DB349E900883430 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
 		E866CDFB2D3143F500F62142 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserData.swift; path = "UnChair-iOS/Core/Authentication/UserData.swift"; sourceTree = SOURCE_ROOT; };
@@ -399,6 +401,7 @@
 				E8C01E072CFE15790073C616 /* AuthController.swift */,
 				E8D2BA7A2C84897400BEEAAF /* Authentication.swift */,
 				E866CE032D3151D900F62142 /* UserManager.swift */,
+				E84B469A2DDBA5C500108CCC /* Secrets.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -561,6 +564,7 @@
 				E847C0F22DB82F2A005BED49 /* BreakItem.swift in Sources */,
 				E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */,
 				E8AFBAA62C9C45B200AEE292 /* WaterBarChart2.swift in Sources */,
+				E84B469B2DDBA5C500108CCC /* Secrets.swift in Sources */,
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8AFBAAB2C9C45D600AEE292 /* ExerciseChartModel.swift in Sources */,
 				E828853D2DC6AA7E00EEAE8F /* GlassCard.swift in Sources */,
