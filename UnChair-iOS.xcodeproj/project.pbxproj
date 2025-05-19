@@ -69,6 +69,8 @@
 		E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */; };
 		E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */; };
 		E8BB4E362BFD0AEF00C1459C /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB4E352BFD0AEF00C1459C /* SettingsScreen.swift */; };
+		E8BE39B72DDBD885006F48B1 /* configurationTest.storekit in Resources */ = {isa = PBXBuildFile; fileRef = E8BE39B62DDBD885006F48B1 /* configurationTest.storekit */; };
+		E8BE39B92DDBD9A9006F48B1 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = E8BE39B82DDBD9A9006F48B1 /* StoreKitTestCertificate.cer */; };
 		E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E072CFE15790073C616 /* AuthController.swift */; };
 		E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E092CFE16670073C616 /* AuthState.swift */; };
 		E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0B2CFE16900073C616 /* MainView.swift */; };
@@ -151,6 +153,8 @@
 		E8B9A2E82C556C55003127CC /* DetailsBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsBreakView.swift; sourceTree = "<group>"; };
 		E8BB4E312BFD0A5E00C1459C /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		E8BB4E352BFD0AEF00C1459C /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+		E8BE39B62DDBD885006F48B1 /* configurationTest.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = configurationTest.storekit; sourceTree = "<group>"; };
+		E8BE39B82DDBD9A9006F48B1 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificate.cer; sourceTree = "<group>"; };
 		E8C01E072CFE15790073C616 /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		E8C01E092CFE16670073C616 /* AuthState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthState.swift; sourceTree = "<group>"; };
 		E8C01E0B2CFE16900073C616 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -214,6 +218,8 @@
 		E874A9F22BFB53A50075644C = {
 			isa = PBXGroup;
 			children = (
+				E8BE39B62DDBD885006F48B1 /* configurationTest.storekit */,
+				E8BE39B82DDBD9A9006F48B1 /* StoreKitTestCertificate.cer */,
 				E874A9FD2BFB53A50075644C /* UnChair-iOS */,
 				E866CDEC2D30F2BC00F62142 /* Frameworks */,
 				E874A9FC2BFB53A50075644C /* Products */,
@@ -545,10 +551,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				E874AA062BFB53A60075644C /* Preview Assets.xcassets in Resources */,
+				E8BE39B92DDBD9A9006F48B1 /* StoreKitTestCertificate.cer in Resources */,
 				E899A41B2C6BEBBF0042C5CC /* single_beep.mp3 in Resources */,
 				E832992D2D2DCAB500B5D009 /* GoogleService-Info.plist in Resources */,
 				E899A4192C6BE73E0042C5CC /* count_down.mp3 in Resources */,
 				E874AA032BFB53A60075644C /* Assets.xcassets in Resources */,
+				E8BE39B72DDBD885006F48B1 /* configurationTest.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
