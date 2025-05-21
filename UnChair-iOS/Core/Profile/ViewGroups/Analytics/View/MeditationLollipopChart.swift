@@ -65,7 +65,7 @@ struct MeditationLollipopChart: View {
                             .foregroundStyle(.white)
                             .padding(12)
                             .frame(width: 120)
-                            .background(RoundedRectangle(cornerRadius: 10).fill(.pink.gradient))
+                            .background(RoundedRectangle(cornerRadius: 8).fill(.pink.gradient))
                         }
                 }
                 

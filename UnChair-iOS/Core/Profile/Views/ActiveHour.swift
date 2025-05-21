@@ -45,7 +45,7 @@ struct ActiveHour: View {
                 }
                 .padding(6)
                 .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             }
             .sheet(isPresented: $isStartTimePickerPresented) {

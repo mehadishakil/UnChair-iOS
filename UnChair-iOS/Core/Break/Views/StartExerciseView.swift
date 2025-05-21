@@ -100,7 +100,7 @@ struct StartExerciseView: View {
                                 .foregroundColor(.white)
                                 .frame(width: 100, height: 50)
                                 .background(.secondary)
-                                .cornerRadius(25)
+                                .cornerRadius(24)
                         }
                         
                         Button(action: {
@@ -111,7 +111,7 @@ struct StartExerciseView: View {
                                 .foregroundColor(.white)
                                 .frame(width: 100, height: 50)
                                 .background(.secondary)
-                                .cornerRadius(25)
+                                .cornerRadius(24)
                         }
                     }
                 } else {
@@ -120,7 +120,7 @@ struct StartExerciseView: View {
                             .foregroundColor(.whiteblack)
                             .frame(width: 200, height: 50)
                             .background(.primary)
-                            .cornerRadius(25)
+                            .cornerRadius(24)
                     }
                 }
             }

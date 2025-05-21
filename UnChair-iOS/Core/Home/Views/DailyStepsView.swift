@@ -13,11 +13,9 @@ struct DailyStepsView: View {
   var body: some View {
       ZStack{
           RoundedRectangle(cornerRadius: 20, style: .continuous)
-              .fill(
-                Color.blue.opacity(0.8)
-              )
+              .fill(Color.blue.quaternary)
           
-          GlassCard {
+          
             VStack(spacing: 16) {
               Image(systemName: "figure.walk")
                 .font(.system(size: 40))
@@ -27,16 +25,17 @@ struct DailyStepsView: View {
                 .font(.system(.title, weight: .bold))
                 .foregroundColor(.white)
               Text("Steps")
-                .font(.system(.subheadline, weight: .medium))
+                    .font(.system(.title2, weight: .medium))
                 .foregroundColor(.white)
             }
             .padding()
-          }
-          .onDisappear {
-            if healthVM.stepCount > 0 {
-              healthVM.updateStepCount(healthVM.stepCount)
-            }
-          }
+          
+          
+      }
+      .onDisappear {
+        if healthVM.stepCount > 0 {
+          healthVM.updateStepCount(healthVM.stepCount)
+        }
       }
     
   }

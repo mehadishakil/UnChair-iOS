@@ -81,7 +81,7 @@ struct DetailsBreakView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 50, height: 50)
-                                .cornerRadius(8)
+                                .cornerRadius(12)
                             VStack(alignment: .leading) {
                                 Text(exercise.name)
                                     .fontWeight(.bold)
@@ -105,7 +105,7 @@ struct DetailsBreakView: View {
                         .padding(.vertical)
                         .frame(maxWidth: .infinity)
                         .background(.primary)
-                        .cornerRadius(10)
+                        .cornerRadius(12)
                 }
                 .padding(.vertical, 50)
                 .padding(.horizontal)

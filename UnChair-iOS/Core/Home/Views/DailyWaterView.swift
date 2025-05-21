@@ -17,7 +17,7 @@ struct DailyWaterView: View {
   var body: some View {
       ZStack{
           RoundedRectangle(cornerRadius: 20, style: .continuous)
-              .fill(Color.blue.opacity(0.5))
+              .fill(Color.blue.quaternary)
           
         
           Button {
@@ -67,12 +67,12 @@ struct CircularProgressBar: View {
             }
             
             VStack {
-                Image(systemName: "drop.fill")
+                Image("water")
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 30)
+                    .frame(height: 40)
                     .foregroundColor(.blue).opacity(0.8)
-                Text("Drinking")
+                Text("Water")
                     .font(.system(size: 14))
                     .foregroundColor(.white)
 

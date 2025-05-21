@@ -349,7 +349,7 @@ struct WaterBarChartView: View {
                     .frame(height: 180)
                     .frame(maxWidth: .infinity)
                     .background(Color.gray.opacity(0.1))
-                    .cornerRadius(10)
+                    .cornerRadius(12)
             } else {
                 WaterBarChart(
                     currentActiveItem: $currentActiveItem,

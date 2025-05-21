@@ -13,20 +13,8 @@ struct DailySleepView: View {
 
   var body: some View {
     ZStack {
-      RoundedRectangle(cornerRadius: 20, style: .continuous)
-        .fill(
-          LinearGradient(
-            colors: [
-              Color.blue.opacity(0.5),
-              Color.purple.opacity(0.5)
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-          )
-        )
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 5)
+        RoundedRectangle(cornerRadius: 20, style: .continuous)
+            .fill(Color.blue.quaternary)
 
       Button {
         showPicker.toggle()
@@ -43,7 +31,7 @@ struct DailySleepView: View {
               .foregroundColor(.white)
           }
 
-          Text("Sleep")
+          Text("Sleeps")
             .font(.system(.subheadline, weight: .medium))
             .foregroundColor(.white.opacity(0.8))
         }

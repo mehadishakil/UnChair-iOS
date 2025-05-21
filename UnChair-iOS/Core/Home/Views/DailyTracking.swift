@@ -12,10 +12,10 @@ struct DailyTracking: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Daily Tracking")
+            Text("Activities")
                 .font(.title2.weight(.semibold))
             
-            HStack(spacing: 15) {
+            HStack(spacing: 16) {
                 DailyStepsView()
                 DailyWaterView()
             }

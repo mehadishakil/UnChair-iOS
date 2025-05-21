@@ -146,7 +146,7 @@ struct ExerciseMultiLineChart: View {
                             .foregroundStyle(.white)
                             .padding(12)
                             .frame(width: 180)
-                            .background(RoundedRectangle(cornerRadius: 10).fill(.pink.gradient))
+                            .background(RoundedRectangle(cornerRadius: 12).fill(.pink.gradient))
                         }
                 }
                 

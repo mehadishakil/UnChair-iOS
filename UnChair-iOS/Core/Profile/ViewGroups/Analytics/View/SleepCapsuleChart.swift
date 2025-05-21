@@ -416,7 +416,7 @@ struct SleepCapsuleChart: View {
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .center) {
-                RoundedRectangle(cornerRadius: 3)
+                RoundedRectangle(cornerRadius: 4)
                     .fill(Color.gray.opacity(0.7))
                     .frame(height: 0.5)
                     .frame(maxWidth: .infinity)

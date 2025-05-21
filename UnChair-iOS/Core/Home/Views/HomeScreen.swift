@@ -27,7 +27,7 @@ struct HomeScreen: View {
                             VStack(spacing: 0) {
                                 HeaderView()
                                 HCalendarView()
-                                    .padding(.bottom)
+                                    .padding(.vertical)
                                 GlassCard{
                                     SedentaryTime(notificationPermissionGranted: $notificationPermissionGranted,
                                                   selectedDuration: $selectedDuration) {
@@ -36,7 +36,8 @@ struct HomeScreen: View {
                                         }
                                     }
                                 }
-                                .padding()
+                                .padding(.horizontal)
+                                .padding(.top)
                                 
                                 
                                 DailyTracking()
@@ -66,31 +67,37 @@ struct HomeScreen: View {
     }
     
     var breakSectionView: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Take a break")
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Breaks")
                 .font(.title2.weight(.semibold))
                 .padding(.horizontal, 20)
-            
+
             GeometryReader { outer in
                 let containerSize = outer.size
-                
+                let cardInset: CGFloat = 50
+                let sideInset = cardInset / 2
+
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack{
+                    HStack(spacing: 8) {
                         ForEach(breakList) { item in
                             GeometryReader { geo in
-                                let cardSize = geo.size
-                                let minX = min(geo.frame(in: .scrollView).minX * 1.4, geo.size.width * 1.4)
-                                
+                                let cardFrame      = geo.frame(in: .global)
+                                let cardMidX       = cardFrame.midX
+                                let screenMidX     = UIScreen.main.bounds.width / 2
+                                let strength: CGFloat = 0.95
+                                let distance       = cardMidX - screenMidX
+                                let parallaxOffset = -distance * strength
+
                                 Image(item.image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(width: cardSize.width, height: 170)
-                                    .offset(x: -minX)
-                                    .overlay(content: {
+                                    .frame(width: cardFrame.width, height: cardFrame.height)
+                                    .offset(x: parallaxOffset)
+                                    .cornerRadius(20)
+                                    .overlay {
                                         OverlayView(item: item)
-                                    })
-                                    .clipShape(.rect(cornerRadius: 20))
-                                    .contentShape(Rectangle())
+                                    }
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
                                     .onTapGesture {
                                         selectedBreak = item
                                         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
@@ -99,22 +106,24 @@ struct HomeScreen: View {
                                     }
                             }
                             .frame(
-                                width: containerSize.width - 30,
+                                width: containerSize.width - cardInset,
                                 height: containerSize.height
                             )
                             .scrollTransition(.interactive, axis: .horizontal) { view, phase in
-                                view.scaleEffect(phase.isIdentity ? 1 : 0.94)
+                                view.scaleEffect(phase.isIdentity ? 1 : 0.98)
                             }
                         }
-                        .padding(.horizontal)
                     }
-                    .scrollTargetLayout()
+                    .padding(.trailing, sideInset)
+                    .padding(.leading)
                     .frame(height: containerSize.height)
+                    .scrollTargetLayout()
                 }
                 .scrollTargetBehavior(.viewAligned)
                 .scrollIndicators(.hidden)
             }
             .frame(height: 170)
+            .padding(.top)
         }
     }
     

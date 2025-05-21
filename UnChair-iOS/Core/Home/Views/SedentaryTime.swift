@@ -24,13 +24,8 @@ struct SedentaryTime: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(
-                        colors: [Color.purple.opacity(0.6), Color.blue.opacity(0.6)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous)) // Match GlassCard
-                    .ignoresSafeArea()
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color.blue.quaternary)
             
             HStack() {
                 Spacer()
@@ -38,40 +33,36 @@ struct SedentaryTime: View {
                 Image(systemName: "hourglass.tophalf.filled")
                     .resizable()
                     .frame(width: 90, height: 130)
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                 
                 Spacer()
                 
                 VStack(alignment: .center) {
                     Text("Sedentary Time")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                     
                     Text("\(formattedTime(timeElapsed))")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        .foregroundColor(.primary)
                     Button {
-                        NotificationManager.shared.saveLastBreakTime()
-                        NotificationManager.shared.scheduleNextBreakNotification()
                         onTakeBreak()
                     } label: {
-                        Text("Take a Break")
+                        Text("Unchair")
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(.primary)
                             .padding(.vertical, 8)
                             .padding(.horizontal, 16)
-                            // 1) Frosted material background behind the padded text
                             .background(
                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                                     .fill(.ultraThinMaterial)
                             )
-                            // 2) Optional subtle white border
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                                     .stroke(Color.white.opacity(0.2), lineWidth: 1)
                             )
                     }
-                    .buttonStyle(.plain)     // remove the default bordered style
+                    .buttonStyle(.plain)
 
 
                 }
@@ -170,4 +161,10 @@ func formattedTime(_ totalSeconds: Int) -> String {
     let min = (totalSeconds % 3600) / 60
     let sec = totalSeconds % 60
     return String(format: "%02d:%02d:%02d", hours, min, sec)
+}
+
+#Preview {
+    SedentaryTime(notificationPermissionGranted: .constant(true), selectedDuration: .constant(.init(hours: 2, minutes: 2))) {
+        
+    }
 }

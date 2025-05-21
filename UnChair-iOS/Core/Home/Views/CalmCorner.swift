@@ -14,7 +14,7 @@ struct CalmCorner: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Calm Corner")
+            Text("Meditation")
                 .font(.title2.weight(.semibold))
             
             Button {
@@ -29,8 +29,8 @@ struct CalmCorner: View {
                 ) {
                     navigate = true
                 }
-                .presentationDetents([.height(300)])
-                .presentationDragIndicator(.visible)
+                .presentationDetents([.height(320)])
+                .presentationDragIndicator(.hidden)
             }
             
             NavigationLink(
@@ -54,8 +54,8 @@ struct CalmCorner: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text("Meditate")
-                    .font(.title2.bold())
-                Text("Balance your thoughts and bring peace to your soul with a gentle meditation session.")
+                    .font(.title.bold())
+                Text("Balance your thoughts with a calming meditation")
                     .font(.footnote)
                     .foregroundColor(.white.opacity(0.9))
             }

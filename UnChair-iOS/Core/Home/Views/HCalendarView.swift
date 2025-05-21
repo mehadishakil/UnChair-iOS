@@ -68,20 +68,44 @@ struct HCalendarView: View {
                         }
                     
                     ForEach(Array(components.enumerated()), id: \.element) { index, date in
-                        VStack {
-                            Text(day(from: date))
+                        let isSelected = calendar.isDate(selectedDate, equalTo: date, toGranularity: .day)
+
+                        VStack(spacing: 12) {
+                            Text(day(from: date).prefix(1)) // "M", "T", etc.
                                 .font(.caption)
-                            Text("\(calendar.component(.day, from: date))")
+                                .fontWeight(.medium)
+
+                            ZStack {
+                                if isSelected {
+                                    Circle()
+                                        .fill(Color.white)
+                                        .frame(width: 36, height: 36)
+                                }
+
+                                Text("\(calendar.component(.day, from: date))")
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(isSelected ? .darkGray : .primary)
+                            }
                         }
-                        .frame(width: 35, height: 35)
-                        .padding(8)
-                        .background(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.primary : Color.clear /*Color.primary : Color.clear*/)
-                        .cornerRadius(100)
-                        .foregroundColor(calendar.isDate(selectedDate, equalTo: date, toGranularity: .day) ? Color.white : .primary)
+                        .frame(width: 50, height: 80)
+                        .background(
+                            ZStack {
+                                if isSelected {
+                                    RoundedRectangle(cornerRadius: 22)
+                                        .fill(Color.blue)
+                                        .matchedGeometryEffect(id: "selectedBackground", in: Namespace().wrappedValue)
+                                }
+                            }
+                        )
+                        .animation(.easeInOut(duration: 0.3), value: selectedDate)
+                        .foregroundColor(isSelected ? .white : .primary)
                         .onTapGesture {
-                            selectedDate = date
+                            withAnimation {
+                                selectedDate = date
+                            }
                         }
                         .id(index)
+
                     }
                 }
             }
