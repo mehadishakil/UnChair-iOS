@@ -155,21 +155,20 @@ struct WaterBarChart : View {
                         .foregroundStyle(.secondary.opacity(0.3))
                         .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                             VStack{
+                                Text("\(selectedItem.consumption, specifier: "%.1f")")
+                                    .font(.caption.bold())
+                                
                                 if currentTab == "Year" {
                                     Text(selectedItem.date, format: .dateTime.month(.wide))
-                                        .bold()
+                                        .font(.caption2)
                                 } else {
                                     Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-                                        .bold()
+                                        .font(.caption2)
                                 }
-                                
-                                Text("\(selectedItem.consumption, specifier: "%.1f")")
-                                    .font(.title3.bold())
                             }
                             .foregroundStyle(.white)
-                            .padding(12)
-                            .frame(width: 120)
-                            .background(RoundedRectangle(cornerRadius: 10).fill(.pink.gradient))
+                            .padding(8)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
                         }
                 }
                 
@@ -188,13 +187,13 @@ struct WaterBarChart : View {
                         y: .value("Value", water.consumption)
                     )
                     .cornerRadius(4)
-                    .foregroundStyle(Color.pink.gradient)
+                    .foregroundStyle(Color.blue.gradient)
                     .opacity(rawSelectedDate == nil || Calendar.current.isDate(water.date,
                              equalTo: selectedViewItem?.date ?? Date(),
                              toGranularity: currentTab == "Year" ? .month : .day) ? 1.0 : 0.3)
                 }
             }
-            .frame(height: 180)
+            .frame(height: 160)
             .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
             .onChange(of: waterData) { oldData, newData in
                 if currentTab == "Year" {

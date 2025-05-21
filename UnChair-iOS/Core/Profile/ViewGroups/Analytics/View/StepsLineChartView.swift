@@ -21,7 +21,7 @@ struct StepsLineChartView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "figure.walk")
+                        Image(systemName: "shoeprints.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)

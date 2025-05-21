@@ -87,11 +87,11 @@ struct HCalendarView: View {
                                     .foregroundColor(isSelected ? .darkGray : .primary)
                             }
                         }
-                        .frame(width: 50, height: 80)
+                        .frame(width: 48, height: 80)
                         .background(
                             ZStack {
                                 if isSelected {
-                                    RoundedRectangle(cornerRadius: 22)
+                                    RoundedRectangle(cornerRadius: 36)
                                         .fill(Color.blue)
                                         .matchedGeometryEffect(id: "selectedBackground", in: Namespace().wrappedValue)
                                 }

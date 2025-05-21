@@ -17,7 +17,7 @@ struct DailyStepsView: View {
           
           
             VStack(spacing: 16) {
-              Image(systemName: "figure.walk")
+              Image(systemName: "shoeprints.fill")
                 .font(.system(size: 40))
                 .frame(maxWidth: .infinity, alignment: .center)
                 .foregroundStyle(Color.white)

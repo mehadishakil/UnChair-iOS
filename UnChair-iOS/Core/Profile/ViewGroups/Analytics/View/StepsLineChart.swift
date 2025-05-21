@@ -222,22 +222,22 @@ struct StepsLineChart: View {
                     RuleMark(x: .value("Selected", selectedItem.date, unit: component))
                         .foregroundStyle(.secondary.opacity(0.3))
                         .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                            VStack{
-                                if currentTab == "Year" {
-                                    Text(selectedItem.date, format: .dateTime.month(.wide))
-                                        .bold()
-                                } else {
-                                    Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-                                        .bold()
-                                }
                                 
-                                Text("\(selectedItem.steps)")
-                                    .font(.title3.bold())
+                        VStack{
+                            Text("\(selectedItem.steps)")
+                                .font(.caption.bold())
+                            
+                            if currentTab == "Year" {
+                                Text(selectedItem.date, format: .dateTime.month(.wide))
+                                    .font(.caption2)
+                            } else {
+                                Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                                    .font(.caption2)
                             }
-                            .foregroundStyle(.white)
-                            .padding(12)
-                            .frame(width: 120)
-                            .background(RoundedRectangle(cornerRadius: 10).fill(.blue.gradient))
+                        }
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
                         }
                 }
             }

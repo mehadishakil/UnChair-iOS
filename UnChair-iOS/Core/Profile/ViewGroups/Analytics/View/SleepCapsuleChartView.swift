@@ -24,7 +24,7 @@ struct SleepCapsuleChartView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "moon.fill")
+                        Image(systemName: "moon.zzz.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
