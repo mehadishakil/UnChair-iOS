@@ -216,33 +216,42 @@ struct CapsuleItem: View {
             VStack {
                 // caption
                 if isActive {
-                    VStack{
-                        Text("\(data.sleep, specifier: "%.1f")h")
-                            .font(.caption.bold())
-                            .multilineTextAlignment(.center)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .transition(.opacity.combined(with: .scale))
-                        
-                        if currentTab == "Year" {
-                            Text(data.date, format: .dateTime.month(.wide))
-                                .font(.caption2)
-                        } else {
-                            Text(data.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-                                .font(.caption2)
+                    VStack(spacing: 0) {
+                        VStack{
+                            Text("\(data.sleep, specifier: "%.1f")h")
+                                .font(.caption.bold())
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .transition(.opacity.combined(with: .scale))
+                            
+                            if currentTab == "Year" {
+                                Text(data.date, format: .dateTime.month(.wide))
+                                    .font(.caption2)
+                            } else {
+                                Text(data.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                                    .font(.caption2)
+                            }
                         }
-                    }
-                    .foregroundStyle(.white)
-                    .padding(8)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
 
-                    .frame(minWidth: max(capsuleWidth * 5, 150))
-                    .transition(.opacity.combined(with: .scale))
-                    .zIndex(1) // Ensure caption is above everything
-                    .padding(.bottom, 5)
+                        .frame(minWidth: max(capsuleWidth * 5, 150))
+                        .transition(.opacity.combined(with: .scale))
+                        .zIndex(1)
+                        
+                        
+                        Rectangle()
+                          .fill(Color.blue.tertiary)
+                          .frame(width: 1, height: 80)
+                          .padding(.top, -2)
+                    }
+                    .offset(y: -44)
+                    .animation(.easeInOut(duration: 0.2), value: isActive)
                 }
                 Spacer()
             }
-            .animation(.easeInOut(duration: 0.2), value: isActive)
+            
             
             VStack {
                 Spacer()

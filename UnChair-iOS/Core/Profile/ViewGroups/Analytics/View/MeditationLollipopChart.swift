@@ -65,7 +65,7 @@ struct MeditationLollipopChart: View {
                             .foregroundStyle(.white)
                             .padding(12)
                             .frame(width: 120)
-                            .background(RoundedRectangle(cornerRadius: 8).fill(.pink.gradient))
+                            .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
                         }
                 }
                 
@@ -79,7 +79,7 @@ struct MeditationLollipopChart: View {
                         y: .value("Duration", data.duration)
                     )
                     .symbol(Circle())
-                    .foregroundStyle(Color.pink.gradient)
+                    .foregroundStyle(Color.blue.gradient)
                     .symbolSize(100)
                     .opacity(rawSelectedDate == nil || data.date == selectedViewItem?.date ? 1.0 : 0.3)
                     
@@ -89,7 +89,7 @@ struct MeditationLollipopChart: View {
                         yStart: .value("Duration", 0),
                         yEnd: .value("Duration", data.duration)
                     )
-                    .foregroundStyle(Color.pink.gradient)
+                    .foregroundStyle(Color.blue.gradient)
                     .lineStyle(StrokeStyle(lineWidth: 2))
                     .opacity(rawSelectedDate == nil || data.date == selectedViewItem?.date ? 1.0 : 0.3)
                 }

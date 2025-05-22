@@ -50,9 +50,8 @@ struct ExerciseMultiLineChart: View {
             }
         }
         
-        // Add default break types if none exist
         if types.isEmpty {
-            types = ["Long Break", "Medium Break", "Quick Break", "Short Break"]
+            types = ["Short Break", "Quick Break", "Medium Break", "Long Break"]
         }
         
         return Array(types).sorted()
@@ -121,32 +120,40 @@ struct ExerciseMultiLineChart: View {
                 if let selectedItem = selectedViewItem {
                     let component: Calendar.Component = currentTab == "Year" ? .month : .day
                     RuleMark(x: .value("Selected", selectedItem.date, unit: component))
-                        .foregroundStyle(.secondary.opacity(0.3))
-                        .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
-                            VStack(alignment: .leading) {
-                                if currentTab == "Year" {
-                                    Text(selectedItem.date, format: .dateTime.month(.wide))
-                                        .bold()
-                                } else {
-                                    Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-                                        .bold()
-                                }
-                                
+                        .foregroundStyle(.blue.gradient)
+                        .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
+                            // define a two-column layout
+                            let columns = [
+                              GridItem(.flexible(), spacing: 8),
+                              GridItem(.flexible(), spacing: 8)
+                            ]
+
+                            VStack(spacing: 4) {
+                              LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
                                 ForEach(selectedItem.breakEntries.sorted(by: { $0.breakType < $1.breakType }), id: \.breakType) { entry in
-                                    HStack {
-                                        Circle()
-                                            .fill(colorForBreakType(entry.breakType))
-                                            .frame(width: 8, height: 8)
-                                        
-                                        Text("\(entry.breakType): \(entry.breakValue, specifier: "%.1f") min")
-                                            .font(.caption)
-                                    }
+                                  HStack(spacing: 4) {
+                                    RoundedRectangle(cornerRadius: 4)
+                                      .fill(colorForBreakType(entry.breakType))
+                                      .frame(width: 12, height: 4)
+                                    Text("\(entry.breakValue, specifier: "%.1f") min")
+                                      .font(.caption)
+                                  }
+                                  .frame(maxWidth: .infinity)  // make each cell expand equally
                                 }
+                              }
+
+                              // then your date label below
+                              if currentTab == "Year" {
+                                Text(selectedItem.date, format: .dateTime.month(.wide))
+                                  .font(.caption2)
+                              } else {
+                                Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                                  .font(.caption2)
+                              }
                             }
                             .foregroundStyle(.white)
-                            .padding(12)
-                            .frame(width: 180)
-                            .background(RoundedRectangle(cornerRadius: 12).fill(.pink.gradient))
+                            .padding(8)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(.blue))
                         }
                 }
                 
@@ -174,7 +181,6 @@ struct ExerciseMultiLineChart: View {
                 }
             }
             .chartForegroundStyleScale(domain: allBreakTypes, range: allBreakTypes.map { colorForBreakType($0) })
-            // Remove the default legend and use our custom legend below
             .chartLegend(.hidden)
             .frame(height: 180)
             .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
@@ -243,9 +249,8 @@ struct ExerciseMultiLineChart: View {
             }
             .padding(.top, 4)
         }
-        .padding(.horizontal) // Remove .padding() to prevent unnecessary spacing
+        .padding(.horizontal)
         .onAppear {
-            // Ensure the data is loaded when component appears
             if currentTab == "Year" && monthlyAggregatedExerciseData.isEmpty {
                 monthlyAggregatedExerciseData = aggregateByMonth(exerciseData).suffix(12)
             }

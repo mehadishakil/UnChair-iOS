@@ -8,50 +8,34 @@
 import SwiftUI
 
 struct DailyStepsView: View {
-  @EnvironmentObject private var healthVM: HealthDataViewModel
-
-  var body: some View {
-      ZStack{
-          RoundedRectangle(cornerRadius: 20, style: .continuous)
-              .fill(Color.blue.quaternary)
-          
-          
-            VStack(spacing: 16) {
-              Image(systemName: "shoeprints.fill")
-                .font(.system(size: 40))
-                .frame(maxWidth: .infinity, alignment: .center)
-                .foregroundStyle(Color.white)
-              Text("\(healthVM.stepCount)")
-                .font(.system(.title, weight: .bold))
-                .foregroundColor(.white)
-              Text("Steps")
-                    .font(.system(.title2, weight: .medium))
-                .foregroundColor(.white)
-            }
-            .padding()
-          
-          
-      }
-      .onDisappear {
-        if healthVM.stepCount > 0 {
-          healthVM.updateStepCount(healthVM.stepCount)
-        }
-      }
+    @EnvironmentObject private var healthVM: HealthDataViewModel
     
-  }
-}
-
-struct StepsCardView<Content: View>: View {
-    var content: Content
-    
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-     
     var body: some View {
-        content
-            .cornerRadius(12)
-            .shadow(color: .black.opacity(0.2), radius: 6, x: 0, y: 4)
+        ZStack{
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color(.systemBackground))
+            
+            VStack(spacing: 16) {
+                Image("walk")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 44)
+                    .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                Text("\(healthVM.stepCount)")
+                    .font(.system(.title, weight: .bold))
+                    .foregroundColor(.primary)
+                Text("Steps")
+                    .font(.system(.callout, weight: .medium))
+                    .foregroundColor(.primary)
+            }
+        }
+        .frame(height: 170)
+        .shadow(color: Color.black.opacity(0.15), radius: 8)
+        .onDisappear {
+            if healthVM.stepCount > 0 {
+                healthVM.updateStepCount(healthVM.stepCount)
+            }
+        }
     }
 }
 

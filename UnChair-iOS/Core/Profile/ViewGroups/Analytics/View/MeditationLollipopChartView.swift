@@ -24,10 +24,10 @@ struct MeditationLollipopChartView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
-                            .foregroundColor(.pink)
+                            .foregroundColor(.blue)
                         Text("Meditation")
                             .fontWeight(.semibold)
-                            .foregroundColor(.pink)
+                            .foregroundColor(.primary)
                     }
                     
                     // Calculate average of non-zero values only

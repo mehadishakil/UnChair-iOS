@@ -126,29 +126,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //struct ExerciseMultiLineChartView: View {
 //    
 //    @Environment(\.modelContext) var modelContext
@@ -269,10 +246,6 @@
 //    }
 //}
 
-
-
-
-
 import SwiftUI
 import SwiftData
 
@@ -289,14 +262,14 @@ struct ExerciseMultiLineChartView: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Image(systemName: "figure.walk")
+                        Image(systemName: "figure.mixed.cardio")
                             .resizable()
                             .scaledToFit()
                             .frame(height: 20)
-                            .foregroundColor(.pink)
+                            .foregroundColor(.blue)
                         Text("Exercise")
                             .fontWeight(.semibold)
-                            .foregroundColor(.pink)
+                            .foregroundColor(.blue)
                     }
                 }
                 

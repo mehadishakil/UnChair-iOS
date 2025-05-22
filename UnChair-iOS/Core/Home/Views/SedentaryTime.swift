@@ -25,14 +25,14 @@ struct SedentaryTime: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color.blue.quaternary)
+                .fill(Color(.systemBackground))
             
             HStack() {
                 Spacer()
                 
                 Image(systemName: "hourglass.tophalf.filled")
                     .resizable()
-                    .frame(width: 90, height: 130)
+                    .frame(width: 90, height: 120)
                     .foregroundColor(.primary)
                 
                 Spacer()
@@ -50,12 +50,12 @@ struct SedentaryTime: View {
                     } label: {
                         Text("Unchair")
                             .font(.headline)
-                            .foregroundColor(.primary)
+                            .foregroundColor(.white)
                             .padding(.vertical, 8)
                             .padding(.horizontal, 16)
                             .background(
                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .fill(.ultraThinMaterial)
+                                    .fill(.blue)
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -97,7 +97,9 @@ struct SedentaryTime: View {
             }
 
         }
-            }
+            .frame(height: 170)
+            .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+        }
     
     private func updateTimeElapsed() {
         let now = Date()
