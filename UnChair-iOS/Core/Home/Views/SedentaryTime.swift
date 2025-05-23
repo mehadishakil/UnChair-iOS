@@ -15,6 +15,7 @@ struct SedentaryTime: View {
     @State private var timeElapsed: Int = 0
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     let onTakeBreak: () -> Void
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     init(notificationPermissionGranted: Binding<Bool>, selectedDuration: Binding<TimeDuration>, onTakeBreak: @escaping () -> Void) {
         self._notificationPermissionGranted = notificationPermissionGranted
@@ -25,26 +26,32 @@ struct SedentaryTime: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(.systemBackground))
+                // .fill(Color(.systemBackground))
+                .fill(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
             
             HStack() {
-                Spacer()
-                
                 Image(systemName: "hourglass.tophalf.filled")
                     .resizable()
-                    .frame(width: 90, height: 120)
-                    .foregroundColor(.primary)
+                    .frame(width: 90)
+                    .foregroundColor(userTheme == .dark ? .white.opacity(0.8) : .darkGray)
+                    .padding(.leading)
+                    .shadow(color: Color.darkGray.opacity(0.15), radius: 4)
                 
                 Spacer()
                 
                 VStack(alignment: .center) {
                     Text("Sedentary Time")
-                        .font(.title3)
+                        .font(.headline.weight(.regular))
                         .foregroundColor(.primary)
                     
+                    Spacer()
+                    
                     Text("\(formattedTime(timeElapsed))")
-                        .font(.title3)
+                        .font(.largeTitle.bold())
                         .foregroundColor(.primary)
+                    
+                    Spacer()
+                    
                     Button {
                         onTakeBreak()
                     } label: {
@@ -63,8 +70,8 @@ struct SedentaryTime: View {
                             )
                     }
                     .buttonStyle(.plain)
-
-
+                    
+                    
                 }
                 Spacer()
             }
@@ -95,11 +102,11 @@ struct SedentaryTime: View {
             .onReceive(timer) { _ in
                 updateTimeElapsed()
             }
-
+            
         }
-            .frame(height: 170)
-            .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
-        }
+        .frame(height: 170)
+        .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
+    }
     
     private func updateTimeElapsed() {
         let now = Date()
@@ -111,8 +118,8 @@ struct SedentaryTime: View {
             timeElapsed = max(elapsed, 0)
             
             if notificationPermissionGranted &&
-               timeElapsed >= (selectedDuration.totalMinutes * 60) &&
-               !NotificationManager.shared.hasScheduledNotification() {
+                timeElapsed >= (selectedDuration.totalMinutes * 60) &&
+                !NotificationManager.shared.hasScheduledNotification() {
                 NotificationManager.shared.scheduleNextBreakNotification()
             }
         } else {

@@ -51,20 +51,20 @@ struct MeditationLollipopChart: View {
                         .foregroundStyle(.secondary.opacity(0.3))
                         .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                             VStack {
+                                Text("\(selectedItem.duration, specifier: "%.1f") min")
+                                    .font(.caption.bold())
+                                
                                 // Use different format based on tab
                                 if currentTab == "Year" {
                                     Text(selectedItem.date, format: .dateTime.month(.wide))
-                                        .bold()
+                                        .font(.caption2)
                                 } else {
-                                    Text(selectedItem.date, format: .dateTime.day().month(.abbreviated))
-                                        .bold()
+                                    Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                                        .font(.caption2)
                                 }
-                                Text("\(selectedItem.duration, specifier: "%.1f") min")
-                                    .font(.title3.bold())
                             }
                             .foregroundStyle(.white)
-                            .padding(12)
-                            .frame(width: 120)
+                            .padding(8)
                             .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
                         }
                 }

@@ -15,6 +15,7 @@ struct StepsLineChartView: View {
     @State private var currentActiveItem: StepsChartModel?
     @State private var plotWidth: CGFloat = 0
     @StateObject private var firestoreService = FirestoreService()
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     var body: some View {
         VStack {
@@ -70,7 +71,7 @@ struct StepsLineChartView: View {
             }
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {

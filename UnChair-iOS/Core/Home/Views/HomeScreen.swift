@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import FirebaseAuth
+import FirebaseFirestore
 
 struct HomeScreen: View {
     @Binding var selectedDuration: TimeDuration
@@ -14,6 +16,8 @@ struct HomeScreen: View {
     @Namespace private var namespace
     @EnvironmentObject var healthViewModel: HealthDataViewModel
     @State private var selectedBreak: Break? = nil
+    @AppStorage("userTheme") private var userTheme: Theme = .system
+    
     
     
     var body: some View {
@@ -60,6 +64,7 @@ struct HomeScreen: View {
                 }
             }
         }
+        .preferredColorScheme(userTheme.colorScheme)
         .fullScreenCover(isPresented: $showDetail) {
             BreakDetailsView(namespace: namespace, show: $showDetail, breakItem: selectedBreak == nil ? breakList[0] : selectedBreak!)
                 .ignoresSafeArea()
@@ -145,7 +150,6 @@ struct HomeScreen: View {
         })
     }
     
-    
     private func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
             DispatchQueue.main.async {
@@ -165,6 +169,8 @@ struct HomeScreen: View {
         default: return "\(minutes) minutes"
         }
     }
+    
+    
 }
 
 

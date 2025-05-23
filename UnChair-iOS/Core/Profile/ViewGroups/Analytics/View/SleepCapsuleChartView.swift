@@ -17,6 +17,7 @@ struct SleepCapsuleChartView: View {
     @State private var currentActiveItem: SleepChartModel?
     @State private var plotWidth: CGFloat = 0
     @StateObject private var firestoreService = FirestoreService()
+    @AppStorage("userTheme") private var userTheme: Theme = .system
 
     
     var body: some View {
@@ -58,7 +59,7 @@ struct SleepCapsuleChartView: View {
                 .padding(.horizontal)
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {

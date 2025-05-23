@@ -141,7 +141,7 @@ struct TimePickerView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.purple)
+                    .background(Color.blue)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
@@ -165,7 +165,7 @@ struct TimePickerView: View {
         .background(.ultraThinMaterial)
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(isActive ? Color.purple : Color.gray.opacity(0.3), lineWidth: 2)
+                .stroke(isActive ? Color.blue : Color.gray.opacity(0.3), lineWidth: 2)
         )
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }

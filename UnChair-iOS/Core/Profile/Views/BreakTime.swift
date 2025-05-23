@@ -94,7 +94,7 @@ struct BreakDurationPicker: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.purple)
+                    .background(Color.blue)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }

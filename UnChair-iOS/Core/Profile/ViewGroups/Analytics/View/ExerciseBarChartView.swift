@@ -13,6 +13,7 @@ struct ExerciseBarChartView: View {
     @State private var exerciseData: [ExerciseChartModel] = []
     @State private var currentActiveItem: ExerciseChartModel?
     @State private var plotWidth: CGFloat = 0
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     var body: some View {
         VStack {
@@ -46,7 +47,7 @@ struct ExerciseBarChartView: View {
                     .padding()
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {

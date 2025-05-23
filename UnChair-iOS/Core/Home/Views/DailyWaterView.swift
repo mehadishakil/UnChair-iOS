@@ -13,13 +13,15 @@ struct DailyWaterView: View {
     private let waterTarget: Int = 3500
     private let maxIntake: Int = 6000
     private let minIntake: Int = 0
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     var body: some View {
         
         Button(action: { showWaterPicker.toggle() }) {
             ZStack{
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Color(.systemBackground))
+                    // .fill(Color(.systemBackground))
+                    .fill(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
                 
                     CircularProgressBar(current: healthViewModel.waterIntake, target: waterTarget, maxIntake: maxIntake, minIntake: minIntake)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -28,6 +30,7 @@ struct DailyWaterView: View {
         .buttonStyle(PlainButtonStyle())
         .frame(height: 170)
         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+//        .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
         .sheet(isPresented: $showWaterPicker) {
             WaterPickerView(currentMl: healthViewModel.waterIntake, waterTarget: waterTarget, maxIntake: maxIntake, minIntake: minIntake, onUpdate: { newValue in
                 healthViewModel.updateWaterIntake(newValue)

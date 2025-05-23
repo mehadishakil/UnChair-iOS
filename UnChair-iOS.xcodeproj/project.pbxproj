@@ -285,11 +285,11 @@
 		E8783CC32BFD923D0085A899 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				E8DB22832D71EECC001172B5 /* HealthDataService.swift */,
 				E8E6CD5F2DAFAB89006C959A /* SettingsManager.swift */,
 				E85889342DB349E900883430 /* NotificationManager.swift */,
 				E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */,
 				E8FB19A22D882CF600A5CF82 /* HealthDataViewModel.swift */,
-				E8DB22832D71EECC001172B5 /* HealthDataService.swift */,
 				E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */,
 			);
 			path = ViewModels;

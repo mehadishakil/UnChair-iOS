@@ -256,6 +256,7 @@ struct ExerciseMultiLineChartView: View {
     @State private var currentActiveItem: ExerciseChartModel?
     @State private var plotWidth: CGFloat = 0
     @StateObject private var firestoreService = FirestoreService()
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     var body: some View {
         VStack {
@@ -303,7 +304,7 @@ struct ExerciseMultiLineChartView: View {
             }
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
         .cornerRadius(16)
         .shadow(radius: 8)
         .onAppear {

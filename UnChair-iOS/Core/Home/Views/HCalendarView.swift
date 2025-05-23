@@ -71,7 +71,7 @@ struct HCalendarView: View {
                         let isSelected = calendar.isDate(selectedDate, equalTo: date, toGranularity: .day)
 
                         VStack(spacing: 12) {
-                            Text(day(from: date).prefix(1)) // "M", "T", etc.
+                            Text(day(from: date).prefix(3)) // "M", "T", etc.
                                 .font(.caption)
                                 .fontWeight(.medium)
 

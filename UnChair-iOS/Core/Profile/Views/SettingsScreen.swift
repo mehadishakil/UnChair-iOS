@@ -34,6 +34,9 @@ struct SettingsScreen: View {
     @EnvironmentObject var authController: AuthController
     @State private var full_name: String = ""
     @State private var email: String = ""
+    @State private var signoutAlert: Bool = false
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     var db = Firestore.firestore()
     
     
@@ -201,14 +204,28 @@ struct SettingsScreen: View {
                 }
                 
                 Button {
-                    do {
-                        try authController.signOut()
-                    } catch {
-                        print(error.localizedDescription)
-                    }
+                    signoutAlert.toggle()
                 } label: {
                     Text("Sign Out")
                         .foregroundColor(.primary)
+                }
+                .alert("Sign Out", isPresented: $signoutAlert) {
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Text("Cancel")
+                    }
+                    Button {
+                        do {
+                            try authController.signOut()
+                        } catch {
+                            print(error.localizedDescription)
+                        }
+                    } label: {
+                        Text("Yes")
+                    }
+                } message: {
+                    Text("Are you sure?")
                 }
             }
         }
@@ -257,8 +274,6 @@ struct RestorePurchaseView: View {
     }
 }
 
-
-
 struct PermissionsView: View {
     var body: some View {
         Text("Permissions")
@@ -279,6 +294,7 @@ struct TermsServiceView: View {
             .navigationTitle("Terms & Service")
     }
 }
+
 struct FAQView: View {
     var body: some View {
         Text("FAQ")

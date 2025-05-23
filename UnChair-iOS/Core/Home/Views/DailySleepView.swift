@@ -10,7 +10,7 @@ import SwiftUI
 struct DailySleepView: View {
     @EnvironmentObject private var healthVM: HealthDataViewModel
     @State private var showPicker = false
-    
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     private var hours: Int { Int(healthVM.sleepHours) }
     private var minutes: Int { Int((healthVM.sleepHours - Float(hours)) * 60) }
     
@@ -19,7 +19,8 @@ struct DailySleepView: View {
             ZStack {
                 // background & border
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Color(.systemBackground))
+//                    .fill(Color(.systemBackground))
+                    .fill(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
                 
                 
                 VStack(alignment: .leading) {
@@ -67,6 +68,7 @@ struct DailySleepView: View {
         .buttonStyle(PlainButtonStyle())
         .frame(height: 170)
         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+        // .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
         .sheet(isPresented: $showPicker) {
             SleepPickerView(initialSleep: healthVM.sleepHours) { newVal in
                 healthVM.updateSleepHours(newVal)

@@ -106,7 +106,7 @@ struct ExerciseMultiLineChart: View {
     // Define colors for each break type
     private func colorForBreakType(_ type: String) -> Color {
         switch type {
-        case "Long Break": return .blue
+        case "Long Break": return .pink
         case "Medium Break": return .green
         case "Quick Break": return .orange
         case "Short Break": return .purple
