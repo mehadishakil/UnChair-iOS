@@ -235,7 +235,6 @@ struct CapsuleItem: View {
                         .foregroundStyle(.white)
                         .padding(8)
                         .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
-
                         .frame(minWidth: max(capsuleWidth * 5, 150))
                         .transition(.opacity.combined(with: .scale))
                         .zIndex(1)

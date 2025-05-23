@@ -20,7 +20,6 @@ struct ExerciseMultiLineChart: View {
     var selectedViewItem: ExerciseChartModel? {
         guard let rawSelectedDate else { return nil }
         
-        // Different granularity based on the tab
         let granularity: Calendar.Component = currentTab == "Year" ? .month : .day
         
         return exerciseChartData.first {
@@ -41,7 +40,6 @@ struct ExerciseMultiLineChart: View {
         }
     }
     
-    // Get all unique break types regardless of data
     private var allBreakTypes: [String] {
         var types = Set<String>()
         for model in exerciseData {
@@ -57,22 +55,17 @@ struct ExerciseMultiLineChart: View {
         return Array(types).sorted()
     }
     
-    // Create organized data points by break type
     private var organizedDataPoints: [String: [ExerciseBreakDataPoint]] {
         var organized: [String: [ExerciseBreakDataPoint]] = [:]
         
-        // Initialize with empty arrays for all break types
         for breakType in allBreakTypes {
             organized[breakType] = []
         }
         
-        // Add all data points
         for model in exerciseChartData {
-            // Organize by break type
             let date = model.date
             let existingBreakTypes = model.breakEntries.map { $0.breakType }
             
-            // Add data for existing break entries
             for entry in model.breakEntries {
                 let point = ExerciseBreakDataPoint(
                     date: date,
@@ -82,7 +75,6 @@ struct ExerciseMultiLineChart: View {
                 organized[entry.breakType, default: []].append(point)
             }
             
-            // Ensure all break types have a data point for this date
             for breakType in allBreakTypes {
                 if !existingBreakTypes.contains(breakType) {
                     let point = ExerciseBreakDataPoint(
@@ -95,7 +87,6 @@ struct ExerciseMultiLineChart: View {
             }
         }
         
-        // Sort data points by date for each break type
         for breakType in organized.keys {
             organized[breakType] = organized[breakType]?.sorted(by: { $0.date < $1.date }) ?? []
         }
@@ -103,13 +94,12 @@ struct ExerciseMultiLineChart: View {
         return organized
     }
     
-    // Define colors for each break type
     private func colorForBreakType(_ type: String) -> Color {
         switch type {
-        case "Long Break": return .pink
-        case "Medium Break": return .green
-        case "Quick Break": return .orange
-        case "Short Break": return .purple
+        case "Long Break": return .yellow
+        case "Medium Break": return .indigo
+        case "Quick Break": return .cyan
+        case "Short Break": return .pink
         default: return .pink
         }
     }
@@ -117,47 +107,6 @@ struct ExerciseMultiLineChart: View {
     var body: some View {
         VStack {
             Chart {
-                if let selectedItem = selectedViewItem {
-                    let component: Calendar.Component = currentTab == "Year" ? .month : .day
-                    RuleMark(x: .value("Selected", selectedItem.date, unit: component))
-                        .foregroundStyle(.blue.gradient)
-                        .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .fit(to: .chart))) {
-                            // define a two-column layout
-                            let columns = [
-                              GridItem(.flexible(), spacing: 8),
-                              GridItem(.flexible(), spacing: 8)
-                            ]
-
-                            VStack(spacing: 4) {
-                              LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
-                                ForEach(selectedItem.breakEntries.sorted(by: { $0.breakType < $1.breakType }), id: \.breakType) { entry in
-                                  HStack(spacing: 4) {
-                                    RoundedRectangle(cornerRadius: 4)
-                                      .fill(colorForBreakType(entry.breakType))
-                                      .frame(width: 12, height: 4)
-                                    Text("\(entry.breakValue, specifier: "%.1f") min")
-                                      .font(.caption)
-                                  }
-                                  .frame(maxWidth: .infinity)  // make each cell expand equally
-                                }
-                              }
-
-                              // then your date label below
-                              if currentTab == "Year" {
-                                Text(selectedItem.date, format: .dateTime.month(.wide))
-                                  .font(.caption2)
-                              } else {
-                                Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-                                  .font(.caption2)
-                              }
-                            }
-                            .foregroundStyle(.white)
-                            .padding(8)
-                            .background(RoundedRectangle(cornerRadius: 8).fill(.blue))
-                        }
-                }
-                
-                // Chart lines grouped by break type
                 ForEach(allBreakTypes, id: \.self) { breakType in
                     let dataPoints = organizedDataPoints[breakType] ?? []
                     
@@ -179,9 +128,47 @@ struct ExerciseMultiLineChart: View {
                     }
                     .foregroundStyle(by: .value("Break Type", breakType))
                 }
+                
+                if let selectedItem = selectedViewItem {
+                    let component: Calendar.Component = currentTab == "Year" ? .month : .day
+                    RuleMark(x: .value("Selected", selectedItem.date, unit: component))
+                        .foregroundStyle(.secondary.opacity(0.3))
+                        .annotation(position: .top, spacing: -40, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
+                            VStack(spacing: 2) {
+                                let columns = [
+                                    GridItem(.flexible(), spacing: 8),
+                                    GridItem(.flexible(), spacing: 8)
+                                ]
+                                
+                                LazyVGrid(columns: columns, alignment: .center, spacing: 8) {
+                                    ForEach(selectedItem.breakEntries.sorted(by: { $0.breakType < $1.breakType }), id: \.breakType) { entry in
+                                        HStack(spacing: 4) {
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .fill(colorForBreakType(entry.breakType))
+                                                .frame(width: 12, height: 4)
+                                            Text("\(entry.breakValue, specifier: "%.1f") m")
+                                                .font(.caption.bold())
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                    }
+                                }
+                                
+                                if currentTab == "Year" {
+                                    Text(selectedItem.date, format: .dateTime.month(.wide))
+                                        .font(.caption2)
+                                } else {
+                                    Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                                        .font(.caption2)
+                                }
+                            }
+                            .frame(minWidth: 150)
+                            .foregroundStyle(.white)
+                            .padding(8)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
+//                            .offset(y: 40)
+                        }
+                }
             }
-            .chartForegroundStyleScale(domain: allBreakTypes, range: allBreakTypes.map { colorForBreakType($0) })
-            .chartLegend(.hidden)
             .frame(height: 180)
             .chartXSelection(value: $rawSelectedDate.animation(.easeInOut))
             .onChange(of: exerciseData) { _, newData in
@@ -227,8 +214,9 @@ struct ExerciseMultiLineChart: View {
                     AxisGridLine()
                 }
             }
+            .chartForegroundStyleScale(domain: allBreakTypes, range: allBreakTypes.map { colorForBreakType($0) })
+            .chartLegend(.hidden)
             
-            // Custom legend implementation
             VStack() {
                 HStack {
                     HStack() {
@@ -257,7 +245,6 @@ struct ExerciseMultiLineChart: View {
         }
     }
     
-    // Custom legend item for better control
     private func legendItem(for breakType: String) -> some View {
         HStack(spacing: 4) {
             Circle()
@@ -298,14 +285,11 @@ struct ExerciseMultiLineChart: View {
             let firstDayComponents = DateComponents(year: components.year, month: components.month, day: 1)
             let firstDay = calendar.date(from: firstDayComponents) ?? Date()
             
-            // Create a dictionary to hold aggregated values for each break type
             var aggregatedBreaks: [String: Double] = [:]
             var breakTypeCounts: [String: Int] = [:]
             
-            // Get all unique break types from this month's data
             var allMonthBreakTypes = Set<String>()
             
-            // Collect all break entries
             for item in items {
                 for entry in item.breakEntries {
                     allMonthBreakTypes.insert(entry.breakType)
@@ -320,7 +304,6 @@ struct ExerciseMultiLineChart: View {
                 }
             }
             
-            // Calculate averages
             var aggregatedEntries: [BreakEntry] = []
             for (breakType, totalValue) in aggregatedBreaks {
                 let count = breakTypeCounts[breakType] ?? 1
@@ -328,7 +311,6 @@ struct ExerciseMultiLineChart: View {
                 aggregatedEntries.append(BreakEntry(breakType: breakType, breakValue: averageValue))
             }
             
-            // Add any missing break types from the full dataset with 0 values
             for breakType in allBreakTypes {
                 if !allMonthBreakTypes.contains(breakType) {
                     aggregatedEntries.append(BreakEntry(breakType: breakType, breakValue: 0))
@@ -345,7 +327,6 @@ struct ExerciseMultiLineChart: View {
     }
 }
 
-// Helper struct to identify data points for charting
 struct ExerciseBreakDataPoint: Identifiable {
     var id: String { "\(date.timeIntervalSince1970)-\(breakType)" }
     var date: Date
@@ -353,7 +334,6 @@ struct ExerciseBreakDataPoint: Identifiable {
     var breakValue: Double
 }
 
-// Make BreakEntry conform to Identifiable, Hashable for use in ForEach
 extension BreakEntry: Identifiable, Hashable {
     var id: String { breakType }
     
