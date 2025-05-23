@@ -11,6 +11,7 @@ import FirebaseCore
 import GoogleSignIn
 import AuthenticationServices
 import FirebaseFirestore
+import RevenueCat
 
 @MainActor
 @Observable
@@ -41,9 +42,9 @@ class AuthController: ObservableObject {
             }
         }
     }
-
-
-
+    
+    
+    
     
     
     @MainActor
@@ -63,6 +64,7 @@ class AuthController: ObservableObject {
         if let user = Auth.auth().currentUser {
             try await saveUserData(user: user, provider: "google")
             try await loadUserData(user: user)
+            identifyUserWithRevenueCat(uid: user.uid)
         }
     }
     
@@ -91,6 +93,7 @@ class AuthController: ObservableObject {
             if let user = Auth.auth().currentUser {
                 try await saveUserData(user: user, provider: "apple")
                 try await loadUserData(user: user)
+                identifyUserWithRevenueCat(uid: user.uid)
             }
         } catch {
             print("Apple Sign-In Error: \(error.localizedDescription)")
@@ -103,6 +106,13 @@ class AuthController: ObservableObject {
         do {
             try Auth.auth().signOut()
             GIDSignIn.sharedInstance.signOut() // Sign out Google user
+            Purchases.shared.logOut { customerInfo, error in
+                if let error = error {
+                    print("Error signing out from RevenueCat: \(error.localizedDescription)")
+                } else {
+                    print("Successfully signed out from RevenueCat")
+                }
+            }
             self.authState = .unauthenticated // Update state
         } catch {
             throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to sign out"])
@@ -135,16 +145,16 @@ class AuthController: ObservableObject {
     private func loadUserData(user: User) async throws {
         let userRef = db.collection("users").document(user.uid)
         let snapshot = try await userRef.getDocument()
-
+        
         if let data = snapshot.data() {
             // If the user document exists, map Firestore fields to your UserData model
             let name = data["name"] as? String ?? "Unknown"
             let email = data["email"] as? String ?? ""
             let provider = data["provider"] as? String ?? ""
-
+            
             // Update the AuthController’s currentUser property
             self.currentUser = UserData(uid: user.uid, name: name, email: email, provider: provider)
-
+            
             print("Fetched existing user data for \(name)")
         } else {
             // If no document exists, create one (already handled by saveUserData)
@@ -152,7 +162,16 @@ class AuthController: ObservableObject {
             try await saveUserData(user: user, provider: "unknown")
         }
     }
-
+    
+    private func identifyUserWithRevenueCat(uid: String) {
+        Purchases.shared.logIn(uid) { (customerInfo, created, error) in
+            if let error = error {
+                print("RevenueCat identify failed: \(error.localizedDescription)")
+            } else {
+                print("RevenueCat identified as \(uid)")
+            }
+        }
+    }
     
     
 }

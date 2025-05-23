@@ -36,10 +36,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         
         Purchases.logLevel = .debug
-        Purchases.configure(
-            withAPIKey: Secrets.apiKey,
-            appUserID: Auth.auth().currentUser?.uid
-        )
+        Purchases.configure(withAPIKey: Secrets.apiKey)
+
         
         return true
     }
@@ -50,7 +48,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     // Handle app becoming active (user returns to the app)
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Reschedule notifications when app becomes active
         NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
         NotificationManager.shared.scheduleNextBreakNotification()
     }

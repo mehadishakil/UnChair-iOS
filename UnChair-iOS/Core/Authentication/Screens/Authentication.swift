@@ -23,11 +23,12 @@ struct Authentication: View {
         VStack {
             Spacer()
             
-            Image(systemName: "figure.walk")
+            Image("AppIcon")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(height: 40)
-                .foregroundColor(.primary)
+                .cornerRadius(20)
+                
             
             Text("UnChair")
                 .font(.title)

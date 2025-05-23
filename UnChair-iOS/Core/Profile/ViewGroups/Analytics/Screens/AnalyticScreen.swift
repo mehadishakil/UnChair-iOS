@@ -12,22 +12,20 @@ struct AnalyticScreen: View {
         ScrollView{
             VStack{
                 WaterBarChartView()
-                    .padding()
+                    .padding(.horizontal)
                 
                 StepsLineChartView()
                     .padding()
                 
                 SleepCapsuleChartView()
-                    .padding()
-//                
+                    .padding(.horizontal)
+                
                 ExerciseMultiLineChartView()
                     .padding()
                 
-//                Sample()
-//                    .padding()
-                
                 MeditationLollipopChartView()
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.bottom)
             }
         }
     }
