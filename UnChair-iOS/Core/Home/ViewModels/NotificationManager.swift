@@ -4,6 +4,12 @@
 //
 //  Created by Mehadi Hasan on 19/4/25.
 //
+//
+//  NotificationManager.swift
+//  UnChair-iOS
+//
+//  Created by Mehadi Hasan on 19/4/25.
+//
 
 import Foundation
 import UserNotifications
@@ -29,9 +35,26 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     private let lastBreakDayKey = "lastBreakDay"
     private let lastBreakMonthKey = "lastBreakMonth"
     private let lastBreakYearKey = "lastBreakYear"
+    private let appNotificationEnabledKey = "appNotificationEnabled" // NEW: App-level toggle
     
     private let settings = SettingsManager.shared
     private let notificationCenter = UNUserNotificationCenter.current()
+    
+    // MARK: - App-level notification toggle
+    var isAppNotificationEnabled: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: appNotificationEnabledKey)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: appNotificationEnabledKey)
+            // When the app-level setting changes, update notification scheduling
+            if newValue {
+                scheduleNextBreakNotification()
+            } else {
+                cancelPendingBreakNotifications()
+            }
+        }
+    }
     
     private override init() {
         super.init()
@@ -71,6 +94,22 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
             
             DispatchQueue.main.async {
                 completion(granted)
+            }
+        }
+    }
+    
+    // MARK: - Check if notifications should be scheduled
+    private func shouldScheduleNotifications(completion: @escaping (Bool) -> Void) {
+        // First check app-level toggle
+        guard isAppNotificationEnabled else {
+            completion(false)
+            return
+        }
+        
+        // Then check system permission
+        notificationCenter.getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                completion(settings.authorizationStatus == .authorized)
             }
         }
     }
@@ -173,8 +212,8 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
             let lastBreakComps = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: lastBreakTime)
             
             // If dates are different, it's a new day
-            if nowComps.year != lastBreakComps.year || 
-               nowComps.month != lastBreakComps.month || 
+            if nowComps.year != lastBreakComps.year ||
+               nowComps.month != lastBreakComps.month ||
                nowComps.day != lastBreakComps.day {
                 return true
             }
@@ -204,7 +243,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
             } else {
                 // Normal day schedule (start time before end time)
                 if (lastBreakTotalMinutes <= endTotalMinutes && lastBreakTotalMinutes >= startTotalMinutes) &&
-                   ((nowTotalMinutes >= startTotalMinutes && nowTotalMinutes <= endTotalMinutes && 
+                   ((nowTotalMinutes >= startTotalMinutes && nowTotalMinutes <= endTotalMinutes &&
                      lastBreakComps.day != nowComps.day) ||
                     (nowTotalMinutes < startTotalMinutes || nowTotalMinutes > endTotalMinutes)) {
                     return true
@@ -230,39 +269,49 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         notificationCenter.removePendingNotificationRequests(withIdentifiers: [breakReminderIdentifier])
     }
     
+    // MARK: - Updated scheduling method with dual checks
     // Calculate and schedule the next break notification
     func scheduleNextBreakNotification() {
-        // First, cancel any existing break notifications
-        cancelPendingBreakNotifications()
-        
-        // Get the current date and time
-        let now = Date()
-        
-        // Check if we're within active hours
-        if !isWithinActiveHours(now) {
-            // Schedule for the next active period start
-            scheduleForNextActivePeriodStart()
-            return
-        }
-        
-        // Get the last break time or use the active period start
-        let lastBreakTime = getLastBreakTime() ?? getActiveHourStartForToday()
-        
-        // Calculate the focused interval in seconds
-        let focusedInterval = TimeInterval(settings.breakDuration.totalMinutes * 60)
-        
-        // Calculate when the next break should be
-        let proposedNextBreakTime = lastBreakTime.addingTimeInterval(focusedInterval)
-        
-        // Get today's active end time
-        let todayEndTime = getActiveHourEndForToday()
-        
-        // The next break time should be the earlier of the proposed time or the end of active hours
-        let nextBreakTime = min(proposedNextBreakTime, todayEndTime)
-        
-        // Only schedule if it's in the future and within today's active hours
-        if nextBreakTime > now && nextBreakTime <= todayEndTime {
-            scheduleNotification(for: nextBreakTime)
+        // Check both app-level and system-level permissions
+        shouldScheduleNotifications { [weak self] shouldSchedule in
+            guard let self = self, shouldSchedule else {
+                // Cancel any pending notifications if we shouldn't schedule
+                self?.cancelPendingBreakNotifications()
+                return
+            }
+            
+            // First, cancel any existing break notifications
+            self.cancelPendingBreakNotifications()
+            
+            // Get the current date and time
+            let now = Date()
+            
+            // Check if we're within active hours
+            if !self.isWithinActiveHours(now) {
+                // Schedule for the next active period start
+                self.scheduleForNextActivePeriodStart()
+                return
+            }
+            
+            // Get the last break time or use the active period start
+            let lastBreakTime = self.getLastBreakTime() ?? self.getActiveHourStartForToday()
+            
+            // Calculate the focused interval in seconds
+            let focusedInterval = TimeInterval(self.settings.breakDuration.totalMinutes * 60)
+            
+            // Calculate when the next break should be
+            let proposedNextBreakTime = lastBreakTime.addingTimeInterval(focusedInterval)
+            
+            // Get today's active end time
+            let todayEndTime = self.getActiveHourEndForToday()
+            
+            // The next break time should be the earlier of the proposed time or the end of active hours
+            let nextBreakTime = min(proposedNextBreakTime, todayEndTime)
+            
+            // Only schedule if it's in the future and within today's active hours
+            if nextBreakTime > now && nextBreakTime <= todayEndTime {
+                self.scheduleNotification(for: nextBreakTime)
+            }
         }
     }
     
@@ -382,7 +431,6 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     }
 }
 
-
 extension NotificationManager {
     // Check if a break notification is already scheduled
     func hasScheduledNotification() -> Bool {
@@ -399,5 +447,16 @@ extension NotificationManager {
         // Wait for the async call to complete
         _ = group.wait(timeout: .now() + 1.0)
         return hasNotification
+    }
+    
+    // MARK: - Helper method to get current notification status
+    func getNotificationStatus(completion: @escaping (Bool, Bool) -> Void) {
+        notificationCenter.getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                let systemEnabled = settings.authorizationStatus == .authorized
+                let appEnabled = self.isAppNotificationEnabled
+                completion(systemEnabled, appEnabled)
+            }
+        }
     }
 }

@@ -21,7 +21,8 @@ struct SettingsScreen: View {
     
     @Binding var selectedDuration: TimeDuration
     @State private var language : Language = .English
-    @State private var isNotificationEnabled = true
+    @State private var isNotificationEnabled = false // This is now our app-level toggle
+    @State private var showPermissionAlert = false
     @State private var isDarkOn = true
     @State private var startTime = Calendar
         .current.date(bySettingHour: 8, minute: 0, second: 0, of: Date())!
@@ -86,7 +87,7 @@ struct SettingsScreen: View {
                                     .font(.system(.headline))
                                 Text(email)
                                     .font(.system(.caption))
-                                    
+                                
                             }.padding(1)
                             
                             Spacer()
@@ -98,7 +99,10 @@ struct SettingsScreen: View {
                     HStack {
                         Image(systemName: "bell")
                         Toggle(isOn: $isNotificationEnabled) {
-                            Text("Notification")
+                            Text("Break Reminders")
+                        }
+                        .onChange(of: isNotificationEnabled) { newValue in
+                            handleNotificationToggle(newValue)
                         }
                     }
                     
@@ -135,6 +139,17 @@ struct SettingsScreen: View {
                     ActiveHour()
                     
                     BreakTime()
+                }
+                .alert("Notifications Disabled", isPresented: $showPermissionAlert) {
+                    Button("Cancel", role: .cancel) {
+                        isNotificationEnabled = false
+                    }
+                    Button("Open Settings") {
+                        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                        UIApplication.shared.open(url)
+                    }
+                } message: {
+                    Text("To receive break reminders, please enable notifications in iOS Settings, then return here to turn on break reminders.")
                 }
                 
                 Section(header: Text("Accessibility & Advanced")) {
@@ -232,9 +247,72 @@ struct SettingsScreen: View {
         .preferredColorScheme(userTheme.colorScheme)
         .onAppear {
             fetchUserData()
+            loadNotificationSettings()
         }
     }
     
+    // MARK: - Updated notification handling methods
+    
+    private func handleNotificationToggle(_ newValue: Bool) {
+        if newValue {
+            // User wants to enable notifications
+            checkAndRequestNotificationPermission()
+        } else {
+            // User wants to disable notifications
+            NotificationManager.shared.isAppNotificationEnabled = false
+        }
+    }
+    
+    private func checkAndRequestNotificationPermission() {
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                switch settings.authorizationStatus {
+                case .notDetermined:
+                    // First time: request permission
+                    NotificationManager.shared.requestAuthorization { granted in
+                        if granted {
+                            // Permission granted, enable app-level toggle
+                            NotificationManager.shared.isAppNotificationEnabled = true
+                            isNotificationEnabled = true
+                        } else {
+                            // Permission denied, keep toggle off
+                            isNotificationEnabled = false
+                        }
+                    }
+
+                case .denied:
+                    // Already denied: show alert to guide user to Settings
+                    showPermissionAlert = true
+
+                case .authorized, .provisional, .ephemeral:
+                    // Already allowed: enable app-level toggle
+                    NotificationManager.shared.isAppNotificationEnabled = true
+                    isNotificationEnabled = true
+
+                @unknown default:
+                    isNotificationEnabled = false
+                }
+            }
+        }
+    }
+    
+    private func loadNotificationSettings() {
+        // Load the app-level notification setting
+        isNotificationEnabled = NotificationManager.shared.isAppNotificationEnabled
+        
+        // Also check if system permission has been revoked
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                // If system permission is denied but app toggle is on, turn off app toggle
+                if settings.authorizationStatus == .denied && isNotificationEnabled {
+                    isNotificationEnabled = false
+                    NotificationManager.shared.isAppNotificationEnabled = false
+                }
+            }
+        }
+    }
     
     private func fetchUserData() {
         if let currentUser = Auth.auth().currentUser {
@@ -255,7 +333,6 @@ struct SettingsScreen: View {
 #Preview {
     SettingsScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
 }
-
 
 
 // some dummy views
