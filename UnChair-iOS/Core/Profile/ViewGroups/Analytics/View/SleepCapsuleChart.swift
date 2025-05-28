@@ -46,7 +46,7 @@ struct SleepCapsuleChart: View {
                             data: data,
                             isActive: currentActiveItem?.id == data.id,
                             xAxisLabel: formatDate(data.date, index: displayData.firstIndex(of: data) ?? 0),
-                            yAxisValue: (data.sleep / 12) * 100,
+                            yAxisValue: (CGFloat(data.sleep) / 60.0 / 12.0) * 100,
                             capsuleWidth: getCapsuleWidth(),
                             currentTab: currentTab
                         )
@@ -218,7 +218,7 @@ struct CapsuleItem: View {
                 if isActive {
                     VStack(spacing: 0) {
                         VStack{
-                            Text("\(data.sleep, specifier: "%.1f")h")
+                            Text("\(Double(data.sleep) / 60.0, specifier: "%.1f")h")
                                 .font(.caption.bold())
                                 .multilineTextAlignment(.center)
                                 .fixedSize(horizontal: false, vertical: true)

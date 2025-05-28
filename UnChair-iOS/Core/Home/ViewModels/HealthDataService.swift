@@ -39,7 +39,7 @@ class HealthDataService {
         date: Date,
         waterIntake: Int?,
         stepsTaken: Int?,
-        sleepDuration: Float?,
+        sleepDuration: Int?,
         meditationDuration: Int?,
         exerciseTime: [String: Int]?
     ) async throws {

@@ -56,20 +56,19 @@ struct HeaderView: View {
                 .fontWeight(.medium)
             
             Spacer()
-            
-            ZStack {
-                RoundedRectangle(cornerRadius: 50, style: .continuous)
-                    .fill(Color(.systemBackground))
-                    .frame(width: 40, height: 40)
-                    .shadow(radius: 2)
-                
-                Image(systemName: "bell")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 16, height: 16)
-                    .foregroundColor(.primary)
-            }
-            .padding(.trailing, 20)
+//            ZStack {
+//                RoundedRectangle(cornerRadius: 50, style: .continuous)
+//                    .fill(Color(.systemBackground))
+//                    .frame(width: 40, height: 40)
+//                    .shadow(radius: 2)
+//                
+//                Image(systemName: "bell")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 16, height: 16)
+//                    .foregroundColor(.primary)
+//            }
+//            .padding(.trailing, 20)
         }
         .padding(.vertical, 20)
         .onAppear {
