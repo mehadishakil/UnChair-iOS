@@ -81,7 +81,6 @@ struct BreakDetailsView: View {
                         .frame(width: 44, height: 44)
                         .cornerRadius(10)
                         .padding(8)
-                    // apply a material blur behind each image if desired
                         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     
                     VStack(alignment: .leading) {

@@ -97,8 +97,8 @@ struct TimeSelectionView: View {
                             .padding(.vertical, 8)
                             .padding(.horizontal, 20)
                             .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(selectedTime == mins ? .purple : .gray.opacity(0.3))
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(selectedTime == mins ? .blue : Color(.secondarySystemBackground))
                             )
                             .foregroundColor(selectedTime == mins ? .white : .primary)
                     }
@@ -128,7 +128,7 @@ struct TimeSelectionView: View {
                     .font(.headline.weight(.semibold))
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.purple)
+                    .background(Color.blue)
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
             }
@@ -144,7 +144,7 @@ struct TimeSelectionView: View {
             Image(systemName: systemImage)
                 .symbolRenderingMode(.hierarchical)
                 .font(.system(size: 40))
-                .foregroundColor(.purple)
+                .foregroundColor(.blue)
         }
     }
 }

@@ -65,10 +65,12 @@ struct HomeScreen: View {
             }
         }
         .preferredColorScheme(userTheme.colorScheme)
-        .fullScreenCover(isPresented: $showDetail) {
-            BreakDetailsView(namespace: namespace, show: $showDetail, breakItem: selectedBreak == nil ? breakList[0] : selectedBreak!)
-                .ignoresSafeArea()
-        }
+//        .fullScreenCover(isPresented: $showDetail) {
+//            NavigationStack {
+//                DetailsBreakView(breakItem: selectedBreak ?? breakList[0])
+//                    .ignoresSafeArea()
+//            }
+//        }
     }
     
     var breakSectionView: some View {
@@ -85,31 +87,32 @@ struct HomeScreen: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(breakList) { item in
-                            GeometryReader { geo in
-                                let cardFrame      = geo.frame(in: .global)
-                                let cardMidX       = cardFrame.midX
-                                let screenMidX     = UIScreen.main.bounds.width / 2
-                                let strength: CGFloat = 0.95
-                                let distance       = cardMidX - screenMidX
-                                let parallaxOffset = -distance * strength
+                            NavigationLink(destination: DetailsBreakView(breakItem: item)) {
+                                GeometryReader { geo in
+                                    let cardFrame = geo.frame(in: .global)
+                                    let cardMidX = cardFrame.midX
+                                    let screenMidX = UIScreen.main.bounds.width / 2
+                                    let strength: CGFloat = 0.95
+                                    let distance = cardMidX - screenMidX
+                                    let parallaxOffset = -distance * strength
 
-                                Image(item.image)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: cardFrame.width, height: cardFrame.height)
-                                    .offset(x: parallaxOffset)
-                                    .cornerRadius(20)
-                                    .overlay {
-                                        OverlayView(item: item)
-                                    }
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                                    .onTapGesture {
-                                        selectedBreak = item
-                                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                            showDetail = true
+                                    Image(item.image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: cardFrame.width, height: cardFrame.height)
+                                        .offset(x: parallaxOffset)
+                                        .cornerRadius(20)
+                                        .overlay {
+                                            OverlayView(item: item)
                                         }
-                                    }
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                }
+                                .frame(width: containerSize.width - cardInset, height: containerSize.height)
+                                .scrollTransition(.interactive, axis: .horizontal) { view, phase in
+                                    view.scaleEffect(phase.isIdentity ? 1 : 0.98)
+                                }
                             }
+
                             .frame(
                                 width: containerSize.width - cardInset,
                                 height: containerSize.height

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DetailsBreakView: View {
     let breakItem: Break
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     var body: some View {
         ScrollView {
@@ -28,11 +29,7 @@ struct DetailsBreakView: View {
                             alignment: .bottom
                         )
                         .edgesIgnoringSafeArea(.all)
-                        
-                    
-                    
-                    
-                    // Title
+
                     Text(breakItem.title)
                         .font(.title)
                         .fontWeight(.bold)
@@ -40,13 +37,7 @@ struct DetailsBreakView: View {
                         .foregroundColor(.white)
                         
                 }
-                
-                
-                
-                
-                
-                
-                // Description
+
                 Text(breakItem.description)
                     .foregroundColor(.gray)
                     .padding(.horizontal)
@@ -59,7 +50,7 @@ struct DetailsBreakView: View {
                             .fontWeight(.bold)
                         Spacer()
                         Text("approx. \(breakItem.duration / 60) mins")
-                            .foregroundColor(.purple)
+                            .foregroundColor(.blue)
                     }
                 }
                 .padding(.horizontal)
@@ -72,7 +63,7 @@ struct DetailsBreakView: View {
                             .fontWeight(.bold)
                         Spacer()
                         Text("\(breakItem.exercises.count) exercises")
-                            .foregroundColor(.purple)
+                            .foregroundColor(.blue)
                     }
                     
                     ForEach(breakItem.exercises) { exercise in
@@ -80,8 +71,9 @@ struct DetailsBreakView: View {
                             Image(exercise.image)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                                .cornerRadius(12)
+                                .frame(width: 44, height: 44)
+                                .padding(8)
+                                .background(userTheme == .dark ? Color.gray.opacity(0.7) : .gray3, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                             VStack(alignment: .leading) {
                                 Text(exercise.name)
                                     .fontWeight(.bold)
@@ -98,14 +90,14 @@ struct DetailsBreakView: View {
                 Spacer(minLength: 0)
                 
                 NavigationLink(destination: StartExerciseView(breakItem: breakItem)) {
-                    Text("Next")
-                        .font(.title3)
-                        .bold()
-                        .foregroundColor(.whiteblack)
-                        .padding(.vertical)
-                        .frame(maxWidth: .infinity)
-                        .background(.primary)
-                        .cornerRadius(12)
+                        Text("Next")
+                            .font(.headline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                    
                 }
                 .padding(.vertical, 50)
                 .padding(.horizontal)
