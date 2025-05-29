@@ -80,7 +80,7 @@ struct Meditation: View {
                             
                             LiquidButtonIcon(
                                 show: $showControls,
-                                icon: isPaused ? "play.fill" : "pause.fill",
+                                icon: isPaused ? "play.fill" : "stop.fill",
                                 xOffset: 100,
                                 yOffset: 0,
                                 animationDelay: 0.08,

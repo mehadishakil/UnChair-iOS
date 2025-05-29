@@ -77,29 +77,28 @@ struct StartExerciseView: View {
                     // Outer Circle – Overall Progress
                     Circle()
                         .stroke(lineWidth: 16)
-                        .opacity(0.2)
+                        .opacity(0.6)
                         .foregroundColor(.blue)
                         .frame(width: 300, height: 300)
                     
                     Circle()
                         .trim(from: 0.0, to: CGFloat(Double(totalElapsedTime) / Double(totalDuration)))
-                        .stroke(style: StrokeStyle(lineWidth: 16, lineCap: .round, lineJoin: .round))
-                        .foregroundColor(.blue)
+                        .stroke(.blue, style: StrokeStyle(lineWidth: 16, lineCap: .round, lineJoin: .round))
+                        
                         .rotationEffect(Angle(degrees: -90))
                         .animation(.easeInOut(duration: 0.2), value: totalElapsedTime)
                         .frame(width: 300, height: 300)
                     
                     // Inner Circle – Current Exercise Progress
                     Circle()
-                        .fill(.gray.opacity(1.9))
-                        .stroke(Color.blue.secondary, lineWidth: 4)
+                        .fill(.gray3.opacity(0.9))
+                        .stroke(.gray.opacity(0.3), lineWidth: 4)
                         .foregroundColor(.green.opacity(0.5))
                         .frame(width: 276, height: 276)
                     
                     Circle()
                         .trim(from: 0.0, to: CGFloat(Double(elapsedTime) / Double(exercises[currentExerciseIndex].duration)))
-                        .stroke(style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round))
-                        .foregroundColor(.blue.opacity(0.7))
+                        .stroke(Color.green.secondary, style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round))
                         .rotationEffect(Angle(degrees: -90))
                         .animation(.easeInOut(duration: 0.2), value: elapsedTime)
                         .frame(width: 276, height: 276)
@@ -150,7 +149,7 @@ struct StartExerciseView: View {
                                 // Pause/Resume Icon
                                 LiquidButtonIcon(
                                     show: $showControlButtons,
-                                    icon: isPaused ? "play.fill" : "pause.fill",
+                                    icon: isPaused ? "play.fill" : "stop.fill",
                                     xOffset: 100,
                                     animationDelay: 0.08,
                                     action: {
