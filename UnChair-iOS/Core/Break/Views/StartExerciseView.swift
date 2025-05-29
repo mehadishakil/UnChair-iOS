@@ -98,7 +98,7 @@ struct StartExerciseView: View {
                     
                     Circle()
                         .trim(from: 0.0, to: CGFloat(Double(elapsedTime) / Double(exercises[currentExerciseIndex].duration)))
-                        .stroke(Color.green.secondary, style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round))
+                        .stroke(Color.cyan, style: StrokeStyle(lineWidth: 8, lineCap: .round, lineJoin: .round))
                         .rotationEffect(Angle(degrees: -90))
                         .animation(.easeInOut(duration: 0.2), value: elapsedTime)
                         .frame(width: 276, height: 276)

@@ -153,45 +153,32 @@ struct SettingsScreen: View {
                 }
                 
                 Section(header: Text("Accessibility & Advanced")) {
-                    NavigationLink(destination: RestorePurchaseView()) {
+                    NavigationLink(destination: ManageSubscription()) {
                         HStack {
                             Image(systemName: "creditcard")
-                            Text("Restore Purchase")
+                            Text("Manage Subscriptions")
                             Spacer()
                         }
                     }
-                    NavigationLink(destination: TermsServiceView()) {
+                    NavigationLink(destination: TermsOfUseView()) {
                         HStack {
                             Image(systemName: "doc.plaintext")
                             Text("Terms of Use")
                             Spacer()
                         }
                     }
-                    NavigationLink(destination: ContactUsView()) {
+                    NavigationLink(destination: PrivacyPolicyView()) {
                         HStack {
                             Image(systemName: "lock.shield")
                             Text("Privacy Policy")
                             Spacer()
                         }
                     }
-                    NavigationLink(destination: PermissionsView()) {
-                        HStack {
-                            Image(systemName: "checkmark.shield")
-                            Text("Permissions")
-                            Spacer()
-                        }
-                    }
+
                     NavigationLink(destination: ContactUsView()) {
                         HStack {
                             Image(systemName: "phone")
-                            Text("Contact Us")
-                            Spacer()
-                        }
-                    }
-                    NavigationLink(destination: FeedbackView()) {
-                        HStack {
-                            Image(systemName: "face.smiling")
-                            Text("Feedback")
+                            Text("Contact & Support")
                             Spacer()
                         }
                     }
@@ -199,20 +186,6 @@ struct SettingsScreen: View {
                         HStack {
                             Image(systemName: "questionmark.circle")
                             Text("About")
-                            Spacer()
-                        }
-                    }
-                    NavigationLink(destination: FAQView()) {
-                        HStack {
-                            Image(systemName: "info.bubble")
-                            Text("FAQ")
-                            Spacer()
-                        }
-                    }
-                    NavigationLink(destination: HelpView()) {
-                        HStack {
-                            Image(systemName: "person.fill.questionmark")
-                            Text("Help")
                             Spacer()
                         }
                     }
@@ -334,9 +307,6 @@ struct SettingsScreen: View {
     SettingsScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
 }
 
-
-// some dummy views
-// Dummy views for navigation destinations
 struct UserProfileView: View {
     var body: some View {
         Text("User Profile")
@@ -344,45 +314,8 @@ struct UserProfileView: View {
     }
 }
 
-struct RestorePurchaseView: View {
-    var body: some View {
-        Text("Restore Purchase")
-            .navigationTitle("Restore Purchase")
-    }
-}
 
-struct PermissionsView: View {
-    var body: some View {
-        Text("Permissions")
-            .navigationTitle("Permissions")
-    }
-}
 
-struct AboutView: View {
-    var body: some View {
-        Text("About")
-            .navigationTitle("About")
-    }
-}
 
-struct TermsServiceView: View {
-    var body: some View {
-        Text("Terms & Service")
-            .navigationTitle("Terms & Service")
-    }
-}
 
-struct FAQView: View {
-    var body: some View {
-        Text("FAQ")
-            .navigationTitle("FAQ")
-    }
-}
-
-struct HelpView: View {
-    var body: some View {
-        Text("Help")
-            .navigationTitle("Help")
-    }
-}
 

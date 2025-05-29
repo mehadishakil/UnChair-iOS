@@ -38,7 +38,7 @@ struct MainView: View {
                         }
                 } else {
                     // User doesn't have subscription - show paywall
-                    PaywallView()
+                    PaywallView(displayCloseButton: false)
                         .onPurchaseCompleted { customerInfo in
                             // Handle successful purchase
                             self.customerInfo = customerInfo
