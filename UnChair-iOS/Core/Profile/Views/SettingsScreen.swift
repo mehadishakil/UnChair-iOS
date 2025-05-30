@@ -21,7 +21,7 @@ struct SettingsScreen: View {
     
     @Binding var selectedDuration: TimeDuration
     @State private var language : Language = .English
-    @State private var isNotificationEnabled = false // This is now our app-level toggle
+    @State private var isNotificationEnabled = false
     @State private var showPermissionAlert = false
     @State private var isDarkOn = true
     @State private var startTime = Calendar
@@ -39,12 +39,13 @@ struct SettingsScreen: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) var dismiss
     var db = Firestore.firestore()
+    // MARK: - User Goals (stored locally)
     
+    @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
     
     var body: some View {
         NavigationView {
             Form {
-                // User profile section
                 Section {
                     NavigationLink(destination: EditProfile()) {
                         HStack {
@@ -98,6 +99,7 @@ struct SettingsScreen: View {
                 Section(header: Text("Personalization")) {
                     HStack {
                         Image(systemName: "bell")
+                            .frame(width: 20, alignment: .center)
                         Toggle(isOn: $isNotificationEnabled) {
                             Text("Break Reminders")
                         }
@@ -112,7 +114,7 @@ struct SettingsScreen: View {
                         }) {
                             HStack {
                                 Image(systemName: "circle.lefthalf.filled")
-                                    .foregroundColor(.primary)
+                                    .frame(width: 20, alignment: .center)
                                 Text("Appearance")
                                     .foregroundColor(.primary)
                                 Spacer()
@@ -129,16 +131,11 @@ struct SettingsScreen: View {
                     
                     HStack {
                         Image(systemName: "globe")
+                            .frame(width: 20, alignment: .center)
                         Picker("Language", selection: $language) {
                             Text("English").tag(Language.English)
-                            Text("Bangla").tag(Language.Bangla)
-                            Text("Arabic").tag(Language.Arabic)
                         }
                     }
-                    
-                    ActiveHour()
-                    
-                    BreakTime()
                 }
                 .alert("Notifications Disabled", isPresented: $showPermissionAlert) {
                     Button("Cancel", role: .cancel) {
@@ -152,10 +149,26 @@ struct SettingsScreen: View {
                     Text("To receive break reminders, please enable notifications in iOS Settings, then return here to turn on break reminders.")
                 }
                 
+                
+                Section(header: Text("Lifestyle Settings")) {
+                    ActiveHour()
+                    
+                    BreakTime()
+                    
+                    DailyWaterGoal()
+                    
+                    DailyStepsGoal()
+                    
+                    DailySleepGoal()
+                }
+                
+                
+                
                 Section(header: Text("Accessibility & Advanced")) {
                     NavigationLink(destination: ManageSubscription()) {
                         HStack {
                             Image(systemName: "creditcard")
+                                .frame(width: 20, alignment: .center)
                             Text("Manage Subscriptions")
                             Spacer()
                         }
@@ -163,6 +176,7 @@ struct SettingsScreen: View {
                     NavigationLink(destination: TermsOfUseView()) {
                         HStack {
                             Image(systemName: "doc.plaintext")
+                                .frame(width: 20, alignment: .center)
                             Text("Terms of Use")
                             Spacer()
                         }
@@ -170,14 +184,16 @@ struct SettingsScreen: View {
                     NavigationLink(destination: PrivacyPolicyView()) {
                         HStack {
                             Image(systemName: "lock.shield")
+                                .frame(width: 20, alignment: .center)
                             Text("Privacy Policy")
                             Spacer()
                         }
                     }
-
+                    
                     NavigationLink(destination: ContactUsView()) {
                         HStack {
                             Image(systemName: "phone")
+                                .frame(width: 20, alignment: .center)
                             Text("Contact & Support")
                             Spacer()
                         }
@@ -185,6 +201,7 @@ struct SettingsScreen: View {
                     NavigationLink(destination: AboutView()) {
                         HStack {
                             Image(systemName: "questionmark.circle")
+                                .frame(width: 20, alignment: .center)
                             Text("About")
                             Spacer()
                         }
@@ -253,16 +270,16 @@ struct SettingsScreen: View {
                             isNotificationEnabled = false
                         }
                     }
-
+                    
                 case .denied:
                     // Already denied: show alert to guide user to Settings
                     showPermissionAlert = true
-
+                    
                 case .authorized, .provisional, .ephemeral:
                     // Already allowed: enable app-level toggle
                     NotificationManager.shared.isAppNotificationEnabled = true
                     isNotificationEnabled = true
-
+                    
                 @unknown default:
                     isNotificationEnabled = false
                 }
@@ -306,16 +323,4 @@ struct SettingsScreen: View {
 #Preview {
     SettingsScreen(selectedDuration: .constant(TimeDuration(hours: 0, minutes: 45)))
 }
-
-struct UserProfileView: View {
-    var body: some View {
-        Text("User Profile")
-            .navigationTitle("User Profile")
-    }
-}
-
-
-
-
-
 

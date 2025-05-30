@@ -56,7 +56,7 @@ struct MeditationLollipopChart: View {
                                 
                                 // Use different format based on tab
                                 if currentTab == "Year" {
-                                    Text(selectedItem.date, format: .dateTime.month(.wide))
+                                    Text(selectedItem.date, format: .dateTime.month(.abbreviated))
                                         .font(.caption2)
                                 } else {
                                     Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))

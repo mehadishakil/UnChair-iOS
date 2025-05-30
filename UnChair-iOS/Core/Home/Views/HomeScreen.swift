@@ -18,8 +18,6 @@ struct HomeScreen: View {
     @State private var selectedBreak: Break? = nil
     @AppStorage("userTheme") private var userTheme: Theme = .system
     
-    
-    
     var body: some View {
         ZStack {
             NavigationStack {
@@ -47,8 +45,8 @@ struct HomeScreen: View {
                                 DailyTracking()
                                 
                                 
-                                breakSectionView
-                                    .id("breakSection")
+                                BreakSectionView(breakList: breakList)
+                                
                                 
                                 CalmCorner()
                             }
@@ -65,92 +63,124 @@ struct HomeScreen: View {
             }
         }
         .preferredColorScheme(userTheme.colorScheme)
-//        .fullScreenCover(isPresented: $showDetail) {
-//            NavigationStack {
-//                DetailsBreakView(breakItem: selectedBreak ?? breakList[0])
-//                    .ignoresSafeArea()
-//            }
-//        }
     }
     
-    var breakSectionView: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Breaks")
-                .font(.title2.weight(.semibold))
-                .padding(.horizontal, 20)
-
-            GeometryReader { outer in
-                let containerSize = outer.size
-                let cardInset: CGFloat = 50
-                let sideInset = cardInset / 2
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(breakList) { item in
-                            NavigationLink(destination: DetailsBreakView(breakItem: item)) {
+    
+    struct BreakSectionView: View {
+        // MARK: – PUBLIC API
+        let breakList: [Break]
+        
+        // MARK: – INTERNAL STATE
+        @State private var selectedIndex: Int = 0
+        
+        // MARK: – LAYOUT CONSTANTS
+        private let cardInset: CGFloat = 50
+        private var sideInset: CGFloat { cardInset / 2 }
+        private let cardHeight: CGFloat = 170
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Breaks")
+                    .font(.title2.weight(.semibold))
+                    .padding(.horizontal, 20)
+                
+                TabView(selection: $selectedIndex) {
+                    ForEach(breakList.indices, id: \.self) { idx in
+                        NavigationLink(destination: DetailsBreakView(breakItem: breakList[idx])) {
+                            ZStack {
                                 GeometryReader { geo in
-                                    let cardFrame = geo.frame(in: .global)
-                                    let cardMidX = cardFrame.midX
-                                    let screenMidX = UIScreen.main.bounds.width / 2
-                                    let strength: CGFloat = 0.95
-                                    let distance = cardMidX - screenMidX
-                                    let parallaxOffset = -distance * strength
-
-                                    Image(item.image)
+                                    // OPTIONAL PARALLAX EFFECT:
+                                    let midX      = geo.frame(in: .global).midX
+                                    let screenMid = UIScreen.main.bounds.width / 2
+                                    let dist      = midX - screenMid
+                                    let parallax  = -dist * 0.2
+                                    
+                                    Image(breakList[idx].image)
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
-                                        .frame(width: cardFrame.width, height: cardFrame.height)
-                                        .offset(x: parallaxOffset)
-                                        .cornerRadius(20)
-                                        .overlay {
-                                            OverlayView(item: item)
-                                        }
+                                        .frame(width: geo.size.width, height: geo.size.height)
+                                        .offset(x: parallax)
                                         .clipShape(RoundedRectangle(cornerRadius: 20))
                                 }
-                                .frame(width: containerSize.width - cardInset, height: containerSize.height)
-                                .scrollTransition(.interactive, axis: .horizontal) { view, phase in
-                                    view.scaleEffect(phase.isIdentity ? 1 : 0.98)
-                                }
+                                .cornerRadius(20)
+                                
+                                OverlayView(item: breakList[idx])
                             }
-
-                            .frame(
-                                width: containerSize.width - cardInset,
-                                height: containerSize.height
-                            )
-                            .scrollTransition(.interactive, axis: .horizontal) { view, phase in
-                                view.scaleEffect(phase.isIdentity ? 1 : 0.98)
-                            }
+                            .padding(.horizontal)
+                            .frame(height: cardHeight)
+                            .tag(idx)
                         }
                     }
-                    .padding(.trailing, sideInset)
-                    .padding(.leading)
-                    .frame(height: containerSize.height)
-                    .scrollTargetLayout()
                 }
-                .scrollTargetBehavior(.viewAligned)
-                .scrollIndicators(.hidden)
-            }
-            .frame(height: 170)
-            .padding(.top)
-        }
-    }
-    
-    @ViewBuilder
-    func OverlayView(item: Break) -> some View {
-        ZStack(alignment: .bottomLeading, content: {
-            LinearGradient(colors: [.clear, .clear, .clear, .black.opacity(0.1), .black.opacity(0.5), .black], startPoint: .top, endPoint: .bottom)
-            
-            VStack(alignment: .leading, spacing: 2, content: {
-                Text("\(item.title)")
-                    .font(.title)
-                    .bold()
+                .frame(height: cardHeight)
+                .tabViewStyle(.page(indexDisplayMode: .never))
                 
-                Text("\(item.overview)")
-                    .font(.footnote)
-            })
-            .foregroundColor(.white)
-            .padding()
-        })
+                // MARK: - Active Item Indicator
+                HStack(spacing: 8) {
+                    Spacer()
+                    
+                    ForEach(breakList.indices, id: \.self) { index in
+                        Circle()
+                            .fill(index == selectedIndex ? .primary : .secondary)
+                            .frame(width: 6, height: 6)
+                            .scaleEffect(index == selectedIndex ? 1.1 : 1.0)
+                            .animation(.easeInOut(duration: 0.2), value: selectedIndex)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+            }
+        }
+        
+        
+        // MARK: – YOUR OVERLAY VIEW (unchanged)
+        @ViewBuilder
+        private func OverlayView(item: Break) -> some View {
+            ZStack(alignment: .bottomLeading) {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .mask(
+                        // Gradient mask to create fade effect
+                        LinearGradient(
+                            colors: [
+                                .black,
+                                .black.opacity(0.8),
+                                .clear,
+                                .clear,
+                                .clear
+                            ],
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
+                    )
+                
+                // Additional tint for better contrast
+                LinearGradient(
+                    colors: [
+                        .black.opacity(0.5),
+                        .black.opacity(0.3),
+                        .clear,
+                        .clear,
+                        .clear
+                    ],
+                    startPoint: .bottom,
+                    endPoint: .top
+                )
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.title)
+                        .font(.title)
+                        .bold()
+                    Text(item.overview)
+                        .font(.footnote)
+                        .lineLimit(1)
+                }
+                .foregroundColor(.white)
+                .padding()
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+        }
     }
     
     private func requestNotificationPermission() {

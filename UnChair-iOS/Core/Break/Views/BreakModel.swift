@@ -53,7 +53,6 @@ let exercises: [Exercise] = [
     Exercise(image: "deep_breathing", name: "Deep Breathing", description: "Take 5 deep breaths, inhaling through your nose and exhaling through your mouth.", duration: 60),
 
     // Long Break Exercises
-    Exercise(image: "walk_around", name: "Walk Around", description: "Take a short walk around your room or office.", duration: 300),
     Exercise(image: "push_ups", name: "Push-ups", description: "Do 10 push-ups on the floor. If it seems harder than you can try knee push ups.", duration: 60),
     Exercise(image: "chair_squats", name: "Chair Squats", description: "Stand up and sit down 10 times without fully sitting.", duration: 60),
     Exercise(image: "seated_figure_four_stretch", name: "Seated Figure-Four Stretch", description: "Sit and place one ankle on the opposite knee, leaning forward.", duration: 60),
@@ -62,7 +61,8 @@ let exercises: [Exercise] = [
     Exercise(image: "arm_circles", name: "Arm Circles", description: "Extend your arms and make circular motions, both forward and backward.", duration: 60),
     Exercise(image: "standing_side_bend", name: "Standing Side Bend", description: "Stand, place one hand on your hip, and reach over your head to the opposite side.", duration: 60),
     Exercise(image: "calf_stretch", name: "Calf Stretch", description: "Place your hands on a wall, step one foot back, and press your heel down.", duration: 60),
-    Exercise(image: "meditation", name: "Meditation", description: "Sit comfortably, close your eyes, and focus on your breathing.", duration: 180)
+    Exercise(image: "walk_around", name: "Walk Around", description: "Take a short walk around your room or office.", duration: 300),
+    Exercise(image: "meditation", name: "Deep Breathing", description: "Sit comfortably, close your eyes, and focus on your breathing.", duration: 180)
 ]
 
 
@@ -71,22 +71,22 @@ let breakList: [Break] = [
     Break(
         title: "Quick Break",
         image: "quickbreakimage",
-        overview: "neck, shoulder, and ankle stretches to relieve tension.",
+        overview: "Neck, shoulder & ankle stretches for tension relief",
         description: "A quick session focusing on neck, shoulders, and ankle stretches to quickly relieve tension and improve circulation.",
         duration: 120,
         exercises: Array(exercises.prefix(5))
     ),
     Break(
-        title: "Short Break", 
+        title: "Short Break",
         image: "shortbreakimage",
-        overview: "wrists, back, legs, and eyes stretches to refresh the mind.",
+        overview: "Wrist, back & leg stretches to reduce strain",
         description: "A brief yet effective series of stretches for wrists, back, legs, and eyes to reduce strain and refresh the mind.",
-        duration: 300, 
+        duration: 300,
         exercises: Array(exercises[5...10])
     ),
     Break(title: "Medium Break",
           image: "mediumbreakimage",
-          overview: "standing and seated exercises with deep breathing for relaxation.",
+          overview: "Standing & seated exercises with deep breathing",
           description: "A combination of standing and seated exercises targeting legs, shoulders, and back, paired with deep breathing for relaxation.",
           duration: 600,
           exercises: Array(exercises[11...18])
@@ -94,8 +94,8 @@ let breakList: [Break] = [
     Break(
         title: "Long Break",
         image: "longbreakimage",
-        overview: "walking, stretching, and mindfulness for sustained productivity.",
-        description: "A comprehensive routine including walking, stretching, and mindfulness exercises to revitalize your body and mind for sustained productivity.",
+        overview: "Stretching exercise & mindfulness to revitalize",
+        description: "A comprehensive routine including stretching exercise, walking, and mindfulness to revitalize your body and mind for sustained productivity.",
         duration: 1200,
         exercises: Array(exercises[19...28])
     )

@@ -11,7 +11,7 @@ struct CalmCorner: View {
     @State private var showDialog = false
     @State private var selectedTime = 5
     @State private var navigate = false
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Meditation")
@@ -35,7 +35,7 @@ struct CalmCorner: View {
             
             NavigationLink(
                 destination: Meditation(initialTime: selectedTime)
-                               .environmentObject(HealthDataViewModel()),
+                    .environmentObject(HealthDataViewModel()),
                 isActive: $navigate
             ) { EmptyView() }
                 .hidden()
@@ -49,15 +49,45 @@ struct CalmCorner: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .clipped()
-
-            LinearGradient(colors: [.clear, .clear, .clear, .black.opacity(0.1), .black.opacity(0.5), .black], startPoint: .top, endPoint: .bottom)
-
+            
+            
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .mask(
+                    // Gradient mask to create fade effect
+                    LinearGradient(
+                        colors: [
+                            .black,
+                            .black.opacity(0.8),
+                            .clear,
+                            .clear,
+                            .clear
+                        ],
+                        startPoint: .bottom,
+                        endPoint: .top
+                    )
+                )
+            
+            // Additional tint for better contrast
+            LinearGradient(
+                colors: [
+                    .black.opacity(0.5),
+                    .black.opacity(0.3),
+                    .clear,
+                    .clear,
+                    .clear
+                ],
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            
             VStack(alignment: .leading, spacing: 4) {
                 Text("Meditate")
                     .font(.title.bold())
+                    .foregroundColor(.white)
                 Text("Balance your thoughts with a calming meditation")
                     .font(.footnote)
-                    .foregroundColor(.white.opacity(0.9))
+                    .foregroundColor(.white)
             }
             .padding()
             .foregroundColor(.white)
@@ -67,8 +97,8 @@ struct CalmCorner: View {
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.15), radius: 8, x: 5, y: 10)
     }
-
-
+    
+    
 }
 
 struct TimeSelectionView: View {
@@ -116,7 +146,7 @@ struct TimeSelectionView: View {
                     .frame(minWidth: 80)
                 
                 AdjustmentButton(systemImage: "plus.circle.fill") {
-                selectedTime = min(60, selectedTime + 1)
+                    selectedTime = min(60, selectedTime + 1)
                 }
             }
             

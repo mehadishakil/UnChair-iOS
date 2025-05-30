@@ -165,6 +165,7 @@ struct DailySleepView: View {
     @EnvironmentObject private var healthVM: HealthDataViewModel
     @State private var showPicker = false
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    @AppStorage("sleepGoalMins") private var sleepGoalMins: Int = 8 * 60
     
     // Convert total minutes to hours and minutes for display
     private var hours: Int { healthVM.sleepMinutes / 60 }
@@ -175,7 +176,7 @@ struct DailySleepView: View {
             ZStack {
                 // background & border
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+                    .fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
                 
                 VStack(alignment: .leading) {
                     Text("Sleep")
@@ -202,8 +203,7 @@ struct DailySleepView: View {
                     
                     // custom progress bar - convert minutes to hours for percentage calculation
                     GeometryReader { geo in
-                        let total = 12.0 * 60.0 // 12 hours in minutes
-                        let percent = CGFloat(healthVM.sleepMinutes) / CGFloat(total)
+                        let percent = CGFloat(healthVM.sleepMinutes) / CGFloat(sleepGoalMins)
                         ZStack(alignment: .leading) {
                             Capsule()
                                 .fill(Color.gray.opacity(0.2))

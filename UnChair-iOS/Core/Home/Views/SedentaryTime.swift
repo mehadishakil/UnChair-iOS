@@ -26,16 +26,15 @@ struct SedentaryTime: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                // .fill(Color(.systemBackground))
-                .fill(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+                .fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
             
             HStack() {
                 Image(systemName: "hourglass.tophalf.filled")
                     .resizable()
                     .frame(width: 90)
-                    .foregroundColor(userTheme == .dark ? .white.opacity(0.8) : .darkGray)
+                    .foregroundColor(userTheme == .light ? .darkGray : .white)
+                    .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
                     .padding(.leading)
-                    .shadow(color: Color.darkGray.opacity(0.15), radius: 4)
                 
                 Spacer()
                 
@@ -66,7 +65,7 @@ struct SedentaryTime: View {
                             )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
                             )
                     }
                     .buttonStyle(.plain)
@@ -166,7 +165,7 @@ struct SedentaryTime: View {
 }
 
 func formattedTime(_ totalSeconds: Int) -> String {
-    let hours = totalSeconds / 3600
+    let hours = (totalSeconds / 3600) % 24
     let min = (totalSeconds % 3600) / 60
     let sec = totalSeconds % 60
     return String(format: "%02d:%02d:%02d", hours, min, sec)

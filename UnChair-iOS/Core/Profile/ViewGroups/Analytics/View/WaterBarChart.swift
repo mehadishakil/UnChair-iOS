@@ -155,11 +155,11 @@ struct WaterBarChart : View {
                         .foregroundStyle(.secondary.opacity(0.3))
                         .annotation(position: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                             VStack{
-                                Text("\(selectedItem.consumption, specifier: "%.1f")")
+                                Text("\(selectedItem.consumption, specifier: "%.0f") ml")
                                     .font(.caption.bold())
                                 
                                 if currentTab == "Year" {
-                                    Text(selectedItem.date, format: .dateTime.month(.wide))
+                                    Text(selectedItem.date, format: .dateTime.month(.abbreviated))
                                         .font(.caption2)
                                 } else {
                                     Text(selectedItem.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
@@ -172,14 +172,14 @@ struct WaterBarChart : View {
                         }
                 }
                 
-                RuleMark(y: .value("Goal", 3000))
-                    .foregroundStyle(Color.mint)
-                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
-                    .annotation(alignment: .leading){
-                        Text("Goal")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+//                RuleMark(y: .value("Goal", 3000))
+//                    .foregroundStyle(Color.mint)
+//                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
+//                    .annotation(alignment: .leading){
+//                        Text("Goal")
+//                            .font(.caption)
+//                            .foregroundColor(.secondary)
+//                    }
                 
                 ForEach(waterChartData) { water in
                     BarMark(

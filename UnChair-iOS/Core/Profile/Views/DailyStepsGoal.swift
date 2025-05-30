@@ -1,92 +1,74 @@
 //
-//  BreakTime.swift
+//  DailyStepsGoal.swift
 //  UnChair-iOS
 //
-//  Created by Mehadi Hasan on 2/8/24.
+//  Created by Mehadi Hasan on 30/5/25.
 //
+
 
 import SwiftUI
 
-struct BreakTime: View {
-    @StateObject private var settings = SettingsManager.shared
-    @State private var tempDuration: TimeDuration
+struct DailyStepsGoal: View {
+    @AppStorage("stepsGoal") private var stepsGoal: Int = 10000
+    @State private var steps: Int = UserDefaults.standard.integer(forKey: "stepsGoal")
     @State private var isPickerPresented = false
-
-    init() {
-        _tempDuration = State(initialValue: SettingsManager.shared.breakDuration)
-    }
 
     var body: some View {
         HStack {
-            Image(systemName: "timer")
+            Image(systemName: "figure.walk")
                 .frame(width: 20, alignment: .center)
-
-            Text("Focus Time")
-
+            Text("Steps Goal")
             Spacer()
-
+            
             Button {
-                tempDuration = settings.breakDuration
+                // load current goal into buffer and show picker
+                steps = stepsGoal
                 isPickerPresented = true
             } label: {
-                Text("\(settings.breakDuration.hours) hr \(settings.breakDuration.minutes) min")
+                Text("\(stepsGoal) steps")
                     .padding(6)
                     .font(.subheadline.weight(.semibold))
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
             .sheet(isPresented: $isPickerPresented) {
-                BreakDurationPicker(
-                    duration: $tempDuration
+                StepsGoalPickerView(
+                    steps: $steps
                 ) {
-                    settings.breakDuration = tempDuration
+                    // save buffer back to AppStorage
+                    stepsGoal = steps
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
-                .presentationDetents([.fraction(0.55), .medium])
+                .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
             }
         }
     }
 }
 
-struct BreakDurationPicker: View {
-    @Binding var duration: TimeDuration
+struct StepsGoalPickerView: View {
+    @Binding var steps: Int
     @Environment(\.presentationMode) private var presentationMode
     let onSave: () -> Void
 
-    // picker ranges
-    private let hours = Array(0...12)
-    private let minutes = Array(0...59)
+    private let stepsRange: [Int] = Array(stride(from: 1000, through: 20000, by: 100))
 
     var body: some View {
         VStack(spacing: 24) {
-            // custom handle
             Capsule()
-                .frame(width: 40, height: 5)
+                .frame(width: 80, height: 5)
                 .foregroundColor(.gray.opacity(0.3))
                 .padding(.top, 8)
 
-            Text("Focus Time")
+            Text("Set Daily Steps Goal")
                 .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
-            // wheel pickers
-            HStack(spacing: 32) {
-                wheelPicker(selection: $duration.hours, data: hours, label: "hr")
-                wheelPicker(selection: $duration.minutes, data: minutes, label: "min")
-            }
-
-            // live preview
-            Text("\(duration.hours) hr \(duration.minutes) min")
-                .font(.headline.weight(.bold))
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            wheelPicker(selection: $steps, data: stepsRange, label: "steps")
 
             Spacer()
 
-            // save button
             Button {
                 onSave()
                 presentationMode.wrappedValue.dismiss()
@@ -107,7 +89,7 @@ struct BreakDurationPicker: View {
     private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
         VStack(spacing: 8) {
             Text(label)
-                .font(.caption)
+                .font(.footnote)
                 .foregroundColor(.secondary)
 
             Picker("", selection: selection) {
@@ -117,7 +99,7 @@ struct BreakDurationPicker: View {
                 }
             }
             .pickerStyle(.wheel)
-            .frame(width: 80, height: 100)
+            .frame(width: 300, height: 200)
             .clipped()
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -126,7 +108,5 @@ struct BreakDurationPicker: View {
 }
 
 #Preview {
-    BreakTime()
+    DailyStepsGoal()
 }
-
-

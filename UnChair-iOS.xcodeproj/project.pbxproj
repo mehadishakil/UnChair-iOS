@@ -36,6 +36,9 @@
 		E866CE042D3151D900F62142 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E866CE032D3151D900F62142 /* UserManager.swift */; };
 		E868E3342C5CCE87005DFFE0 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */; };
 		E869831D2C441877007A695F /* StartExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E869831C2C441877007A695F /* StartExerciseView.swift */; };
+		E872E6C72DE9DB56006F4F57 /* DailyWaterGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = E872E6C62DE9DB56006F4F57 /* DailyWaterGoal.swift */; };
+		E872E6C92DE9E99B006F4F57 /* DailySleepGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = E872E6C82DE9E99B006F4F57 /* DailySleepGoal.swift */; };
+		E872E6CB2DE9F294006F4F57 /* DailyStepsGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = E872E6CA2DE9F294006F4F57 /* DailyStepsGoal.swift */; };
 		E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */; };
 		E874AA012BFB53A50075644C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874AA002BFB53A50075644C /* ContentView.swift */; };
 		E874AA032BFB53A60075644C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E874AA022BFB53A60075644C /* Assets.xcassets */; };
@@ -125,6 +128,9 @@
 		E866CE032D3151D900F62142 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		E869831C2C441877007A695F /* StartExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartExerciseView.swift; sourceTree = "<group>"; };
+		E872E6C62DE9DB56006F4F57 /* DailyWaterGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWaterGoal.swift; sourceTree = "<group>"; };
+		E872E6C82DE9E99B006F4F57 /* DailySleepGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySleepGoal.swift; sourceTree = "<group>"; };
+		E872E6CA2DE9F294006F4F57 /* DailyStepsGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStepsGoal.swift; sourceTree = "<group>"; };
 		E874A9FB2BFB53A50075644C /* UnChair-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "UnChair-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnChair_iOSApp.swift; sourceTree = "<group>"; };
 		E874AA002BFB53A50075644C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -363,6 +369,9 @@
 				E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */,
 				E8D200692C5D3F67002EB719 /* BreakTime.swift */,
 				E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */,
+				E872E6CA2DE9F294006F4F57 /* DailyStepsGoal.swift */,
+				E872E6C62DE9DB56006F4F57 /* DailyWaterGoal.swift */,
+				E872E6C82DE9E99B006F4F57 /* DailySleepGoal.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -585,6 +594,7 @@
 				E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */,
 				E82A72702DA3EDF3005EA6A6 /* PointLineChart.swift in Sources */,
 				E847C0F22DB82F2A005BED49 /* BreakItem.swift in Sources */,
+				E872E6C92DE9E99B006F4F57 /* DailySleepGoal.swift in Sources */,
 				E8FE7D1B2DE87A5600D9779F /* PrivacyPolicyView.swift in Sources */,
 				E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */,
 				E8AFBAA62C9C45B200AEE292 /* WaterBarChart2.swift in Sources */,
@@ -628,6 +638,7 @@
 				E866CDFC2D3143F500F62142 /* UserData.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
 				E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */,
+				E872E6C72DE9DB56006F4F57 /* DailyWaterGoal.swift in Sources */,
 				E8AFBAA92C9C45B200AEE292 /* WaterBarChartView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
 				E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */,
@@ -640,6 +651,7 @@
 				E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */,
 				E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */,
 				E869831D2C441877007A695F /* StartExerciseView.swift in Sources */,
+				E872E6CB2DE9F294006F4F57 /* DailyStepsGoal.swift in Sources */,
 				E8AFBAAD2C9C460600AEE292 /* DataFetcher.swift in Sources */,
 				E82A72722DA472DE005EA6A6 /* MeditationLollipopChart.swift in Sources */,
 				E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */,

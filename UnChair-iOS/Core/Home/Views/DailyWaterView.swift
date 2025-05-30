@@ -10,7 +10,7 @@ import SwiftUI
 struct DailyWaterView: View {
     @EnvironmentObject private var healthViewModel: HealthDataViewModel
     @State private var showWaterPicker = false
-    private let waterTarget: Int = 3500
+    @AppStorage("waterGoalML") private var waterGoalML: Int = 2000
     private let maxIntake: Int = 6000
     private let minIntake: Int = 0
     @AppStorage("userTheme") private var userTheme: Theme = .system
@@ -20,19 +20,17 @@ struct DailyWaterView: View {
         Button(action: { showWaterPicker.toggle() }) {
             ZStack{
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    // .fill(Color(.systemBackground))
-                    .fill(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+                    .fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
                 
-                    CircularProgressBar(current: healthViewModel.waterIntake, target: waterTarget, maxIntake: maxIntake, minIntake: minIntake)
+                    CircularProgressBar(current: healthViewModel.waterIntake, target: waterGoalML, maxIntake: maxIntake, minIntake: minIntake)
                         .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .buttonStyle(PlainButtonStyle())
         .frame(height: 170)
         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
-//        .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
         .sheet(isPresented: $showWaterPicker) {
-            WaterPickerView(currentMl: healthViewModel.waterIntake, waterTarget: waterTarget, maxIntake: maxIntake, minIntake: minIntake, onUpdate: { newValue in
+            WaterPickerView(currentMl: healthViewModel.waterIntake, waterGoalML: waterGoalML, maxIntake: maxIntake, minIntake: minIntake, onUpdate: { newValue in
                 healthViewModel.updateWaterIntake(newValue)
             })
             .presentationDetents([.medium])
@@ -73,14 +71,14 @@ struct CircularProgressBar: View {
                 Image("water")
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 44)
+                    .frame(height: 36)
                 Text("Water")
                     .font(.callout)
                     .foregroundColor(.primary)
                 
                 HStack {
                     Text("\(current) ml")
-                        .font(.headline.weight(.semibold))
+                        .font(.title3.weight(.semibold))
                         .foregroundColor(.primary)
                 }
             }
@@ -128,7 +126,7 @@ struct WaterPickerView: View {
     }
     
     init(currentMl: Int,
-         waterTarget: Int, maxIntake: Int, minIntake: Int,
+         waterGoalML: Int, maxIntake: Int, minIntake: Int,
          onUpdate: @escaping (Int) -> Void) {
         let glasses = currentMl / WaterUnit.glass.mlPerUnit
         _totalMl = State(initialValue: currentMl)
@@ -190,7 +188,7 @@ struct WaterPickerView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     Text("\(totalMl) ml")
-                        .font(.title2)
+                        .font(.callout)
                         .fontWeight(.bold)
                 }
                 
@@ -217,99 +215,6 @@ struct WaterPickerView: View {
     }
 }
 
-
-//struct WaterPickerView: View {
-//    @State private var tempWater: Int
-//    let waterTarget: Int
-//    let maxIntake: Int
-//    let minIntake: Int
-//    let onUpdate: (Int) -> Void
-//    @Environment(\.dismiss) private var dismiss
-//
-//    init(water: Int, waterTarget: Int, maxIntake: Int, minIntake: Int, onUpdate: @escaping (Int) -> Void) {
-//        self._tempWater = State(initialValue: water)
-//        self.waterTarget = waterTarget
-//        self.maxIntake = maxIntake
-//        self.minIntake = minIntake
-//        self.onUpdate = onUpdate
-//    }
-//
-//    var body: some View {
-//        VStack {
-//            Text("Adjust Water Intake")
-//                .font(.headline)
-//                .padding()
-//
-//            CircularProgressBar(current: tempWater, target: waterTarget, maxIntake: maxIntake, minIntake: minIntake)
-//                .frame(maxWidth: .infinity, alignment: .center)
-//                .padding()
-//                .gesture(
-//                    DragGesture()
-//                        .onChanged { value in
-//                            updateProgress(with: value)
-//                        }
-//                )
-//
-//            HStack(spacing: 20) {
-//                Button(action: { addWater(amount: 100) }) {
-//                    Text("+100ml")
-//                        .padding(10)
-//                        .background(Color.blue)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(10)
-//                }
-//
-//                Button(action: { addWater(amount: 250) }) {
-//                    Text("+250ml")
-//                        .padding(10)
-//                        .background(Color.blue)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(10)
-//                }
-//
-//                Button(action: { addWater(amount: 500) }) {
-//                    Text("+500ml")
-//                        .padding(10)
-//                        .background(Color.blue)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(10)
-//                }
-//            }
-//            .padding()
-//
-//            Button(action: {
-//                onUpdate(tempWater)
-//                dismiss()
-//            }) {
-//                Text("Done")
-//                    .bold()
-//            }
-//            .padding()
-//        }
-//    }
-//
-//    private func addWater(amount: Int) {
-//        let newAmount = tempWater + amount
-//        if newAmount <= maxIntake {
-//            tempWater = newAmount
-//        } else {
-//            tempWater = maxIntake
-//        }
-//    }
-//
-//    private func updateProgress(with value: DragGesture.Value) {
-//        let center = CGPoint(x: 100, y: 100) // Assuming a 200x200 circle
-//        let vector = CGVector(dx: value.location.x - center.x, dy: value.location.y - center.y)
-//        let angle = atan2(vector.dy, vector.dx) + .pi / 2
-//        let normalizedAngle = angle < 0 ? angle + 2 * .pi : angle
-//        let newProgress = normalizedAngle / (2 * .pi)
-//        let newIntake = Int(newProgress * CGFloat(maxIntake))
-//
-//        if newIntake <= maxIntake && newIntake >= minIntake {
-//            tempWater = newIntake
-//        }
-//    }
-//}
 
 #Preview {
     DailyWaterView()

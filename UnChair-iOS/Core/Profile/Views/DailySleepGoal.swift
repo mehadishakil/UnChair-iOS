@@ -1,83 +1,76 @@
 //
-//  BreakTime.swift
+//  DailySleepGoal.swift
 //  UnChair-iOS
 //
-//  Created by Mehadi Hasan on 2/8/24.
+//  Created by Mehadi Hasan on 30/5/25.
 //
 
 import SwiftUI
 
-struct BreakTime: View {
-    @StateObject private var settings = SettingsManager.shared
+struct DailySleepGoal: View {
+    @AppStorage("sleepGoalMins") private var sleepGoalMins: Int = 8 * 60
     @State private var tempDuration: TimeDuration
     @State private var isPickerPresented = false
 
     init() {
-        _tempDuration = State(initialValue: SettingsManager.shared.breakDuration)
+        let saved = UserDefaults.standard.integer(forKey: "sleepGoalMins")
+        _tempDuration = State(initialValue: TimeDuration(fromTotalMinutes: saved))
     }
 
     var body: some View {
         HStack {
-            Image(systemName: "timer")
+            Image(systemName: "powersleep")
                 .frame(width: 20, alignment: .center)
-
-            Text("Focus Time")
-
+            Text("Sleep Goal")
             Spacer()
 
             Button {
-                tempDuration = settings.breakDuration
+                tempDuration = TimeDuration(fromTotalMinutes: sleepGoalMins)
                 isPickerPresented = true
             } label: {
-                Text("\(settings.breakDuration.hours) hr \(settings.breakDuration.minutes) min")
+                Text("\(sleepGoalMins / 60) hr \(sleepGoalMins % 60) min")
                     .padding(6)
                     .font(.subheadline.weight(.semibold))
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
             .sheet(isPresented: $isPickerPresented) {
-                BreakDurationPicker(
-                    duration: $tempDuration
-                ) {
-                    settings.breakDuration = tempDuration
+                DailySleepGoalPickerView(duration: $tempDuration) {
+                    sleepGoalMins = tempDuration.totalMinutes
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
-                .presentationDetents([.fraction(0.55), .medium])
+                .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
             }
         }
     }
 }
 
-struct BreakDurationPicker: View {
+struct DailySleepGoalPickerView: View {
     @Binding var duration: TimeDuration
     @Environment(\.presentationMode) private var presentationMode
     let onSave: () -> Void
 
-    // picker ranges
-    private let hours = Array(0...12)
+    private let hours = Array(4...14)
     private let minutes = Array(0...59)
 
     var body: some View {
         VStack(spacing: 24) {
-            // custom handle
             Capsule()
-                .frame(width: 40, height: 5)
+                .frame(width: 80, height: 5)
                 .foregroundColor(.gray.opacity(0.3))
                 .padding(.top, 8)
 
-            Text("Focus Time")
+            Text("Set Daily Sleep Goal")
                 .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
-            // wheel pickers
             HStack(spacing: 32) {
                 wheelPicker(selection: $duration.hours, data: hours, label: "hr")
                 wheelPicker(selection: $duration.minutes, data: minutes, label: "min")
             }
 
-            // live preview
             Text("\(duration.hours) hr \(duration.minutes) min")
                 .font(.headline.weight(.bold))
                 .padding()
@@ -86,7 +79,6 @@ struct BreakDurationPicker: View {
 
             Spacer()
 
-            // save button
             Button {
                 onSave()
                 presentationMode.wrappedValue.dismiss()
@@ -107,7 +99,7 @@ struct BreakDurationPicker: View {
     private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
         VStack(spacing: 8) {
             Text(label)
-                .font(.caption)
+                .font(.footnote)
                 .foregroundColor(.secondary)
 
             Picker("", selection: selection) {
@@ -126,7 +118,5 @@ struct BreakDurationPicker: View {
 }
 
 #Preview {
-    BreakTime()
+    DailySleepGoal()
 }
-
-

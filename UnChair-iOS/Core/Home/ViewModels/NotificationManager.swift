@@ -13,6 +13,7 @@ import SwiftUI
 extension Notification.Name {
     static let breakNotificationTapped = Notification.Name("BreakNotificationTapped")
     static let breakSettingsChanged = Notification.Name("BreakSettingsChanged")
+    static let dailyGoalChanged = Notification.Name("DailyGoalChanged")
 }
 
 class NotificationManager: NSObject, UNUserNotificationCenterDelegate {

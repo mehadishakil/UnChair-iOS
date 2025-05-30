@@ -225,7 +225,7 @@ struct CapsuleItem: View {
                                 .transition(.opacity.combined(with: .scale))
                             
                             if currentTab == "Year" {
-                                Text(data.date, format: .dateTime.month(.wide))
+                                Text(data.date, format: .dateTime.month(.abbreviated))
                                     .font(.caption2)
                             } else {
                                 Text(data.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))

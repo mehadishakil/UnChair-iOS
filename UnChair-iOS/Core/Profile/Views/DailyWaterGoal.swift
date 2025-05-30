@@ -1,92 +1,74 @@
 //
-//  BreakTime.swift
+//  WaterDailyGoal.swift
 //  UnChair-iOS
 //
-//  Created by Mehadi Hasan on 2/8/24.
+//  Created by Mehadi Hasan on 30/5/25.
 //
 
 import SwiftUI
 
-struct BreakTime: View {
-    @StateObject private var settings = SettingsManager.shared
-    @State private var tempDuration: TimeDuration
+struct DailyWaterGoal: View {
+    @AppStorage("waterGoalML") private var waterGoalML: Int = 2000
+    @State private var water: Int = UserDefaults.standard.integer(forKey: "waterGoalML")
     @State private var isPickerPresented = false
-
-    init() {
-        _tempDuration = State(initialValue: SettingsManager.shared.breakDuration)
-    }
 
     var body: some View {
         HStack {
-            Image(systemName: "timer")
+            Image(systemName: "drop.fill")
                 .frame(width: 20, alignment: .center)
-
-            Text("Focus Time")
-
+            Text("Water Goal")
             Spacer()
-
+            
             Button {
-                tempDuration = settings.breakDuration
+                water = waterGoalML
                 isPickerPresented = true
             } label: {
-                Text("\(settings.breakDuration.hours) hr \(settings.breakDuration.minutes) min")
+                Text("\(waterGoalML) ml")
                     .padding(6)
                     .font(.subheadline.weight(.semibold))
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
             .sheet(isPresented: $isPickerPresented) {
-                BreakDurationPicker(
-                    duration: $tempDuration
+                WaterGoalPickerView(
+                    water: $water
                 ) {
-                    settings.breakDuration = tempDuration
+                    // save buffer back to AppStorage
+                    waterGoalML = water
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
-                .presentationDetents([.fraction(0.55), .medium])
+                .presentationDetents([.medium])
                 .presentationDragIndicator(.hidden)
             }
         }
     }
 }
 
-struct BreakDurationPicker: View {
-    @Binding var duration: TimeDuration
+
+struct WaterGoalPickerView: View {
+    @Binding var water: Int
     @Environment(\.presentationMode) private var presentationMode
     let onSave: () -> Void
 
-    // picker ranges
-    private let hours = Array(0...12)
-    private let minutes = Array(0...59)
+    // e.g. from 0 to 5000 ml in 100-ml steps
+    private let waterRange: [Int] = Array(stride(from: 1000, through: 8000, by: 100))
 
     var body: some View {
         VStack(spacing: 24) {
-            // custom handle
             Capsule()
-                .frame(width: 40, height: 5)
+                .frame(width: 80, height: 5)
                 .foregroundColor(.gray.opacity(0.3))
                 .padding(.top, 8)
 
-            Text("Focus Time")
+            Text("Set Daily Water Goal")
                 .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
-            // wheel pickers
-            HStack(spacing: 32) {
-                wheelPicker(selection: $duration.hours, data: hours, label: "hr")
-                wheelPicker(selection: $duration.minutes, data: minutes, label: "min")
-            }
-
-            // live preview
-            Text("\(duration.hours) hr \(duration.minutes) min")
-                .font(.headline.weight(.bold))
-                .padding()
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            wheelPicker(selection: $water, data: waterRange, label: "milliliter")
 
             Spacer()
 
-            // save button
             Button {
                 onSave()
                 presentationMode.wrappedValue.dismiss()
@@ -107,7 +89,7 @@ struct BreakDurationPicker: View {
     private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
         VStack(spacing: 8) {
             Text(label)
-                .font(.caption)
+                .font(.footnote)
                 .foregroundColor(.secondary)
 
             Picker("", selection: selection) {
@@ -117,7 +99,7 @@ struct BreakDurationPicker: View {
                 }
             }
             .pickerStyle(.wheel)
-            .frame(width: 80, height: 100)
+            .frame(width: 300, height: 200)
             .clipped()
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -126,7 +108,5 @@ struct BreakDurationPicker: View {
 }
 
 #Preview {
-    BreakTime()
+    DailyWaterGoal()
 }
-
-

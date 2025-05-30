@@ -21,6 +21,7 @@ struct ActiveHour: View {
     var body: some View {
         HStack {
             Image(systemName: "clock.arrow.2.circlepath")
+                .frame(width: 20, alignment: .center)
             
             Text("Work Hour")
             

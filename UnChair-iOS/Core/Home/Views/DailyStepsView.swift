@@ -10,31 +10,57 @@ import SwiftUI
 struct DailyStepsView: View {
     @EnvironmentObject private var healthVM: HealthDataViewModel
     @AppStorage("userTheme") private var userTheme: Theme = .system
-    
+    @AppStorage("stepsGoal") private var stepsGoal: Int = 10000
+
+    var progress: Double {
+        guard stepsGoal > 0 else { return 0.0 }
+        return min(Double(healthVM.stepCount) / Double(stepsGoal), 1.0)
+    }
+
     var body: some View {
-        ZStack{
+        ZStack {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                // .fill(Color(.systemBackground))
-                .fill(userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+                .fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
             
-            VStack(spacing: 16) {
+            VStack(spacing: 4) {
                 Image(systemName: "figure.walk")
                     .resizable()
                     .scaledToFit()
-                    .frame(height: 44)
+                    .frame(height: 36)
                     .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
-                    .foregroundColor(userTheme == .dark ? .white.opacity(0.9) : .darkGray)
+                    .foregroundColor(userTheme == .light ? .darkGray : .white.opacity(0.9))
+                
+                Spacer()
+                
                 Text("\(healthVM.stepCount)")
                     .font(.system(.title, weight: .bold))
                     .foregroundColor(.primary)
-                Text("Steps")
-                    .font(.system(.callout, weight: .medium))
-                    .foregroundColor(.primary)
+                
+                Spacer()
+                
+                VStack(spacing: 4) {
+                    Text("Steps")
+                        .font(.system(.callout, weight: .medium))
+                        .foregroundColor(.primary)
+                    
+                    GeometryReader { geo in
+                        let percent = CGFloat(healthVM.stepCount) / CGFloat(stepsGoal)
+                        ZStack(alignment: .leading) {
+                            Capsule()
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(height: 6)
+                            Capsule()
+                                .fill(Color.blue)
+                                .frame(width: geo.size.width * CGFloat(percent), height: 6)
+                        }
+                    }
+                }
+                .padding(.bottom, 4)
             }
+            .padding()
         }
         .frame(height: 170)
         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
-//        .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
         .onDisappear {
             if healthVM.stepCount > 0 {
                 healthVM.updateStepCount(healthVM.stepCount)
