@@ -27,6 +27,9 @@ struct ContentView: View {
 
             SettingsScreen(selectedDuration: $selectedDuration)
                 .tabItem { Label("Library", systemImage: "gearshape.fill") }
+            
+            WorkHourSelectionView()
+                .tabItem { Label("OnBoard", systemImage: "gearshape.fill") }
         }
         .background(.ultraThinMaterial)
         .edgesIgnoringSafeArea(.bottom)

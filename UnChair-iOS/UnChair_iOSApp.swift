@@ -25,18 +25,23 @@ struct UnChair_iOSApp: App {
     @StateObject private var healthViewModel = HealthDataViewModel()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @Environment(\.scenePhase) var scenePhase
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     
     var body: some Scene {
         WindowGroup {
-            MainView()
-                .environmentObject(authController)
-                .environmentObject(healthViewModel)
-                .onChange(of: scenePhase) { _, newPhase in
-                    if newPhase == .active {
-                        NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
-                        NotificationManager.shared.scheduleNextBreakNotification()
+            if hasCompletedOnboarding {
+                MainView()
+                    .environmentObject(authController)
+                    .environmentObject(healthViewModel)
+                    .onChange(of: scenePhase) { _, newPhase in
+                        if newPhase == .active {
+                            NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
+                            NotificationManager.shared.scheduleNextBreakNotification()
+                        }
                     }
-                }
+            } else {
+                OnBoarding()
+            }
         }
         .modelContainer(for: [UserData.self, WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])
     }
