@@ -14,6 +14,7 @@ struct ContentView: View {
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @EnvironmentObject private var authController: AuthController
     @EnvironmentObject private var healthViewModel: HealthDataViewModel
+    
 
     var body: some View {
         TabView {

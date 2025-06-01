@@ -8,18 +8,19 @@
 import SwiftUI
 
 struct SleepSelectionView: View {
-    @State private var selectedSteps: Int = 10000
-    @State private var showNextScreen: Bool = false
-    @State private var value: CGFloat = 10
+    @Binding var selectedSleep: TimeDuration
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    
+    private let hours = Array(4...14)
+    private let minutes = Array(0...59)
     
     var body: some View {
         NavigationView {
             ZStack {
                 VStack(spacing: 16) {
-                    VStack(spacing : 8) {
+                    VStack(spacing: 8) {
                         HStack(spacing: 0) {
-                            Text("Set our daily ")
+                            Text("Set your daily ")
                                 .font(.title2)
                                 .foregroundColor(.primary)
                             Text("sleep ")
@@ -36,11 +37,15 @@ struct SleepSelectionView: View {
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 40)
                             .padding(.bottom, 20)
-                        
                     }
 
-                        SleepPicker()
-
+                    VStack {
+                        HStack(spacing: 24) {
+                            wheelPicker(selection: $selectedSleep.hours, data: hours, label: "Hours")
+                            wheelPicker(selection: $selectedSleep.minutes, data: minutes, label: "Minutes")
+                        }
+                    }
+                    .padding()
                 }
             }
             .navigationBarHidden(true)
@@ -48,53 +53,28 @@ struct SleepSelectionView: View {
         .navigationViewStyle(StackNavigationViewStyle())
     }
     
-    struct SleepPicker: View {
-        @State private var tempDuration: TimeDuration
-        private let hours = Array(4...14)
-        private let minutes = Array(0...59)
+    @ViewBuilder
+    private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
+        VStack {
+            Text(label)
+                .font(.footnote)
+                .foregroundColor(.secondary)
 
-        init() {
-            let saved = UserDefaults.standard.integer(forKey: "sleepGoalMins")
-            _tempDuration = State(initialValue: TimeDuration(fromTotalMinutes: saved))
-        }
-
-        var body: some View {
-            VStack {
-                HStack(spacing: 24) {
-                    wheelPicker(selection: $tempDuration.hours, data: hours, label: "Hours")
-                    wheelPicker(selection: $tempDuration.minutes, data: minutes, label: "Minutes")
+            Picker("", selection: selection) {
+                ForEach(data, id: \.self) { value in
+                    Text("\(value)")
+                        .tag(value)
                 }
             }
-            .padding()
-        }
-
-        @ViewBuilder
-        private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
-            VStack {
-                Text(label)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-
-                Picker("", selection: selection) {
-                    ForEach(data, id: \.self) { value in
-                        Text("\(value)")
-                            .tag(value)
-                    }
-                }
-                .background(.ultraThinMaterial)
-                .pickerStyle(.wheel)
-                .frame(width: 100)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            }
+            .background(.ultraThinMaterial)
+            .pickerStyle(.wheel)
+            .frame(width: 100)
+            .clipped()
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
-    
 }
 
-
-
-
 #Preview {
-    SleepSelectionView()
+    SleepSelectionView(selectedSleep: .constant(TimeDuration.init(hours: 6, minutes: 30)))
 }

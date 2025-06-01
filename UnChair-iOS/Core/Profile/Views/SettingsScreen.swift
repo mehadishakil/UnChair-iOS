@@ -238,7 +238,11 @@ struct SettingsScreen: View {
         .onAppear {
             fetchUserData()
             loadNotificationSettings()
+            if NotificationManager.shared.isAppNotificationEnabled {
+                NotificationManager.shared.scheduleDailyBreakNotifications()
+            }
         }
+
     }
     
     // MARK: - Updated notification handling methods

@@ -9,11 +9,13 @@
 import SwiftUI
 import RevenueCat
 import RevenueCatUI
+import StoreKit
 
 struct MainView: View {
     
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var healthViewModel: HealthDataViewModel
+    @Environment(\.requestReview) var requestReview : RequestReviewAction
     
     // State to track subscription status
     @State private var isSubscriptionActive = false
@@ -43,6 +45,7 @@ struct MainView: View {
                             // Handle successful purchase
                             self.customerInfo = customerInfo
                             checkSubscriptionStatus()
+                            requestReview()
                         }
                         .onRestoreCompleted { customerInfo in
                             // Handle successful restore

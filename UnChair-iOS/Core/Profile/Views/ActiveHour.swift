@@ -131,12 +131,11 @@ struct TimePickerView: View {
             .onChange(of: startTime) { _ in updateDuration() }
             .onChange(of: endTime)   { _ in updateDuration() }
 
-            
-
             // Save button
             Button {
                 onSave()
                 presentationMode.wrappedValue.dismiss()
+                
             } label: {
                 Text("Save")
                     .font(.headline)

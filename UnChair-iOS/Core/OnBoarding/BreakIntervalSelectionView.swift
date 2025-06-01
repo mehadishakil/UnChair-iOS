@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct BreakIntervalSelectionView: View {
-    @State private var selectedSteps: Int = 10000
-    @State private var showNextScreen: Bool = false
-    @State private var value: CGFloat = 10
+    @Binding var selectedBreakInterval: TimeDuration
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    
+    private let hours = Array(0...4)  // More reasonable range for break intervals
+    private let minutes = Array(stride(from: 0, through: 55, by: 5)) // 5-minute increments
     
     var body: some View {
         NavigationView {
             ZStack {
                 VStack(spacing: 16) {
-                    VStack(spacing : 8) {
+                    VStack(spacing: 8) {
                         HStack(spacing: 0) {
                             Text("Set your ")
                                 .font(.title2)
@@ -30,21 +31,21 @@ struct BreakIntervalSelectionView: View {
                                 .foregroundColor(.primary)
                         }
                         
-                        
-                        // Subtitle
                         Text("Set your preferred focus duration\nbefore taking a break.")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 40)
                             .padding(.bottom, 20)
-                        
                     }
        
-                    
-                   
-                        SleepPicker()
-                
+                    VStack {
+                        HStack(spacing: 24) {
+                            wheelPicker(selection: $selectedBreakInterval.hours, data: hours, label: "Hours")
+                            wheelPicker(selection: $selectedBreakInterval.minutes, data: minutes, label: "Minutes")
+                        }
+                    }
+                    .padding()
                 }
             }
             .navigationBarHidden(true)
@@ -52,45 +53,24 @@ struct BreakIntervalSelectionView: View {
         .navigationViewStyle(StackNavigationViewStyle())
     }
     
-    struct SleepPicker: View {
-        @State private var tempDuration: TimeDuration
-        private let hours = Array(4...14)
-        private let minutes = Array(0...59)
+    @ViewBuilder
+    private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
+        VStack {
+            Text(label)
+                .font(.footnote)
+                .foregroundColor(.secondary)
 
-        init() {
-            let saved = UserDefaults.standard.integer(forKey: "sleepGoalMins")
-            _tempDuration = State(initialValue: TimeDuration(fromTotalMinutes: saved))
-        }
-
-        var body: some View {
-            VStack {
-                HStack(spacing: 24) {
-                    wheelPicker(selection: $tempDuration.hours, data: hours, label: "Hours")
-                    wheelPicker(selection: $tempDuration.minutes, data: minutes, label: "Minutes")
+            Picker("", selection: selection) {
+                ForEach(data, id: \.self) { value in
+                    Text("\(value)")
+                        .tag(value)
                 }
             }
-            .padding()
-        }
-
-        @ViewBuilder
-        private func wheelPicker(selection: Binding<Int>, data: [Int], label: String) -> some View {
-            VStack {
-                Text(label)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-
-                Picker("", selection: selection) {
-                    ForEach(data, id: \.self) { value in
-                        Text("\(value)")
-                            .tag(value)
-                    }
-                }
-                .background(.ultraThinMaterial)
-                .pickerStyle(.wheel)
-                .frame(width: 100, height: 180)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            }
+            .background(.ultraThinMaterial)
+            .pickerStyle(.wheel)
+            .frame(width: 100, height: 180)
+            .clipped()
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
 }
@@ -99,5 +79,5 @@ struct BreakIntervalSelectionView: View {
 
 
 #Preview {
-    BreakIntervalSelectionView()
+    BreakIntervalSelectionView(selectedBreakInterval: .constant(TimeDuration.init(hours: 1, minutes: 30)))
 }

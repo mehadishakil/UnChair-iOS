@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct DailyStepsGoal: View {
-    @AppStorage("stepsGoal") private var stepsGoal: Int = 10000
+    @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
     @State private var steps: Int = UserDefaults.standard.integer(forKey: "stepsGoal")
     @State private var isPickerPresented = false
 

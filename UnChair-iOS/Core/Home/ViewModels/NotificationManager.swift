@@ -44,7 +44,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
             UserDefaults.standard.set(newValue, forKey: appNotificationEnabledKey)
             // When the app-level setting changes, update notification scheduling
             if newValue {
-                scheduleNextBreakNotification()
+                scheduleDailyBreakNotifications() // <-- instead of scheduleNextBreakNotification()
             } else {
                 cancelPendingBreakNotifications()
             }
@@ -55,6 +55,19 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         super.init()
         setupNotificationDelegate()
         setupNotificationCategories()
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleSettingsChanged),
+            name: .breakSettingsChanged,
+            object: nil
+        )
+    }
+
+    
+    @objc private func handleSettingsChanged() {
+        guard isAppNotificationEnabled else { return }
+        rescheduleDailyBreakNotifications()
     }
     
     // Set this class as the notification delegate
@@ -424,6 +437,38 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         
         scheduleNotification(for: nextStart)
     }
+    
+    func scheduleDailyBreakNotifications() {
+        shouldScheduleNotifications { [weak self] shouldSchedule in
+            guard let self = self, shouldSchedule else {
+                self?.cancelPendingBreakNotifications()
+                return
+            }
+
+            self.cancelPendingBreakNotifications()
+            
+            let calendar = Calendar.current
+            let now = Date()
+
+            var breakTime = self.getActiveHourStartForToday()
+            let endTime = self.getActiveHourEndForToday()
+            let interval = TimeInterval(self.settings.breakDuration.totalMinutes * 60)
+
+            while breakTime < endTime {
+                if breakTime > now {
+                    self.scheduleNotification(for: breakTime)
+                }
+                breakTime = breakTime.addingTimeInterval(interval)
+            }
+        }
+    }
+
+    func rescheduleDailyBreakNotifications() {
+        cancelPendingBreakNotifications()
+        scheduleDailyBreakNotifications()
+    }
+
+    
 }
 
 extension NotificationManager {

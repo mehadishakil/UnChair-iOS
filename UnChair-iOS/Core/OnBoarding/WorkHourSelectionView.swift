@@ -4,13 +4,13 @@
 //
 //  Created by Mehadi Hasan on 31/5/25.
 //
+
 import SwiftUI
 
 struct WorkHourSelectionView: View {
-    @State private var selectedSteps: Int = 10000
     @State private var showNextScreen: Bool = false
     @State private var value: CGFloat = 10
-    @AppStorage("userTheme") private var userTheme: Theme = .system // Assuming 'Theme' enum is defined elsewhere
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     
     // State for the custom picker
     @State private var startTime: Date = {
@@ -71,6 +71,8 @@ struct CircularTimePicker: View {
     
     @State private var startAngle: Angle = .degrees(0)
     @State private var endAngle: Angle = .degrees(0)
+    @State private var isDraggingStart: Bool = false
+    @State private var isDraggingEnd: Bool = false
     
     private let radius: CGFloat = 100
     private let handleRadius: CGFloat = 8
@@ -98,18 +100,18 @@ struct CircularTimePicker: View {
             
             // Circular Timer
             ZStack {
-                // Outer Dark Background Circle - Changed to purple
+                // Outer Dark Background Circle
                 Circle()
-                    .fill(.gray) // Changed from black.opacity(0.8)
+                    .fill(.gray)
                     .frame(width: (radius + outerRingWidth) * 2, height: (radius + outerRingWidth) * 2)
                     .overlay(
                         Circle()
                             .stroke(Color.orange.opacity(0.4), lineWidth: 1)
                     )
                 
-                // Inner Circle Background - Changed to a darker purple
+                // Inner Circle Background
                 Circle()
-                    .fill(.background) // Changed from black.opacity(0.6)
+                    .fill(.background)
                     .frame(width: radius * 2, height: radius * 2)
                     .overlay(
                         Circle()
@@ -120,15 +122,15 @@ struct CircularTimePicker: View {
                 ForEach(0..<24) { hour in
                     Rectangle()
                         .fill(Color.gray)
-                        .frame(width: 1, height: 4) // Length of major tick
-                        .offset(y: -radius + 6) // Position outside inner circle
-                        .rotationEffect(.degrees(Double(hour) * 15)) // 360 degrees / 24 hours = 15 degrees per hour
+                        .frame(width: 1, height: 4)
+                        .offset(y: -radius + 6)
+                        .rotationEffect(.degrees(Double(hour) * 15))
                 }
                 
                 // Time Hour Numbers
                 ForEach(Array(stride(from: 0, to: 24, by: 2)), id: \.self) { hour in
                     let displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour)
-                    let angle = Double(hour) * 15 - 90 // Start from top (12am)
+                    let angle = Double(hour) * 15 - 90
                     
                     if displayHour != 12 && displayHour != 6{
                         Text("\(displayHour)")
@@ -139,7 +141,6 @@ struct CircularTimePicker: View {
                                 y: (radius - 25) * sin(Angle.degrees(angle).radians)
                             )
                     }
-                    
                 }
                 
                 // Special Time Labels (12am, 6am, 12pm, 6pm)
@@ -195,7 +196,7 @@ struct CircularTimePicker: View {
                 
                 // Outer Ring Progress Track
                 Circle()
-                    .stroke(Color.darkGray.opacity(0.3), lineWidth: outerRingWidth)
+                    .stroke(Color.gray.opacity(0.3), lineWidth: outerRingWidth)
                     .frame(width: (radius + outerRingWidth/2) * 2, height: (radius + outerRingWidth/2) * 2)
                 
                 // Active Arc - showing selected time range
@@ -204,41 +205,59 @@ struct CircularTimePicker: View {
                     let center = CGPoint(x: size / 2, y: size / 2)
                     let arcRadius = radius + outerRingWidth/2
                     
+                    // Convert our angles to the correct coordinate system
+                    let startAngleRadians = (startAngle.degrees - 90) * .pi / 180
+                    let endAngleRadians = (endAngle.degrees - 90) * .pi / 180
+                    
                     path.addArc(
                         center: center,
                         radius: arcRadius,
-                        startAngle: startAngle,
-                        endAngle: endAngle,
+                        startAngle: Angle(radians: startAngleRadians),
+                        endAngle: Angle(radians: endAngleRadians),
                         clockwise: false
                     )
                 }
                 .stroke(
-                    Color.white.opacity(0.45),
-                    style: StrokeStyle(lineWidth: outerRingWidth * 0.8, lineCap: .round)
+                    .white.opacity(0.5),
+                    style: StrokeStyle(lineWidth: outerRingWidth * 0.6, lineCap: .round)
                 )
                 
-                // Start Time Handle (Gray)
+                // Start Time Handle (Teal)
                 Circle()
                     .fill(highLightColor)
                     .frame(width: handleRadius * 2, height: handleRadius * 2)
                     .overlay(
                         Circle()
-                            .stroke(Color.gray.opacity(0.3), lineWidth: 2) // Changed to .gray from .darkGray
+                            .stroke(Color.gray.opacity(0.3), lineWidth: 2)
                     )
                     .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
                     .offset(
-                        x: (radius + outerRingWidth/2) * cos(startAngle.radians),
-                        y: (radius + outerRingWidth/2) * sin(startAngle.radians)
+                        x: (radius + outerRingWidth/2) * cos((startAngle - .degrees(90)).radians),
+                        y: (radius + outerRingWidth/2) * sin((startAngle - .degrees(90)).radians)
                     )
                     .gesture(
                         DragGesture()
                             .onChanged { gesture in
+                                isDraggingStart = true
                                 let center = CGPoint(x: 0, y: 0)
-                                let vector = CGVector(dx: gesture.location.x - center.x, dy: gesture.location.y - center.y)
-                                let angle = atan2(vector.dy, vector.dx) + .pi / 2
-                                let normalizedAngle = angle < 0 ? angle + 2 * .pi : angle
-                                self.startAngle = Angle(radians: normalizedAngle)
+                                let vector = CGVector(
+                                    dx: gesture.location.x - center.x,
+                                    dy: gesture.location.y - center.y
+                                )
+                                let angle = atan2(vector.dy, vector.dx)
+                                let newAngle = Angle(radians: Double(angle)) + .degrees(90)
+                                
+                                // Smooth angle transition to avoid jumps
+                                let smoothedAngle = smoothAngleTransition(
+                                    from: startAngle,
+                                    to: newAngle
+                                )
+                                
+                                startAngle = smoothedAngle
                                 updateTimeFromAngle(angle: startAngle, isStartTime: true)
+                            }
+                            .onEnded { _ in
+                                isDraggingStart = false
                             }
                     )
                 
@@ -252,18 +271,32 @@ struct CircularTimePicker: View {
                     )
                     .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
                     .offset(
-                        x: (radius + outerRingWidth/2) * cos(endAngle.radians),
-                        y: (radius + outerRingWidth/2) * sin(endAngle.radians)
+                        x: (radius + outerRingWidth/2) * cos((endAngle - .degrees(90)).radians),
+                        y: (radius + outerRingWidth/2) * sin((endAngle - .degrees(90)).radians)
                     )
                     .gesture(
                         DragGesture()
                             .onChanged { gesture in
+                                isDraggingEnd = true
                                 let center = CGPoint(x: 0, y: 0)
-                                let vector = CGVector(dx: gesture.location.x - center.x, dy: gesture.location.y - center.y)
-                                let angle = atan2(vector.dy, vector.dx) + .pi / 2
-                                let normalizedAngle = angle < 0 ? angle + 2 * .pi : angle
-                                self.endAngle = Angle(radians: normalizedAngle)
+                                let vector = CGVector(
+                                    dx: gesture.location.x - center.x,
+                                    dy: gesture.location.y - center.y
+                                )
+                                let angle = atan2(vector.dy, vector.dx)
+                                let newAngle = Angle(radians: Double(angle)) + .degrees(90)
+                                
+                                // Smooth angle transition to avoid jumps
+                                let smoothedAngle = smoothAngleTransition(
+                                    from: endAngle,
+                                    to: newAngle
+                                )
+                                
+                                endAngle = smoothedAngle
                                 updateTimeFromAngle(angle: endAngle, isStartTime: false)
+                            }
+                            .onEnded { _ in
+                                isDraggingEnd = false
                             }
                     )
             }
@@ -273,15 +306,17 @@ struct CircularTimePicker: View {
                 endAngle = Self.angle(for: endTime)
             }
             .onChange(of: startTime) { newValue in
-                startAngle = Self.angle(for: newValue)
+                if !isDraggingStart {
+                    startAngle = Self.angle(for: newValue)
+                }
             }
             .onChange(of: endTime) { newValue in
-                endAngle = Self.angle(for: newValue)
+                if !isDraggingEnd {
+                    endAngle = Self.angle(for: newValue)
+                }
             }
         }
         .padding()
-        
-        //.fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
     }
     
     // MARK: - Helper Functions
@@ -291,22 +326,50 @@ struct CircularTimePicker: View {
         let hour = calendar.component(.hour, from: date)
         let minute = calendar.component(.minute, from: date)
         let totalMinutes = Double(hour * 60 + minute)
+        // Convert to degrees (0° = 12am at top)
         let angle = (totalMinutes / (24.0 * 60.0)) * 360.0
         return Angle.degrees(angle)
     }
     
-    private func updateTimeFromAngle(angle: Angle, isStartTime: Bool) {
-        let normalizedAngle = angle.degrees.truncatingRemainder(dividingBy: 360)
-        let positiveAngle = normalizedAngle < 0 ? normalizedAngle + 360 : normalizedAngle
+    // Smooth angle transition to prevent jumps when crossing 0°/360° boundary
+    private func smoothAngleTransition(from currentAngle: Angle, to newAngle: Angle) -> Angle {
+        let current = currentAngle.degrees.truncatingRemainder(dividingBy: 360)
+        let new = newAngle.degrees.truncatingRemainder(dividingBy: 360)
         
-        let totalMinutes = (positiveAngle / 360.0) * (24.0 * 60.0)
+        let diff = new - current
+        
+        // If the difference is greater than 180°, we're crossing the boundary
+        if diff > 180 {
+            return Angle.degrees(current + (diff - 360))
+        } else if diff < -180 {
+            return Angle.degrees(current + (diff + 360))
+        } else {
+            return Angle.degrees(current + diff)
+        }
+    }
+    
+    private func updateTimeFromAngle(angle: Angle, isStartTime: Bool) {
+        // Normalize angle to 0-360 range
+        var normalizedAngle = angle.degrees.truncatingRemainder(dividingBy: 360)
+        if normalizedAngle < 0 {
+            normalizedAngle += 360
+        }
+        
+        // Convert angle to time (24-hour format)
+        let totalMinutes = (normalizedAngle / 360.0) * (24.0 * 60.0)
         let hour = Int(totalMinutes / 60.0) % 24
         let minute = Int(totalMinutes.truncatingRemainder(dividingBy: 60.0))
         
-        let calendar = Calendar.current
-        let baseDate = isStartTime ? startTime : endTime
+        // Round to nearest 15 minutes for better UX
+        let roundedMinute = (minute / 15) * 15
         
-        if let newDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: baseDate) {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = roundedMinute
+        components.second = 0
+        
+        if let newDate = calendar.date(from: components) {
             if isStartTime {
                 startTime = newDate
             } else {
@@ -321,10 +384,6 @@ struct CircularTimePicker: View {
         return formatter.string(from: date)
     }
 }
-
-
-
-
 
 #Preview {
     WorkHourSelectionView()

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		E802683F2C317E0900F026F1 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E802683E2C317E0900F026F1 /* HeaderView.swift */; };
-		E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */; };
 		E81E099F2CFA381700FFF547 /* DLMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81E099E2CFA381700FFF547 /* DLMode.swift */; };
 		E826D5F52C3D70FD00B00579 /* DailyTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E826D5F42C3D70FD00B00579 /* DailyTracking.swift */; };
 		E828853D2DC6AA7E00EEAE8F /* GlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E828853C2DC6AA7E00EEAE8F /* GlassCard.swift */; };
@@ -87,7 +86,7 @@
 		E8CBDDAC2DD89988008E3E96 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = E8CBDDAB2DD89988008E3E96 /* RevenueCatUI */; };
 		E8CBDDAE2DD899FA008E3E96 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8CBDDAD2DD899FA008E3E96 /* StoreKit.framework */; };
 		E8D2006A2C5D3F67002EB719 /* BreakTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D200692C5D3F67002EB719 /* BreakTime.swift */; };
-		E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */; };
+		E8D2006C2C5D467E002EB719 /* TimeDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2006B2C5D467E002EB719 /* TimeDuration.swift */; };
 		E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D2BA7A2C84897400BEEAAF /* Authentication.swift */; };
 		E8D6BDB32DE89CC0006DBD8A /* ManageSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D6BDB22DE89CC0006DBD8A /* ManageSubscription.swift */; };
 		E8D787032C9941CC00BA83A0 /* WaterChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8D786FF2C9941CC00BA83A0 /* WaterChartModel.swift */; };
@@ -107,7 +106,6 @@
 
 /* Begin PBXFileReference section */
 		E802683E2C317E0900F026F1 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
-		E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onBoardingPage.swift; sourceTree = "<group>"; };
 		E81E099E2CFA381700FFF547 /* DLMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLMode.swift; sourceTree = "<group>"; };
 		E826D5F42C3D70FD00B00579 /* DailyTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTracking.swift; sourceTree = "<group>"; };
 		E828853C2DC6AA7E00EEAE8F /* GlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassCard.swift; sourceTree = "<group>"; };
@@ -182,7 +180,7 @@
 		E8C5AC1A2DEB7C7700E27B78 /* BreakIntervalSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakIntervalSelectionView.swift; sourceTree = "<group>"; };
 		E8CBDDAD2DD899FA008E3E96 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		E8D200692C5D3F67002EB719 /* BreakTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTime.swift; sourceTree = "<group>"; };
-		E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTimeModel.swift; sourceTree = "<group>"; };
+		E8D2006B2C5D467E002EB719 /* TimeDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeDuration.swift; sourceTree = "<group>"; };
 		E8D2BA7A2C84897400BEEAAF /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		E8D6BDB22DE89CC0006DBD8A /* ManageSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageSubscription.swift; sourceTree = "<group>"; };
 		E8D786FF2C9941CC00BA83A0 /* WaterChartModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WaterChartModel.swift; path = ../../../../../../../ModuleDraft/ModuleDraft/Code/Features/Chart/Models/WaterChartModel.swift; sourceTree = "<group>"; };
@@ -378,7 +376,7 @@
 				E8FF2F4A2C58F6BC00E9974E /* FeedbackView.swift */,
 				E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */,
 				E8D200692C5D3F67002EB719 /* BreakTime.swift */,
-				E8D2006B2C5D467E002EB719 /* BreakTimeModel.swift */,
+				E8D2006B2C5D467E002EB719 /* TimeDuration.swift */,
 				E872E6CA2DE9F294006F4F57 /* DailyStepsGoal.swift */,
 				E872E6C62DE9DB56006F4F57 /* DailyWaterGoal.swift */,
 				E872E6C82DE9E99B006F4F57 /* DailySleepGoal.swift */,
@@ -397,7 +395,6 @@
 			isa = PBXGroup;
 			children = (
 				E89507A32C865842002FDAA4 /* OnBoarding.swift */,
-				E81CA4FF2C8745BA002DB217 /* onBoardingPage.swift */,
 				E8C5AC102DEAD8F400E27B78 /* StepsSelectionView.swift */,
 				E8C5AC142DEB175300E27B78 /* WorkHourSelectionView.swift */,
 				E8C5AC162DEB5F7500E27B78 /* WaterSelectionView.swift */,
@@ -653,7 +650,7 @@
 				E8FB19A32D882CF700A5CF82 /* HealthDataViewModel.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E82A72742DA47354005EA6A6 /* MeditationLollipopChartView.swift in Sources */,
-				E8D2006C2C5D467E002EB719 /* BreakTimeModel.swift in Sources */,
+				E8D2006C2C5D467E002EB719 /* TimeDuration.swift in Sources */,
 				E866CDFC2D3143F500F62142 /* UserData.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
 				E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */,
@@ -662,7 +659,6 @@
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
 				E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */,
 				E8D787032C9941CC00BA83A0 /* WaterChartModel.swift in Sources */,
-				E81CA5002C8745BA002DB217 /* onBoardingPage.swift in Sources */,
 				E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */,
 				E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */,
 				E8E787CC2D431DCE0091EE28 /* FirestoreService.swift in Sources */,
