@@ -19,13 +19,20 @@ struct OnBoarding: View {
     @AppStorage("stepsGoal") private var stepsGoal: Int = 10000
     @AppStorage("waterGoalML") private var waterGoalML: Int = 2500
     @AppStorage("sleepGoalMins") private var sleepGoalMins: Int = 480 // 8 hours default
-    @AppStorage("breakIntervalMins") private var breakIntervalMins: Int = 60 // 1 hour default
+    @AppStorage("breakIntervalMins") private var breakIntervalMins: Int = 90 // 1 hour default
+    @AppStorage("workStartHour") private var workStartHour: Int = 9  // 9 AM
+    @AppStorage("workStartMinute") private var workStartMinute: Int = 0
+    @AppStorage("workEndHour") private var workEndHour: Int = 17  // 5 PM
+    @AppStorage("workEndMinute") private var workEndMinute: Int = 0
     
-    // State variables for temporary selections
     @State private var selectedSteps: Int = 10000
     @State private var selectedWater: Int = 2500
     @State private var selectedSleep: TimeDuration = TimeDuration(hours: 8, minutes: 0)
     @State private var selectedBreakInterval: TimeDuration = TimeDuration(hours: 1, minutes: 0)
+    @State private var selectedStartHour: Int = 9
+    @State private var selectedStartMinute: Int = 0
+    @State private var selectedEndHour: Int = 17
+    @State private var selectedEndMinute: Int = 0
     
     var body: some View {
         NavigationView {
@@ -82,7 +89,12 @@ struct OnBoarding: View {
                         case 3:
                             BreakIntervalSelectionView(selectedBreakInterval: $selectedBreakInterval)
                         case 4:
-                            WorkHourSelectionView()
+                            WorkHourSelectionView(
+                                selectedStartHour: $selectedStartHour,
+                                selectedStartMinute: $selectedStartMinute,
+                                selectedEndHour: $selectedEndHour,
+                                selectedEndMinute: $selectedEndMinute
+                            )
                         default:
                             EmptyView()
                         }
@@ -131,12 +143,6 @@ struct OnBoarding: View {
                         }
                     }
                     .padding(.bottom, 20)
-                    
-                    // Navigation to MainView
-                    NavigationLink(destination: MainView(), isActive: $showNextScreen) {
-                        EmptyView()
-                    }
-                    .hidden()
                 }
             }
             .navigationBarHidden(true)
@@ -149,6 +155,10 @@ struct OnBoarding: View {
             selectedWater = waterGoalML
             selectedSleep = TimeDuration(fromTotalMinutes: sleepGoalMins)
             selectedBreakInterval = TimeDuration(fromTotalMinutes: breakIntervalMins)
+            selectedStartHour = workStartHour
+            selectedStartMinute = workStartMinute
+            selectedEndHour = workEndHour
+            selectedEndMinute = workEndMinute
         }
     }
     
@@ -162,6 +172,7 @@ struct OnBoarding: View {
         } else {
             // Final page - save all data and complete onboarding
             saveAllGoals()
+            syncWithSettingsManager() // Sync with SettingsManager if needed
             hasCompletedOnboarding = true
             showNextScreen = true
         }
@@ -177,6 +188,11 @@ struct OnBoarding: View {
             sleepGoalMins = selectedSleep.totalMinutes
         case 3:
             breakIntervalMins = selectedBreakInterval.totalMinutes
+        case 4:
+            workStartHour = selectedStartHour
+            workStartMinute = selectedStartMinute
+            workEndHour = selectedEndHour
+            workEndMinute = selectedEndMinute
         default:
             break
         }
@@ -187,6 +203,28 @@ struct OnBoarding: View {
         waterGoalML = selectedWater
         sleepGoalMins = selectedSleep.totalMinutes
         breakIntervalMins = selectedBreakInterval.totalMinutes
+        workStartHour = selectedStartHour
+        workStartMinute = selectedStartMinute
+        workEndHour = selectedEndHour
+        workEndMinute = selectedEndMinute
+    }
+    
+    // Sync work hours with SettingsManager if needed
+    private func syncWithSettingsManager() {
+        // Create Date objects from hour and minute components
+        var startComponents = DateComponents()
+        startComponents.hour = workStartHour
+        startComponents.minute = workStartMinute
+        if let startTime = Calendar.current.date(from: startComponents) {
+            SettingsManager.shared.startTime = startTime
+        }
+        
+        var endComponents = DateComponents()
+        endComponents.hour = workEndHour
+        endComponents.minute = workEndMinute
+        if let endTime = Calendar.current.date(from: endComponents) {
+            SettingsManager.shared.endTime = endTime
+        }
     }
 }
 

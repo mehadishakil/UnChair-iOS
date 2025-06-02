@@ -8,14 +8,28 @@
 import SwiftUI
 
 struct ActiveHour: View {
-    @StateObject private var settings = SettingsManager.shared
-    @State private var tempStartTime: Date
-    @State private var tempEndTime: Date
+    @AppStorage("workStartHour") private var workStartHour: Int = 9
+    @AppStorage("workStartMinute") private var workStartMinute: Int = 0
+    @AppStorage("workEndHour") private var workEndHour: Int = 17
+    @AppStorage("workEndMinute") private var workEndMinute: Int = 0
+    
+    @State private var tempStartTime: Date = Date()
+    @State private var tempEndTime: Date = Date()
     @State private var isStartTimePickerPresented = false
     
-    init() {
-        _tempStartTime = State(initialValue: SettingsManager.shared.startTime)
-        _tempEndTime = State(initialValue: SettingsManager.shared.endTime)
+    // Computed properties to create Date objects from AppStorage values
+    private var startTime: Date {
+        var components = DateComponents()
+        components.hour = workStartHour
+        components.minute = workStartMinute
+        return Calendar.current.date(from: components) ?? Date()
+    }
+    
+    private var endTime: Date {
+        var components = DateComponents()
+        components.hour = workEndHour
+        components.minute = workEndMinute
+        return Calendar.current.date(from: components) ?? Date()
     }
     
     var body: some View {
@@ -28,19 +42,19 @@ struct ActiveHour: View {
             Spacer()
             
             Button(action: {
-                tempStartTime = settings.startTime
-                tempEndTime = settings.endTime
+                tempStartTime = startTime
+                tempEndTime = endTime
                 isStartTimePickerPresented = true
             }) {
                 HStack{
-                    Text("\(formattedTime(settings.startTime))")
+                    Text("\(formattedTime(startTime))")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                     Text("to")
                         .foregroundColor(.gray)
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                    Text("\(formattedTime(settings.endTime))")
+                    Text("\(formattedTime(endTime))")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                 }
@@ -50,10 +64,21 @@ struct ActiveHour: View {
 
             }
             .sheet(isPresented: $isStartTimePickerPresented) {
-                TimePickerView(startTime: $tempStartTime, endTime: $tempEndTime, onSave: {
-                    settings.startTime = tempStartTime
-                    settings.endTime = tempEndTime
-                })
+                TimePickerView(
+                    startTime: $tempStartTime,
+                    endTime: $tempEndTime,
+                    onSave: {
+                        // Update AppStorage values from selected times
+                        let calendar = Calendar.current
+                        workStartHour = calendar.component(.hour, from: tempStartTime)
+                        workStartMinute = calendar.component(.minute, from: tempStartTime)
+                        workEndHour = calendar.component(.hour, from: tempEndTime)
+                        workEndMinute = calendar.component(.minute, from: tempEndTime)
+                        
+                        // Optionally sync with SettingsManager if still needed elsewhere
+                        syncWithSettingsManager()
+                    }
+                )
                 .presentationDetents([.fraction(0.65), .large])
                 .presentationDragIndicator(.visible)
             }
@@ -65,8 +90,24 @@ struct ActiveHour: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
+    
+    // Optional: Sync with SettingsManager if other parts of your app still depend on it
+    private func syncWithSettingsManager() {
+        var startComponents = DateComponents()
+        startComponents.hour = workStartHour
+        startComponents.minute = workStartMinute
+        if let startTime = Calendar.current.date(from: startComponents) {
+            SettingsManager.shared.startTime = startTime
+        }
+        
+        var endComponents = DateComponents()
+        endComponents.hour = workEndHour
+        endComponents.minute = workEndMinute
+        if let endTime = Calendar.current.date(from: endComponents) {
+            SettingsManager.shared.endTime = endTime
+        }
+    }
 }
-
 
 struct TimePickerView: View {
     @Environment(\.presentationMode) private var presentationMode
@@ -125,7 +166,7 @@ struct TimePickerView: View {
             .datePickerStyle(.wheel)
             .labelsHidden()
             .background(.ultraThinMaterial)
-            .frame(height: 150)        // <- whatever height you like
+            .frame(height: 150)
             .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .onChange(of: startTime) { _ in updateDuration() }
@@ -187,7 +228,6 @@ struct TimePickerView: View {
         durationMinutes = comps.minute ?? 0
     }
 }
-
 
 #Preview {
     ActiveHour()

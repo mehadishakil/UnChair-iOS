@@ -8,22 +8,25 @@
 import SwiftUI
 
 struct WorkHourSelectionView: View {
-    @State private var showNextScreen: Bool = false
-    @State private var value: CGFloat = 10
+    @Binding var selectedStartHour: Int
+    @Binding var selectedStartMinute: Int
+    @Binding var selectedEndHour: Int
+    @Binding var selectedEndMinute: Int
+    
     @AppStorage("userTheme") private var userTheme: Theme = .system
     
     // State for the custom picker
     @State private var startTime: Date = {
         var components = DateComponents()
-        components.hour = 22 // 10 PM
+        components.hour = 9 // 9 AM
         components.minute = 0
         return Calendar.current.date(from: components) ?? Date()
     }()
     
     @State private var endTime: Date = {
         var components = DateComponents()
-        components.hour = 8 // 8 AM
-        components.minute = 30
+        components.hour = 17 // 5 PM
+        components.minute = 0
         return Calendar.current.date(from: components) ?? Date()
     }()
     
@@ -31,7 +34,7 @@ struct WorkHourSelectionView: View {
         NavigationView {
             ZStack {
                 VStack(spacing: 16) {
-                    VStack(spacing : 8) {
+                    VStack(spacing: 8) {
                         HStack(spacing: 0) {
                             Text("Your ")
                                 .font(.title2)
@@ -44,7 +47,6 @@ struct WorkHourSelectionView: View {
                                 .foregroundColor(.primary)
                         }
                         
-                        
                         // Subtitle
                         Text("We will remind you to take breaks\nonly during this period.")
                             .font(.subheadline)
@@ -52,19 +54,61 @@ struct WorkHourSelectionView: View {
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 40)
                             .padding(.bottom, 20)
-                        
                     }
+                    
                     // MARK: - Hour Schedule picker
                     CircularTimePicker(startTime: $startTime, endTime: $endTime)
                 }
             }
             .navigationBarHidden(true)
+            .onAppear {
+                // Load from binding values
+                loadFromBindings()
+            }
+            .onChange(of: startTime) { newValue in
+                updateBindingsFromStartTime(newValue)
+            }
+            .onChange(of: endTime) { newValue in
+                updateBindingsFromEndTime(newValue)
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }
+    
+    // MARK: - Helper Methods
+    
+    private func loadFromBindings() {
+        // Create start time from binding values
+        var startComponents = DateComponents()
+        startComponents.hour = selectedStartHour
+        startComponents.minute = selectedStartMinute
+        if let date = Calendar.current.date(from: startComponents) {
+            startTime = date
+        }
+        
+        // Create end time from binding values
+        var endComponents = DateComponents()
+        endComponents.hour = selectedEndHour
+        endComponents.minute = selectedEndMinute
+        if let date = Calendar.current.date(from: endComponents) {
+            endTime = date
+        }
+    }
+    
+    private func updateBindingsFromStartTime(_ time: Date) {
+        let calendar = Calendar.current
+        selectedStartHour = calendar.component(.hour, from: time)
+        selectedStartMinute = calendar.component(.minute, from: time)
+    }
+    
+    private func updateBindingsFromEndTime(_ time: Date) {
+        let calendar = Calendar.current
+        selectedEndHour = calendar.component(.hour, from: time)
+        selectedEndMinute = calendar.component(.minute, from: time)
+    }
 }
 
-// MARK: - CircularTimePicker
+// MARK: - CircularTimePicker (Same as before, no changes needed)
 struct CircularTimePicker: View {
     @Binding var startTime: Date
     @Binding var endTime: Date
@@ -97,6 +141,11 @@ struct CircularTimePicker: View {
                     .font(.headline)
                     .foregroundColor(.orange.opacity(0.9))
             }
+            
+            // Duration Display
+            Text("Duration: \(calculateDuration())")
+                .font(.subheadline)
+                .foregroundColor(.gray)
             
             // Circular Timer
             ZStack {
@@ -383,8 +432,31 @@ struct CircularTimePicker: View {
         formatter.dateFormat = "hh:mm a"
         return formatter.string(from: date)
     }
+    
+    private func calculateDuration() -> String {
+        let calendar = Calendar.current
+        
+        // Handle case where end time is the next day
+        let actualEndTime = endTime < startTime ?
+            calendar.date(byAdding: .day, value: 1, to: endTime)! : endTime
+        
+        let components = calendar.dateComponents([.hour, .minute], from: startTime, to: actualEndTime)
+        let hours = components.hour ?? 0
+        let minutes = components.minute ?? 0
+        
+        if minutes == 0 {
+            return "\(hours) hours"
+        } else {
+            return "\(hours)h \(minutes)m"
+        }
+    }
 }
 
 #Preview {
-    WorkHourSelectionView()
+    WorkHourSelectionView(
+        selectedStartHour: .constant(9),
+        selectedStartMinute: .constant(0),
+        selectedEndHour: .constant(17),
+        selectedEndMinute: .constant(0)
+    )
 }

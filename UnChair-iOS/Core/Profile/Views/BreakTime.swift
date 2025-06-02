@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct BreakTime: View {
-    @StateObject private var settings = SettingsManager.shared
-    @State private var tempDuration: TimeDuration
+    // Use AppStorage instead of SettingsManager for consistency with onboarding
+    @AppStorage("breakIntervalMins") private var breakIntervalMins: Int = 60 // 1 hour default
+    
+    @State private var tempDuration: TimeDuration = TimeDuration(hours: 1, minutes: 0)
     @State private var isPickerPresented = false
 
-    init() {
-        _tempDuration = State(initialValue: SettingsManager.shared.breakDuration)
+    // Computed property to create TimeDuration from AppStorage value
+    private var breakDuration: TimeDuration {
+        TimeDuration(fromTotalMinutes: breakIntervalMins)
     }
 
     var body: some View {
@@ -26,10 +29,10 @@ struct BreakTime: View {
             Spacer()
 
             Button {
-                tempDuration = settings.breakDuration
+                tempDuration = breakDuration
                 isPickerPresented = true
             } label: {
-                Text("\(settings.breakDuration.hours) hr \(settings.breakDuration.minutes) min")
+                Text("\(breakDuration.hours) hr \(breakDuration.minutes) min")
                     .padding(6)
                     .font(.subheadline.weight(.semibold))
                     .background(.ultraThinMaterial)
@@ -39,13 +42,24 @@ struct BreakTime: View {
                 BreakDurationPicker(
                     duration: $tempDuration
                 ) {
-                    settings.breakDuration = tempDuration
+                    // Update AppStorage value from selected duration
+                    breakIntervalMins = tempDuration.totalMinutes
+                    
+                    // Optionally sync with SettingsManager if still needed elsewhere
+                    syncWithSettingsManager()
+                    
+                    // Post notification for other parts of the app that might depend on it
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
                 .presentationDetents([.fraction(0.55), .medium])
                 .presentationDragIndicator(.hidden)
             }
         }
+    }
+    
+    // Optional: Sync with SettingsManager if other parts of your app still depend on it
+    private func syncWithSettingsManager() {
+        SettingsManager.shared.breakDuration = TimeDuration(fromTotalMinutes: breakIntervalMins)
     }
 }
 
@@ -128,5 +142,3 @@ struct BreakDurationPicker: View {
 #Preview {
     BreakTime()
 }
-
-
