@@ -45,7 +45,8 @@ struct BreakIntervalSelectionView: View {
                             wheelPicker(selection: $selectedBreakInterval.minutes, data: minutes, label: "Minutes")
                         }
                     }
-                    .padding()
+                    
+                    Spacer()
                 }
             }
             .navigationBarHidden(true)
@@ -68,7 +69,7 @@ struct BreakIntervalSelectionView: View {
             }
             .background(.ultraThinMaterial)
             .pickerStyle(.wheel)
-            .frame(width: 100, height: 180)
+            .frame(width: 140)
             .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }

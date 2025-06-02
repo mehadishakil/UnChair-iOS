@@ -82,6 +82,7 @@
 		E8C5AC172DEB5F7500E27B78 /* WaterSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C5AC162DEB5F7500E27B78 /* WaterSelectionView.swift */; };
 		E8C5AC192DEB6AEA00E27B78 /* SleepSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C5AC182DEB6AEA00E27B78 /* SleepSelectionView.swift */; };
 		E8C5AC1B2DEB7C7700E27B78 /* BreakIntervalSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C5AC1A2DEB7C7700E27B78 /* BreakIntervalSelectionView.swift */; };
+		E8C859692DEE3BE50028981B /* WelcomOnBoardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C859682DEE3BE50028981B /* WelcomOnBoardingView.swift */; };
 		E8CBDDAA2DD89988008E3E96 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = E8CBDDA92DD89988008E3E96 /* RevenueCat */; };
 		E8CBDDAC2DD89988008E3E96 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = E8CBDDAB2DD89988008E3E96 /* RevenueCatUI */; };
 		E8CBDDAE2DD899FA008E3E96 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8CBDDAD2DD899FA008E3E96 /* StoreKit.framework */; };
@@ -178,6 +179,7 @@
 		E8C5AC162DEB5F7500E27B78 /* WaterSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterSelectionView.swift; sourceTree = "<group>"; };
 		E8C5AC182DEB6AEA00E27B78 /* SleepSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepSelectionView.swift; sourceTree = "<group>"; };
 		E8C5AC1A2DEB7C7700E27B78 /* BreakIntervalSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakIntervalSelectionView.swift; sourceTree = "<group>"; };
+		E8C859682DEE3BE50028981B /* WelcomOnBoardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomOnBoardingView.swift; sourceTree = "<group>"; };
 		E8CBDDAD2DD899FA008E3E96 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		E8D200692C5D3F67002EB719 /* BreakTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTime.swift; sourceTree = "<group>"; };
 		E8D2006B2C5D467E002EB719 /* TimeDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeDuration.swift; sourceTree = "<group>"; };
@@ -400,6 +402,7 @@
 				E8C5AC162DEB5F7500E27B78 /* WaterSelectionView.swift */,
 				E8C5AC182DEB6AEA00E27B78 /* SleepSelectionView.swift */,
 				E8C5AC1A2DEB7C7700E27B78 /* BreakIntervalSelectionView.swift */,
+				E8C859682DEE3BE50028981B /* WelcomOnBoardingView.swift */,
 			);
 			path = OnBoarding;
 			sourceTree = "<group>";
@@ -650,6 +653,7 @@
 				E8FB19A32D882CF700A5CF82 /* HealthDataViewModel.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E82A72742DA47354005EA6A6 /* MeditationLollipopChartView.swift in Sources */,
+				E8C859692DEE3BE50028981B /* WelcomOnBoardingView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* TimeDuration.swift in Sources */,
 				E866CDFC2D3143F500F62142 /* UserData.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,

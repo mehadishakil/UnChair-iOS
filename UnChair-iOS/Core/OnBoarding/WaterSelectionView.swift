@@ -45,7 +45,6 @@ struct WaterSelectionView: View {
                         Picker("", selection: $selectedWater) {
                             ForEach(waterRange, id: \.self) { value in
                                 Text("\(value)")
-                                    .font(.title)
                                     .padding(.vertical, 10)
                                     .tag(value)
                             }
@@ -55,6 +54,8 @@ struct WaterSelectionView: View {
                         .clipped()
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     }
+                    
+                    Spacer()
                 }
             }
             .navigationBarHidden(true)

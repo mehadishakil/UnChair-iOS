@@ -45,7 +45,8 @@ struct SleepSelectionView: View {
                             wheelPicker(selection: $selectedSleep.minutes, data: minutes, label: "Minutes")
                         }
                     }
-                    .padding()
+                    
+                    Spacer()
                 }
             }
             .navigationBarHidden(true)
@@ -68,7 +69,7 @@ struct SleepSelectionView: View {
             }
             .background(.ultraThinMaterial)
             .pickerStyle(.wheel)
-            .frame(width: 100)
+            .frame(width: 140)
             .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }

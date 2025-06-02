@@ -16,6 +16,7 @@ struct Authentication: View {
     @State private var showAlert: Bool = false
     @State private var isLoading: Bool = false
     @State private var nonce: String?
+    @AppStorage("userTheme") private var userTheme: Theme = .system
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("log_status") private var logStatus: Bool = false
     
@@ -23,15 +24,19 @@ struct Authentication: View {
         VStack {
             Spacer()
             
-            Image("AppIcon")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 40)
-                .cornerRadius(20)
-                
+            Image(
+                (userTheme == .light || (userTheme == .system && colorScheme == .light))
+                ? "UnChair_black"
+                : "UnChair_white"
+            )
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 80)
+            .cornerRadius(20)
+            
             
             Text("UnChair")
-                .font(.title)
+                .font(.largeTitle)
                 .bold()
                 .foregroundColor(.primary)
             
@@ -73,7 +78,7 @@ struct Authentication: View {
                             .font(.title2)
                             .fontWeight(.medium)
                     }
-                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    .foregroundStyle((userTheme == .dark || (userTheme == .system && colorScheme == .dark)) ? .white : .black)
                     
                 }
                 .allowsHitTesting(false)
@@ -115,7 +120,7 @@ struct Authentication: View {
                     .shadow(radius: 1)
                 })
             
-            Text("By continuing, you agree to Basic's [Terms of Service](https://basics.com/terms-of-service) and [Privacy Policy](https://basics.com/privacypolicy) ")
+            Text("By continuing, you agree to UnChair's [Terms of Service](https://basics.com/terms-of-service) and [Privacy Policy](https://basics.com/privacypolicy) ")
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
                 .tint(.primary)

@@ -59,6 +59,8 @@ struct WorkHourSelectionView: View {
                     // MARK: - Hour Schedule picker
                     CircularTimePicker(startTime: $startTime, endTime: $endTime)
                 }
+                
+                Spacer()
             }
             .navigationBarHidden(true)
             .onAppear {

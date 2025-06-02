@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnBoarding: View {
-    let totalPages = 5 // Fixed to match actual number of views
+    let totalPages = 6 // Fixed to match actual number of views
     @State private var showNextScreen: Bool = false
     @State private var currentPage: Int = 0
     @State private var isMovingForward: Bool = true
@@ -81,14 +81,16 @@ struct OnBoarding: View {
                     Group {
                         switch currentPage {
                         case 0:
-                            StepsSelectionView(selectedSteps: $selectedSteps)
+                            WelcomOnBoardingView()
                         case 1:
-                            WaterSelectionView(selectedWater: $selectedWater)
+                            StepsSelectionView(selectedSteps: $selectedSteps)
                         case 2:
-                            SleepSelectionView(selectedSleep: $selectedSleep)
+                            WaterSelectionView(selectedWater: $selectedWater)
                         case 3:
-                            BreakIntervalSelectionView(selectedBreakInterval: $selectedBreakInterval)
+                            SleepSelectionView(selectedSleep: $selectedSleep)
                         case 4:
+                            BreakIntervalSelectionView(selectedBreakInterval: $selectedBreakInterval)
+                        case 5:
                             WorkHourSelectionView(
                                 selectedStartHour: $selectedStartHour,
                                 selectedStartMinute: $selectedStartMinute,
