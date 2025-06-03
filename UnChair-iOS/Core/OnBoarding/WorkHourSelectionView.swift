@@ -75,6 +75,18 @@ struct WorkHourSelectionView: View {
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                NotificationManager.shared.requestAuthorization { granted in
+                    if granted {
+                        print("Notification permission granted")
+                        NotificationManager.shared.scheduleNextBreakNotification()
+                    } else {
+                        print("Notification permission denied")
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - Helper Methods
@@ -144,10 +156,10 @@ struct CircularTimePicker: View {
                     .foregroundColor(.orange.opacity(0.9))
             }
             
-            // Duration Display
-            Text("Duration: \(calculateDuration())")
-                .font(.subheadline)
-                .foregroundColor(.gray)
+//            // Duration Display
+//            Text("Duration: \(calculateDuration())")
+//                .font(.subheadline)
+//                .foregroundColor(.gray)
             
             // Circular Timer
             ZStack {

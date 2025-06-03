@@ -23,17 +23,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         settings.cacheSettings = PersistentCacheSettings(sizeBytes: 100 * 1024 * 1024 as NSNumber)
         Firestore.firestore().settings = settings
         
-        // Configure notification permissions
-        NotificationManager.shared.requestAuthorization { granted in
-            if granted {
-                print("Notification permission granted")
-                // Schedule break notifications when app launches
-                NotificationManager.shared.scheduleNextBreakNotification()
-            } else {
-                print("Notification permission denied")
-            }
-        }
-        
         Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: Secrets.apiKey)
 

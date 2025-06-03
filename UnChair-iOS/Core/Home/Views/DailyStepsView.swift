@@ -71,5 +71,4 @@ struct DailyStepsView: View {
 
 #Preview {
     DailyStepsView()
-        .environmentObject(HealthManager())
 }

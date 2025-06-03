@@ -5,13 +5,6 @@
 //  Created by Mehadi Hasan on 20/5/24.
 //
 
-//
-//  UnChair_iOSApp.swift
-//  UnChair-iOS
-//
-//  Created by Mehadi Hasan on 20/5/24.
-//
-
 import SwiftUI
 import UserNotifications
 import Firebase
@@ -41,6 +34,7 @@ struct UnChair_iOSApp: App {
                     }
             } else {
                 OnBoarding()
+                    .environmentObject(healthViewModel)
             }
         }
         .modelContainer(for: [UserData.self, WaterChartModel.self, StepsChartModel.self, SleepChartModel.self, ExerciseChartModel.self])

@@ -42,6 +42,45 @@ struct Authentication: View {
             
             Spacer()
             
+            Button(
+                action: {
+                    
+                },
+                label: {
+                    HStack {
+                        Image(systemName: "envelope")
+                            .resizable()
+                            .foregroundColor(.BG)
+                            .frame(width: 16, height: 12)
+                        
+                        Text("Continue with Email")
+                            .foregroundColor(.BG)
+                            .font(.title2)
+                            .fontWeight(.medium)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight : 56)
+                    .background(Color.BW)
+                    .cornerRadius(10)
+                    .shadow(radius: 1)
+                })
+            
+            HStack {
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(.secondary)
+                    .frame(height: 1)
+                
+                Text("OR")
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(.secondary)
+                    .frame(height: 1)
+            }
+            .frame(height: 32)
+            
+            
             SignInWithAppleButton { request in
                 let nonce = randomNonceString()
                 self.nonce = nonce

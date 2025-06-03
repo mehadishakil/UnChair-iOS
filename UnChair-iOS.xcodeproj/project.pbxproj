@@ -42,6 +42,10 @@
 		E874AA012BFB53A50075644C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E874AA002BFB53A50075644C /* ContentView.swift */; };
 		E874AA032BFB53A60075644C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E874AA022BFB53A60075644C /* Assets.xcassets */; };
 		E874AA062BFB53A60075644C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E874AA052BFB53A60075644C /* Preview Assets.xcassets */; };
+		E8817BAB2DEEE9150036A426 /* OnBoardingCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8817BAA2DEEE9150036A426 /* OnBoardingCompletionView.swift */; };
+		E8817BAD2DEF506F0036A426 /* VerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8817BAC2DEF506F0036A426 /* VerificationView.swift */; };
+		E8817BAF2DEF575A0036A426 /* SigninView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8817BAE2DEF575A0036A426 /* SigninView.swift */; };
+		E8817BB12DEF57910036A426 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8817BB02DEF57910036A426 /* SignupView.swift */; };
 		E8829A4B2C3AAD8900B197DD /* DailySleepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4A2C3AAD8900B197DD /* DailySleepView.swift */; };
 		E8829A4D2C3AAE8800B197DD /* DailyStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4C2C3AAE8800B197DD /* DailyStepsView.swift */; };
 		E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */; };
@@ -140,6 +144,10 @@
 		E874AA002BFB53A50075644C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E874AA022BFB53A60075644C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E874AA052BFB53A60075644C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E8817BAA2DEEE9150036A426 /* OnBoardingCompletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBoardingCompletionView.swift; sourceTree = "<group>"; };
+		E8817BAC2DEF506F0036A426 /* VerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerificationView.swift; sourceTree = "<group>"; };
+		E8817BAE2DEF575A0036A426 /* SigninView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigninView.swift; sourceTree = "<group>"; };
+		E8817BB02DEF57910036A426 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		E8829A4A2C3AAD8900B197DD /* DailySleepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailySleepView.swift; sourceTree = "<group>"; };
 		E8829A4C2C3AAE8800B197DD /* DailyStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStepsView.swift; sourceTree = "<group>"; };
 		E8829A4E2C3AB16300B197DD /* DailyWaterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWaterView.swift; sourceTree = "<group>"; };
@@ -396,6 +404,7 @@
 		E89507A02C863279002FDAA4 /* OnBoarding */ = {
 			isa = PBXGroup;
 			children = (
+				E8817BAA2DEEE9150036A426 /* OnBoardingCompletionView.swift */,
 				E89507A32C865842002FDAA4 /* OnBoarding.swift */,
 				E8C5AC102DEAD8F400E27B78 /* StepsSelectionView.swift */,
 				E8C5AC142DEB175300E27B78 /* WorkHourSelectionView.swift */,
@@ -441,6 +450,9 @@
 		E89F481C2CE7444400B71FA5 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				E8817BB02DEF57910036A426 /* SignupView.swift */,
+				E8817BAE2DEF575A0036A426 /* SigninView.swift */,
+				E8817BAC2DEF506F0036A426 /* VerificationView.swift */,
 				E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */,
 				E8C01E092CFE16670073C616 /* AuthState.swift */,
 				E8C01E072CFE15790073C616 /* AuthController.swift */,
@@ -619,6 +631,7 @@
 				E8AFBAAB2C9C45D600AEE292 /* ExerciseChartModel.swift in Sources */,
 				E828853D2DC6AA7E00EEAE8F /* GlassCard.swift in Sources */,
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
+				E8817BAD2DEF506F0036A426 /* VerificationView.swift in Sources */,
 				E8AFBAA82C9C45B200AEE292 /* StepsLineChartView.swift in Sources */,
 				E8FE7D192DE87A4C00D9779F /* TermsOfUseView.swift in Sources */,
 				E82A72762DA47530005EA6A6 /* MeditationChartModel.swift in Sources */,
@@ -631,6 +644,7 @@
 				E8D6BDB32DE89CC0006DBD8A /* ManageSubscription.swift in Sources */,
 				E8D787042C9941CC00BA83A0 /* StepsChartModel.swift in Sources */,
 				E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */,
+				E8817BAF2DEF575A0036A426 /* SigninView.swift in Sources */,
 				E8E6CD602DAFAB89006C959A /* SettingsManager.swift in Sources */,
 				E8D2BA7B2C84897400BEEAAF /* Authentication.swift in Sources */,
 				E82A72782DA47DEA005EA6A6 /* ExerciseMultiLineChart.swift in Sources */,
@@ -643,6 +657,7 @@
 				E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */,
 				E847C0F82DB83111005BED49 /* BreakSectionView.swift in Sources */,
 				E8AFBAA72C9C45B200AEE292 /* ExerciseBarChart.swift in Sources */,
+				E8817BB12DEF57910036A426 /* SignupView.swift in Sources */,
 				E8DB22842D71EECC001172B5 /* HealthDataService.swift in Sources */,
 				E84115062DA1649600CB21DF /* ExerciseMultiLineChartView.swift in Sources */,
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
@@ -650,6 +665,7 @@
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
 				E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */,
 				E8C5AC152DEB175300E27B78 /* WorkHourSelectionView.swift in Sources */,
+				E8817BAB2DEEE9150036A426 /* OnBoardingCompletionView.swift in Sources */,
 				E8FB19A32D882CF700A5CF82 /* HealthDataViewModel.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E82A72742DA47354005EA6A6 /* MeditationLollipopChartView.swift in Sources */,

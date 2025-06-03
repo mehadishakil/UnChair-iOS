@@ -38,7 +38,7 @@ struct BreakIntervalSelectionView: View {
                             .padding(.horizontal, 40)
                             .padding(.bottom, 20)
                     }
-       
+                    
                     VStack {
                         HStack(spacing: 24) {
                             wheelPicker(selection: $selectedBreakInterval.hours, data: hours, label: "Hours")
@@ -60,7 +60,7 @@ struct BreakIntervalSelectionView: View {
             Text(label)
                 .font(.footnote)
                 .foregroundColor(.secondary)
-
+            
             Picker("", selection: selection) {
                 ForEach(data, id: \.self) { value in
                     Text("\(value)")

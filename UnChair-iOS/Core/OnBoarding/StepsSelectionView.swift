@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import HealthKit
 
 struct StepsSelectionView: View {
     @Binding var selectedSteps: Int
@@ -14,6 +15,7 @@ struct StepsSelectionView: View {
     @State private var config: WheelPicker.Config = .init(count: 30, steps: 5, spacing: 15, multiplier: 1000)
     @State private var value: CGFloat = 10
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    @EnvironmentObject var healthViewModel: HealthDataViewModel
     
     var body: some View {
         NavigationView {
@@ -21,7 +23,6 @@ struct StepsSelectionView: View {
                 VStack(spacing: 16) {
                     
                     VStack (spacing: 8){
-                        // Title
                         HStack(spacing: 0) {
                             Text("Your daily ")
                                 .font(.title2)
@@ -31,8 +32,6 @@ struct StepsSelectionView: View {
                             Text("target?")
                                 .font(.title2)
                         }
-                        
-                        // Subtitle
                         Text("We will use this data to give you\na better experience tailored for you")
                             .font(.subheadline)
                             .foregroundColor(.gray)
@@ -77,6 +76,17 @@ struct StepsSelectionView: View {
             .navigationBarHidden(true)
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {                    Task {
+                do {
+                    try await healthViewModel.healthService.requestHealthDataPermission()
+                    healthViewModel.loadAllData()
+                } catch {
+                    print("Error requesting HealthKit authorization: \(error.localizedDescription)")
+                }
+            }
+            }
+        }
     }
 }
 

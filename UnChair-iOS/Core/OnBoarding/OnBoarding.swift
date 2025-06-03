@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct OnBoarding: View {
-    let totalPages = 6 // Fixed to match actual number of views
+    let totalPages = 7 // Fixed to match actual number of views
     @State private var showNextScreen: Bool = false
     @State private var currentPage: Int = 0
     @State private var isMovingForward: Bool = true
@@ -89,14 +89,16 @@ struct OnBoarding: View {
                         case 3:
                             SleepSelectionView(selectedSleep: $selectedSleep)
                         case 4:
-                            BreakIntervalSelectionView(selectedBreakInterval: $selectedBreakInterval)
-                        case 5:
                             WorkHourSelectionView(
                                 selectedStartHour: $selectedStartHour,
                                 selectedStartMinute: $selectedStartMinute,
                                 selectedEndHour: $selectedEndHour,
                                 selectedEndMinute: $selectedEndMinute
                             )
+                        case 5:
+                            BreakIntervalSelectionView(selectedBreakInterval: $selectedBreakInterval)
+                        case 6:
+                            OnBoardingCompletionView()
                         default:
                             EmptyView()
                         }
