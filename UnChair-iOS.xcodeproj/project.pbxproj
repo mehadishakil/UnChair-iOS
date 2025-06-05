@@ -28,6 +28,9 @@
 		E84992012C3EB232007F918A /* SiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84992002C3EB232007F918A /* SiteView.swift */; };
 		E84B469B2DDBA5C500108CCC /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84B469A2DDBA5C500108CCC /* Secrets.swift */; };
 		E85889352DB349E900883430 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85889342DB349E900883430 /* NotificationManager.swift */; };
+		E85B4BEF2DF0D4B3003E3142 /* EmailAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = E85B4BED2DF0D4B3003E3142 /* EmailAnimation.json */; };
+		E85B4BF22DF0D61C003E3142 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E85B4BF12DF0D61C003E3142 /* Lottie */; };
+		E85B4BF42DF0D6C2003E3142 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85B4BF32DF0D6C2003E3142 /* LottieView.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
 		E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDED2D30F2BC00F62142 /* FirebaseFirestore */; };
 		E866CDF02D30F2DC00F62142 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDEF2D30F2DC00F62142 /* FirebaseStorage */; };
@@ -55,6 +58,7 @@
 		E89F481F2CE7488200B71FA5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E89F481E2CE7488200B71FA5 /* FirebaseAuth */; };
 		E89F48222CE748C300B71FA5 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = E89F48212CE748C300B71FA5 /* GoogleSignIn */; };
 		E89F48242CE748C300B71FA5 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E89F48232CE748C300B71FA5 /* GoogleSignInSwift */; };
+		E8A50ADF2DF1913E005F41D2 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A50ADE2DF1913E005F41D2 /* ForgotPasswordView.swift */; };
 		E8A84F7A2C2D39F400900714 /* HCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A84F792C2D39F400900714 /* HCalendarView.swift */; };
 		E8AFBAA22C9C45B200AEE292 /* ExerciseBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9A2C9C45B100AEE292 /* ExerciseBarChartView.swift */; };
 		E8AFBAA32C9C45B200AEE292 /* SleepCapsuleChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9B2C9C45B100AEE292 /* SleepCapsuleChart.swift */; };
@@ -68,7 +72,6 @@
 		E8AFBAAD2C9C460600AEE292 /* DataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAAC2C9C460600AEE292 /* DataFetcher.swift */; };
 		E8AFBAAF2C9C462F00AEE292 /* AnalyticScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAAE2C9C462F00AEE292 /* AnalyticScreen.swift */; };
 		E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFFFD72C32B3750002815E /* ActiveHour.swift */; };
-		E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */; };
 		E8B812362C33ECC400698849 /* EditProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B812352C33ECC400698849 /* EditProfile.swift */; };
 		E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */; };
 		E8B9A2E42C555728003127CC /* BreakModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B9A2E32C555728003127CC /* BreakModel.swift */; };
@@ -109,6 +112,19 @@
 		E8FF2F4D2C59041D00E9974E /* ContactUsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF2F4C2C59041D00E9974E /* ContactUsView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		E8BF0B082DF0CC5300846885 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		E802683E2C317E0900F026F1 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		E81E099E2CFA381700FFF547 /* DLMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DLMode.swift; sourceTree = "<group>"; };
@@ -131,6 +147,8 @@
 		E84992002C3EB232007F918A /* SiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteView.swift; sourceTree = "<group>"; };
 		E84B469A2DDBA5C500108CCC /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		E85889342DB349E900883430 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		E85B4BED2DF0D4B3003E3142 /* EmailAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmailAnimation.json; sourceTree = "<group>"; };
+		E85B4BF32DF0D6C2003E3142 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
 		E866CDFB2D3143F500F62142 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserData.swift; path = "UnChair-iOS/Core/Authentication/UserData.swift"; sourceTree = SOURCE_ROOT; };
 		E866CE032D3151D900F62142 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -155,6 +173,7 @@
 		E89507A32C865842002FDAA4 /* OnBoarding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnBoarding.swift; sourceTree = "<group>"; };
 		E899A4182C6BE73E0042C5CC /* count_down.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = count_down.mp3; sourceTree = "<group>"; };
 		E899A41A2C6BEBBF0042C5CC /* single_beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = single_beep.mp3; sourceTree = "<group>"; };
+		E8A50ADE2DF1913E005F41D2 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		E8A84F792C2D39F400900714 /* HCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCalendarView.swift; sourceTree = "<group>"; };
 		E8AFBA9A2C9C45B100AEE292 /* ExerciseBarChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseBarChartView.swift; sourceTree = "<group>"; };
 		E8AFBA9B2C9C45B100AEE292 /* SleepCapsuleChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepCapsuleChart.swift; sourceTree = "<group>"; };
@@ -168,7 +187,6 @@
 		E8AFBAAC2C9C460600AEE292 /* DataFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataFetcher.swift; sourceTree = "<group>"; };
 		E8AFBAAE2C9C462F00AEE292 /* AnalyticScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticScreen.swift; sourceTree = "<group>"; };
 		E8AFFFD72C32B3750002815E /* ActiveHour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveHour.swift; sourceTree = "<group>"; };
-		E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthManager.swift; sourceTree = "<group>"; };
 		E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "UnChair-iOS.entitlements"; sourceTree = "<group>"; };
 		E8B812352C33ECC400698849 /* EditProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfile.swift; sourceTree = "<group>"; };
 		E8B9A2E12C54CCAE003127CC /* QuickBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickBreakView.swift; sourceTree = "<group>"; };
@@ -215,6 +233,7 @@
 			files = (
 				E89F48242CE748C300B71FA5 /* GoogleSignInSwift in Frameworks */,
 				E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */,
+				E85B4BF22DF0D61C003E3142 /* Lottie in Frameworks */,
 				E8CBDDAC2DD89988008E3E96 /* RevenueCatUI in Frameworks */,
 				E8CBDDAE2DD899FA008E3E96 /* StoreKit.framework in Frameworks */,
 				E8CBDDAA2DD89988008E3E96 /* RevenueCat in Frameworks */,
@@ -239,6 +258,15 @@
 				E84992002C3EB232007F918A /* SiteView.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		E85B4BEE2DF0D4B3003E3142 /* Lottie */ = {
+			isa = PBXGroup;
+			children = (
+				E85B4BF32DF0D6C2003E3142 /* LottieView.swift */,
+				E85B4BED2DF0D4B3003E3142 /* EmailAnimation.json */,
+			);
+			path = Lottie;
 			sourceTree = "<group>";
 		};
 		E866CDEC2D30F2BC00F62142 /* Frameworks */ = {
@@ -275,6 +303,7 @@
 				E832992C2D2DCAB500B5D009 /* GoogleService-Info.plist */,
 				E8B2B4E92C7BA32C00091FAF /* UnChair-iOS.entitlements */,
 				E884D3212C726A4C0075A323 /* Info.plist */,
+				E85B4BEE2DF0D4B3003E3142 /* Lottie */,
 				E8783CC12BFD921A0085A899 /* Core */,
 				E899A4172C6BE7030042C5CC /* Sounds */,
 				E874A9FE2BFB53A50075644C /* UnChair_iOSApp.swift */,
@@ -324,7 +353,6 @@
 				E85889342DB349E900883430 /* NotificationManager.swift */,
 				E8E787CB2D431DCE0091EE28 /* FirestoreService.swift */,
 				E8FB19A22D882CF600A5CF82 /* HealthDataViewModel.swift */,
-				E8B2B4E72C7B9F6D00091FAF /* HealthManager.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -450,6 +478,7 @@
 		E89F481C2CE7444400B71FA5 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				E8A50ADE2DF1913E005F41D2 /* ForgotPasswordView.swift */,
 				E8817BB02DEF57910036A426 /* SignupView.swift */,
 				E8817BAE2DEF575A0036A426 /* SigninView.swift */,
 				E8817BAC2DEF506F0036A426 /* VerificationView.swift */,
@@ -548,6 +577,7 @@
 				E874A9F72BFB53A50075644C /* Sources */,
 				E874A9F82BFB53A50075644C /* Frameworks */,
 				E874A9F92BFB53A50075644C /* Resources */,
+				E8BF0B082DF0CC5300846885 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -586,6 +616,7 @@
 				E89F481D2CE7488200B71FA5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				E89F48202CE748C300B71FA5 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				E8CBDDA82DD89988008E3E96 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+				E85B4BF02DF0D61C003E3142 /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			productRefGroup = E874A9FC2BFB53A50075644C /* Products */;
 			projectDirPath = "";
@@ -604,6 +635,7 @@
 				E874AA062BFB53A60075644C /* Preview Assets.xcassets in Resources */,
 				E8BE39B92DDBD9A9006F48B1 /* StoreKitTestCertificate.cer in Resources */,
 				E899A41B2C6BEBBF0042C5CC /* single_beep.mp3 in Resources */,
+				E85B4BEF2DF0D4B3003E3142 /* EmailAnimation.json in Resources */,
 				E832992D2D2DCAB500B5D009 /* GoogleService-Info.plist in Resources */,
 				E899A4192C6BE73E0042C5CC /* count_down.mp3 in Resources */,
 				E874AA032BFB53A60075644C /* Assets.xcassets in Resources */,
@@ -628,6 +660,7 @@
 				E84B469B2DDBA5C500108CCC /* Secrets.swift in Sources */,
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8C5AC1B2DEB7C7700E27B78 /* BreakIntervalSelectionView.swift in Sources */,
+				E8A50ADF2DF1913E005F41D2 /* ForgotPasswordView.swift in Sources */,
 				E8AFBAAB2C9C45D600AEE292 /* ExerciseChartModel.swift in Sources */,
 				E828853D2DC6AA7E00EEAE8F /* GlassCard.swift in Sources */,
 				E8AFFFD82C32B3750002815E /* ActiveHour.swift in Sources */,
@@ -670,6 +703,7 @@
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E82A72742DA47354005EA6A6 /* MeditationLollipopChartView.swift in Sources */,
 				E8C859692DEE3BE50028981B /* WelcomOnBoardingView.swift in Sources */,
+				E85B4BF42DF0D6C2003E3142 /* LottieView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* TimeDuration.swift in Sources */,
 				E866CDFC2D3143F500F62142 /* UserData.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,
@@ -677,7 +711,6 @@
 				E872E6C72DE9DB56006F4F57 /* DailyWaterGoal.swift in Sources */,
 				E8AFBAA92C9C45B200AEE292 /* WaterBarChartView.swift in Sources */,
 				E8B812362C33ECC400698849 /* EditProfile.swift in Sources */,
-				E8B2B4E82C7B9F6D00091FAF /* HealthManager.swift in Sources */,
 				E8D787032C9941CC00BA83A0 /* WaterChartModel.swift in Sources */,
 				E874A9FF2BFB53A50075644C /* UnChair_iOSApp.swift in Sources */,
 				E8BB4E322BFD0A5E00C1459C /* HomeScreen.swift in Sources */,
@@ -743,6 +776,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -806,6 +840,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -837,6 +872,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"UnChair-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 828PG3Q6MA;
 				ENABLE_PREVIEWS = YES;
@@ -873,6 +909,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"UnChair-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 828PG3Q6MA;
 				ENABLE_PREVIEWS = YES;
@@ -924,6 +961,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E85B4BF02DF0D61C003E3142 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 		E89F481D2CE7488200B71FA5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -951,6 +996,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E85B4BF12DF0D61C003E3142 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E85B4BF02DF0D61C003E3142 /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
+		};
 		E866CDED2D30F2BC00F62142 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E89F481D2CE7488200B71FA5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

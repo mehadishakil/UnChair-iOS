@@ -6,38 +6,37 @@
 //
 
 import SwiftUI
-import FirebaseAuth
-import FirebaseCore
-import GoogleSignIn
-import AuthenticationServices
-import FirebaseFirestore
-import RevenueCat
+import FirebaseAuth //
+import FirebaseCore //
+import GoogleSignIn //
+import AuthenticationServices //
+import FirebaseFirestore //
+import RevenueCat //
 
 @MainActor
 @Observable
 class AuthController: ObservableObject {
     
     
-    var authState: AuthState = .undefined
-    private var db = Firestore.firestore()
-    var currentUser: UserData? = nil
+    var authState: AuthState = .undefined //
+    private var db = Firestore.firestore() //
+    var currentUser: UserData? = nil //
     
-    func startListeningToAuthState() async {
-        _ = Auth.auth().addStateDidChangeListener { _, user in
+    func startListeningToAuthState() async { //
+        _ = Auth.auth().addStateDidChangeListener { _, user in //
             DispatchQueue.main.async {
-                if let user = user {
-                    self.authState = .authenticated
-                    // Reload user data from Firestore when a user is found
+                if let user = user { //
+                    self.authState = .authenticated //
                     Task {
                         do {
-                            try await self.loadUserData(user: user)
+                            try await self.loadUserData(user: user) //
                         } catch {
-                            print("Error loading user data: \(error.localizedDescription)")
+                            print("Error loading user data: \(error.localizedDescription)") //
                         }
                     }
                 } else {
-                    self.authState = .unauthenticated
-                    self.currentUser = nil
+                    self.authState = .unauthenticated //
+                    self.currentUser = nil //
                 }
             }
         }
@@ -48,127 +47,137 @@ class AuthController: ObservableObject {
     
     
     @MainActor
-    func signInWithGoogle() async throws {
-        guard let rootViewController = UIApplication.shared.firstKeyWindow?.rootViewController else { return }
-        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
-        let configuration = GIDConfiguration(clientID: clientID)
-        GIDSignIn.sharedInstance.configuration = configuration
+    func signInWithGoogle() async throws { //
+        guard let rootViewController = UIApplication.shared.firstKeyWindow?.rootViewController else { return } //
+        guard let clientID = FirebaseApp.app()?.options.clientID else { return } //
+        let configuration = GIDConfiguration(clientID: clientID) //
+        GIDSignIn.sharedInstance.configuration = configuration //
         
-        let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
-        guard let idToken = result.user.idToken?.tokenString else { return }
-        let accessToken = result.user.accessToken.tokenString
+        let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) //
+        guard let idToken = result.user.idToken?.tokenString else { return } //
+        let accessToken = result.user.accessToken.tokenString //
         
-        let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
-        try await Auth.auth().signIn(with: credential)
+        let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken) //
+        try await Auth.auth().signIn(with: credential) //
         
-        if let user = Auth.auth().currentUser {
-            try await saveUserData(user: user, provider: "google")
-            try await loadUserData(user: user)
-            identifyUserWithRevenueCat(uid: user.uid)
+        if let user = Auth.auth().currentUser { //
+            try await saveUserData(user: user, provider: "google") //
+            try await loadUserData(user: user) //
+            identifyUserWithRevenueCat(uid: user.uid) //
         }
     }
     
-    
-    func signInWithApple(authorization: ASAuthorization, nonce: String?) async throws {
+    @MainActor
+    func signInWithApple(authorization: ASAuthorization, nonce: String?) async throws { //
         do {
-            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid Apple ID Credential"])
+            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else { //
+                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid Apple ID Credential"]) //
             }
             
-            guard let nonce = nonce else {
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid state: A login callback was received, but no login request was sent."])
+            guard let nonce = nonce else { //
+                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid state: A login callback was received, but no login request was sent."]) //
             }
             
-            guard let appleIDToken = appleIDCredential.identityToken else {
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to fetch identity token"])
+            guard let appleIDToken = appleIDCredential.identityToken else { //
+                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to fetch identity token"]) //
             }
             
-            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to serialize token string from data: \(appleIDToken.debugDescription)"])
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else { //
+                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to serialize token string from data: \(appleIDToken.debugDescription)"]) //
             }
             
-            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: appleIDCredential.fullName)
-            try await Auth.auth().signIn(with: credential)
+            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: appleIDCredential.fullName) //
+            try await Auth.auth().signIn(with: credential) //
             
-            if let user = Auth.auth().currentUser {
-                try await saveUserData(user: user, provider: "apple")
-                try await loadUserData(user: user)
-                identifyUserWithRevenueCat(uid: user.uid)
+            if let user = Auth.auth().currentUser { //
+                try await saveUserData(user: user, provider: "apple") //
+                try await loadUserData(user: user) //
+                identifyUserWithRevenueCat(uid: user.uid) //
             }
         } catch {
-            print("Apple Sign-In Error: \(error.localizedDescription)")
-            throw error
+            print("Apple Sign-In Error: \(error.localizedDescription)") //
+            throw error //
         }
     }
     
+    @MainActor
+    func signUpWithEmail(email: String, password: String) async throws {
+        
+    }
     
-    func signOut() throws {
+    @MainActor
+    func signInWithEmail(email: String, password: String) async throws {
+        
+    }
+    
+    
+    func signOut() throws { //
         do {
-            try Auth.auth().signOut()
+            try Auth.auth().signOut() //
             GIDSignIn.sharedInstance.signOut() // Sign out Google user
-            Purchases.shared.logOut { customerInfo, error in
+            Purchases.shared.logOut { customerInfo, error in //
                 if let error = error {
-                    print("Error signing out from RevenueCat: \(error.localizedDescription)")
+                    print("Error signing out from RevenueCat: \(error.localizedDescription)") //
                 } else {
-                    print("Successfully signed out from RevenueCat")
+                    print("Successfully signed out from RevenueCat") //
                 }
             }
             self.authState = .unauthenticated // Update state
         } catch {
-            throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to sign out"])
+            throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to sign out"]) //
         }
     }
     
     
-    private func saveUserData(user: User, provider: String) async throws {
+    private func saveUserData(user: User, provider: String) async throws { //
         // Check if user already exists in Firestore
-        let userRef = db.collection("users").document(user.uid)
-        let snapshot = try await userRef.getDocument()
+        let userRef = db.collection("users").document(user.uid) //
+        let snapshot = try await userRef.getDocument() //
         
-        if !snapshot.exists {
+        if !snapshot.exists { //
             // User doesn't exist, create new document
             var userData: [String: Any] = [
-                "name": user.displayName ?? "Unknown",
-                "provider": provider,
-                "uid": user.uid,
+                "name": user.displayName ?? "Unknown", //
+                "provider": provider, //
+                "uid": user.uid, //
             ]
             
-            if let email = user.email {
-                userData["email"] = email
+            if let email = user.email { //
+                userData["email"] = email //
             }
             
-            try await userRef.setData(userData)
+            try await userRef.setData(userData) //
         }
     }
     
     
-    private func loadUserData(user: User) async throws {
-        let userRef = db.collection("users").document(user.uid)
-        let snapshot = try await userRef.getDocument()
+    private func loadUserData(user: User) async throws { //
+        let userRef = db.collection("users").document(user.uid) //
+        let snapshot = try await userRef.getDocument() //
         
-        if let data = snapshot.data() {
+        if let data = snapshot.data() { //
             // If the user document exists, map Firestore fields to your UserData model
-            let name = data["name"] as? String ?? "Unknown"
-            let email = data["email"] as? String ?? ""
-            let provider = data["provider"] as? String ?? ""
+            let name = data["name"] as? String ?? "Unknown" //
+            let email = data["email"] as? String ?? "" //
+            let provider = data["provider"] as? String ?? "" //
             
             // Update the AuthController’s currentUser property
-            self.currentUser = UserData(uid: user.uid, name: name, email: email, provider: provider)
+            self.currentUser = UserData(uid: user.uid, name: name, email: email, provider: provider) //
             
-            print("Fetched existing user data for \(name)")
+            print("Fetched existing user data for \(name)") //
         } else {
             // If no document exists, create one (already handled by saveUserData)
             // But you could also explicitly call saveUserData here if you want:
-            try await saveUserData(user: user, provider: "unknown")
+            try await saveUserData(user: user, provider: "unknown") //
         }
     }
     
-    private func identifyUserWithRevenueCat(uid: String) {
-        Purchases.shared.logIn(uid) { (customerInfo, created, error) in
+    private func identifyUserWithRevenueCat(uid: String) { //
+        Purchases.shared.logIn(uid) { (customerInfo, created, error) in //
             if let error = error {
-                print("RevenueCat identify failed: \(error.localizedDescription)")
+                print("RevenueCat identify failed: \(error.localizedDescription)") //
             } else {
-                print("RevenueCat identified as \(uid)")
+                print("RevenueCat identified as \(uid)") //
             }
         }
     }
@@ -185,5 +194,3 @@ extension UIApplication {
             .first(where: \.isKeyWindow)
     }
 }
-
-
