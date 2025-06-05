@@ -20,6 +20,7 @@ struct UnChair_iOSApp: App {
     @Environment(\.scenePhase) var scenePhase
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
     
+    
     var body: some Scene {
         WindowGroup {
             if hasCompletedOnboarding {

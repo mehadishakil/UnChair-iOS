@@ -26,12 +26,26 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: Secrets.apiKey)
 
-        
         return true
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return GIDSignIn.sharedInstance.handle(url)
+        // Handle Google Sign-In
+        if GIDSignIn.sharedInstance.handle(url) {
+            return true
+        }
+        
+        // Handle Firebase Email Link Sign-In
+        if Auth.auth().isSignIn(withEmailLink: url.absoluteString) {
+            // Post notification to handle email link in the app
+            NotificationCenter.default.post(
+                name: .emailLinkReceived,
+                object: url.absoluteString
+            )
+            return true
+        }
+        
+        return false
     }
     
     // Handle app becoming active (user returns to the app)
@@ -39,4 +53,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
         NotificationManager.shared.scheduleNextBreakNotification()
     }
+}
+
+// MARK: - Notification Extension
+extension Notification.Name {
+    static let emailLinkReceived = Notification.Name("emailLinkReceived")
 }

@@ -6,5 +6,5 @@
 //
 
 enum AuthState {
-    case undefined, authenticated, unauthenticated
+    case undefined, authenticated, unauthenticated, authenticating
 }

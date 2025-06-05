@@ -214,5 +214,5 @@ struct Authentication: View {
 
 #Preview {
     Authentication()
-        .environment(AuthController.init())
+        
 }

@@ -26,7 +26,7 @@ struct MainView: View {
         Group {
             switch authController.authState {
             case .undefined:
-                ProgressView()
+                Authentication()
             case .authenticated:
                 if isLoadingSubscription {
                     ProgressView("Checking subscription...")
@@ -55,6 +55,8 @@ struct MainView: View {
                 }
             case .unauthenticated:
                 Authentication()
+            case .authenticating:
+                ProgressView()
             }
         }
         .task {
