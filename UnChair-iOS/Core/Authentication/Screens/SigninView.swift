@@ -1,3 +1,5 @@
+
+
 //
 //  SigninView.swift
 //  UnChair-iOS
@@ -53,7 +55,8 @@ struct SigninView: View {
             Spacer().frame(height: 40)
             
             VStack(spacing: 20) {
-                TextField("Email", text: $authController.email)
+                // Use the string-based initializer here:
+                TextField("Email", text: $email)
                     .frame(height: 52)
                     .padding(.leading, 12)
                     .keyboardType(.emailAddress)
@@ -69,7 +72,9 @@ struct SigninView: View {
             Spacer()
             
             Button(action: {
-                signInWithEmailLink()
+                Task {
+                    await EmailSignIn()
+                }
             }) {
                 Text("Sign In")
                     .font(.title3.weight(.semibold))
@@ -88,7 +93,7 @@ struct SigninView: View {
             .overlay {
                 if isLoading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white)) // Make the progress view white
                 }
             }
             
@@ -134,6 +139,7 @@ struct SigninView: View {
                 .signInWithAppleButtonStyle((userTheme == .light || (userTheme == .system && colorScheme == .light)) ? .white : .black)
                 .frame(height: 52)
                 .clipShape(.capsule)
+                // Adjust shadow based on your desired outlier effect
                 .shadow(color: (userTheme == .light || (userTheme == .system && colorScheme == .light)) ? .black : .white, radius: 1)
                 .id("\(userTheme)-\(colorScheme)")
                 
@@ -150,27 +156,27 @@ struct SigninView: View {
                     }
                 }) {
                     HStack {
-                        Image("google_icon")
+                        Image("google_icon") // Ensure this image is correctly imported into your asset catalog
                             .resizable()
-                            .frame(width: 16, height: 16)
+                            .frame(width: 16, height: 16) // Slightly larger icon for better visibility
                         
                         Text("Sign in with Google")
                             .font(.title3.weight(.medium))
-                            .foregroundColor(.primary)
+                            .foregroundColor(.primary) // Adjust text color based on theme
                     }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 52)
+                    .frame(height: 52) // Consistent height with Apple button
                     .background((userTheme == .light || (userTheme == .system && colorScheme == .light))
                                 ? .white
-                                : .black)
-                    .clipShape(Capsule())
+                                : .black) // White background for both themes
+                    .clipShape(Capsule()) // Capsule shape
                     .shadow(color: (userTheme == .light || (userTheme == .system && colorScheme == .light)) ? .black : .white, radius: 1)
                 }
                 
                 HStack {
                     Text("Don't have an account?")
                         .foregroundColor(.secondary)
-                    NavigationLink(destination: SignupView()) {
+                    NavigationLink(destination: SignupView().environment(authController)) {
                         Text("Create account")
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
@@ -187,134 +193,33 @@ struct SigninView: View {
         .alert(alertMessage, isPresented: $showAlert) {
             Button("OK", role: .cancel) { }
         }
-        .onAppear {
-            // Listen for email link notifications
-            NotificationCenter.default.addObserver(
-                forName: .emailLinkReceived,
-                object: nil,
-                queue: .main
-            ) { notification in
-                if let emailLink = notification.object as? String {
-                    handleEmailLink(emailLink)
-                }
-            }
-        }
-        .onDisappear {
-            NotificationCenter.default.removeObserver(self, name: .emailLinkReceived, object: nil)
-        }
+        
     }
-    
-    private func signInWithEmailLink() {
-        Task {
-          await authController.sendSignInLink()
-        }
-      }
     
     func EmailSignIn() {
-        // Validate email format
-        guard isValidEmail(email) else {
-            showError("Please enter a valid email address")
-            return
-        }
-        
         isLoading = true
-        
-        let actionCodeSettings = ActionCodeSettings()
-        
-        // FIXED: Use a proper deep link URL that matches your app's URL scheme
-        // Replace "unchair" with your actual app's URL scheme from Info.plist
-        actionCodeSettings.url = URL(string: "https://unchair.page.link/email-signin")
-        
-        // FIXED: This should be true for email link sign-in
-        actionCodeSettings.handleCodeInApp = true
-        
-        // FIXED: Use the correct bundle identifier
-        if let bundleID = Bundle.main.bundleIdentifier {
-            actionCodeSettings.setIOSBundleID(bundleID)
-        }
-        
-        // Optional: Android package name (remove if not needed)
-        // actionCodeSettings.setAndroidPackageName("com.yourcompany.unchair", installIfNotAvailable: false, minimumVersion: "12")
-        
-        Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings) { error in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                
+        Task {
+            let actionCodeSettings = ActionCodeSettings()
+            actionCodeSettings.url = URL(string: "https://unchair.page.link/")
+            // The sign-in operation has to always be completed in the app.
+            actionCodeSettings.handleCodeInApp = true
+            actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
+            
+            Auth.auth().sendSignInLink(toEmail: email,
+                                       actionCodeSettings: actionCodeSettings) { error in
                 if let error = error {
-                    print("Email link send error: \(error.localizedDescription)")
-                    self.showError("Failed to send email: \(error.localizedDescription)")
+                    self.showError(error.localizedDescription)
                     return
                 }
-                
-                // Success: Save email and show success message
-                UserDefaults.standard.set(self.email, forKey: "Email")
-                self.showError("Check your email for the sign-in link!")
-                print("Email link sent successfully to: \(self.email ?? "")")
+                UserDefaults.standard.set(email, forKey: "Email")
+                self.showError("Check your email for link")
             }
         }
-    }
-    
-    private func handleEmailLink(_ emailLink: String) {
-        guard let savedEmail = UserDefaults.standard.string(forKey: "Email") else {
-            showError("No email found. Please try signing in again.")
-            return
-        }
-        
-        // Verify that the link is valid
-        guard Auth.auth().isSignIn(withEmailLink: emailLink) else {
-            showError("Invalid email link")
-            return
-        }
-        
-        isLoading = true
-        
-        Auth.auth().signIn(withEmail: savedEmail, link: emailLink) { result, error in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                
-                if let error = error {
-                    print("Email link sign-in error: \(error.localizedDescription)")
-                    self.showError("Sign-in failed: \(error.localizedDescription)")
-                    return
-                }
-                
-                guard let user = result?.user else {
-                    self.showError("Sign-in failed: No user returned")
-                    return
-                }
-                
-                print("Email link sign-in successful for user: \(user.uid)")
-                
-                // Save user data and update auth state
-                Task {
-                    do {
-                        try await self.authController.saveUserData(user: user, provider: "email")
-                        try await self.authController.loadUserData(user: user)
-                        
-                        // Clear saved email
-                        UserDefaults.standard.removeObject(forKey: "Email")
-                        
-                        // Update login status
-                        await MainActor.run {
-                            self.logStatus = true
-                        }
-                    } catch {
-                        print("Error saving user data: \(error.localizedDescription)")
-                    }
-                }
-            }
-        }
-    }
-    
-    private func isValidEmail(_ email: String) -> Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-        return emailPred.evaluate(with: email)
     }
     
     func showError(_ message: String) {
-        alertMessage = message
-        showAlert = true
+        errorMessage = message
+        showAlert.toggle()
         isLoading = false
     }
     
@@ -391,5 +296,5 @@ fileprivate extension View {
 
 #Preview {
     SigninView()
-        .environmentObject(AuthController())
+        .environmentObject(AuthController()) // Provide a dummy AuthController for preview
 }
