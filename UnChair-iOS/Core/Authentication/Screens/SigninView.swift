@@ -395,7 +395,6 @@
 //}
 
 
-
 //
 //  SigninView.swift
 //  UnChair-iOS
@@ -408,6 +407,7 @@ import FirebaseAuth
 import AuthenticationServices
 import CryptoKit
 
+// moving back to auth design
 struct SigninView: View {
     @State private var email: String = ""
     @State private var password: String = ""
