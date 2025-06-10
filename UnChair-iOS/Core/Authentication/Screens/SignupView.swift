@@ -127,13 +127,13 @@ struct SignupView: View {
             }
             .disabled(buttonStatus)
             .padding(.vertical)
-//            .overlay {
-//                if isLoading {
-//                    ProgressView()
-//                        .progressViewStyle(CircularProgressViewStyle(tint: .white)) // Make the progress view white
-//                }
-//            }
-            .showLoadingIndicator(isLoading)
+            .opacity(isLoading ? 0.2 : 1)
+            .overlay {
+                if isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                }
+            }
             
             HStack {
                 Text("Already have an account?")
@@ -267,26 +267,6 @@ struct SignupView: View {
 }
 
 fileprivate extension View {
-    @ViewBuilder
-    func showLoadingIndicator(_ status: Bool) -> some View {
-        self
-            .animation(.snappy) { content in
-                content
-                    .opacity(status ? 0 : 1)
-            }
-            .overlay {
-                if status {
-                    ZStack {
-                        Capsule()
-                            .fill(.bar)
-                        
-                        ProgressView()
-                    }
-                }
-            }
-    }
-    
-    
     @ViewBuilder
     func customTextField(_ icon : String? = nil, _ paddingTop : CGFloat = 0, _ paddingBottom : CGFloat = 0) -> some View {
         HStack {
