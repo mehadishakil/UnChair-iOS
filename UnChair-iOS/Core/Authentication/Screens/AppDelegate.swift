@@ -35,16 +35,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             return true
         }
         
-        // Handle Firebase Email Link Sign-In
-        if Auth.auth().isSignIn(withEmailLink: url.absoluteString) {
-            // Post notification to handle email link in the app
-            NotificationCenter.default.post(
-                name: .emailLinkReceived,
-                object: url.absoluteString
-            )
-            return true
-        }
-        
         return false
     }
     
@@ -53,9 +43,4 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
         NotificationManager.shared.scheduleNextBreakNotification()
     }
-}
-
-// MARK: - Notification Extension
-extension Notification.Name {
-    static let emailLinkReceived = Notification.Name("emailLinkReceived")
 }

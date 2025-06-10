@@ -30,7 +30,6 @@
 		E85889352DB349E900883430 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85889342DB349E900883430 /* NotificationManager.swift */; };
 		E85B4BEF2DF0D4B3003E3142 /* EmailAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = E85B4BED2DF0D4B3003E3142 /* EmailAnimation.json */; };
 		E85B4BF22DF0D61C003E3142 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = E85B4BF12DF0D61C003E3142 /* Lottie */; };
-		E85B4BF42DF0D6C2003E3142 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85B4BF32DF0D6C2003E3142 /* LottieView.swift */; };
 		E863CBD62C5A700B009CB2A1 /* MultiLineChartModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */; };
 		E866CDEE2D30F2BC00F62142 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDED2D30F2BC00F62142 /* FirebaseFirestore */; };
 		E866CDF02D30F2DC00F62142 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDEF2D30F2DC00F62142 /* FirebaseStorage */; };
@@ -81,7 +80,6 @@
 		E8BE39B72DDBD885006F48B1 /* configurationTest.storekit in Resources */ = {isa = PBXBuildFile; fileRef = E8BE39B62DDBD885006F48B1 /* configurationTest.storekit */; };
 		E8BE39B92DDBD9A9006F48B1 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = E8BE39B82DDBD9A9006F48B1 /* StoreKitTestCertificate.cer */; };
 		E8C01E082CFE157F0073C616 /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E072CFE15790073C616 /* AuthController.swift */; };
-		E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E092CFE16670073C616 /* AuthState.swift */; };
 		E8C01E0C2CFE16920073C616 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0B2CFE16900073C616 /* MainView.swift */; };
 		E8C01E0E2CFE17F00073C616 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */; };
 		E8C5AC112DEAD8F400E27B78 /* StepsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C5AC102DEAD8F400E27B78 /* StepsSelectionView.swift */; };
@@ -149,7 +147,6 @@
 		E84B469A2DDBA5C500108CCC /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		E85889342DB349E900883430 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		E85B4BED2DF0D4B3003E3142 /* EmailAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmailAnimation.json; sourceTree = "<group>"; };
-		E85B4BF32DF0D6C2003E3142 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
 		E866CDFB2D3143F500F62142 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserData.swift; path = "UnChair-iOS/Core/Authentication/UserData.swift"; sourceTree = SOURCE_ROOT; };
 		E866CE032D3151D900F62142 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -198,7 +195,6 @@
 		E8BE39B62DDBD885006F48B1 /* configurationTest.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = configurationTest.storekit; sourceTree = "<group>"; };
 		E8BE39B82DDBD9A9006F48B1 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificate.cer; sourceTree = "<group>"; };
 		E8C01E072CFE15790073C616 /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
-		E8C01E092CFE16670073C616 /* AuthState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthState.swift; sourceTree = "<group>"; };
 		E8C01E0B2CFE16900073C616 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E8C5AC102DEAD8F400E27B78 /* StepsSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsSelectionView.swift; sourceTree = "<group>"; };
@@ -265,7 +261,6 @@
 		E85B4BEE2DF0D4B3003E3142 /* Lottie */ = {
 			isa = PBXGroup;
 			children = (
-				E85B4BF32DF0D6C2003E3142 /* LottieView.swift */,
 				E85B4BED2DF0D4B3003E3142 /* EmailAnimation.json */,
 			);
 			path = Lottie;
@@ -486,7 +481,6 @@
 				E8817BAE2DEF575A0036A426 /* SigninView.swift */,
 				E8817BAC2DEF506F0036A426 /* VerificationView.swift */,
 				E8C01E0D2CFE17E50073C616 /* AppDelegate.swift */,
-				E8C01E092CFE16670073C616 /* AuthState.swift */,
 				E8C01E072CFE15790073C616 /* AuthController.swift */,
 				E8D2BA7A2C84897400BEEAAF /* Authentication.swift */,
 				E866CE032D3151D900F62142 /* UserManager.swift */,
@@ -699,14 +693,12 @@
 				E8B9A2E92C556C55003127CC /* DetailsBreakView.swift in Sources */,
 				E8C5AC172DEB5F7500E27B78 /* WaterSelectionView.swift in Sources */,
 				E874AA012BFB53A50075644C /* ContentView.swift in Sources */,
-				E8C01E0A2CFE166B0073C616 /* AuthState.swift in Sources */,
 				E8C5AC152DEB175300E27B78 /* WorkHourSelectionView.swift in Sources */,
 				E8817BAB2DEEE9150036A426 /* OnBoardingCompletionView.swift in Sources */,
 				E8FB19A32D882CF700A5CF82 /* HealthDataViewModel.swift in Sources */,
 				E8B9A2E22C54CCAE003127CC /* QuickBreakView.swift in Sources */,
 				E82A72742DA47354005EA6A6 /* MeditationLollipopChartView.swift in Sources */,
 				E8C859692DEE3BE50028981B /* WelcomOnBoardingView.swift in Sources */,
-				E85B4BF42DF0D6C2003E3142 /* LottieView.swift in Sources */,
 				E8D2006C2C5D467E002EB719 /* TimeDuration.swift in Sources */,
 				E866CDFC2D3143F500F62142 /* UserData.swift in Sources */,
 				E89507A42C865842002FDAA4 /* OnBoarding.swift in Sources */,

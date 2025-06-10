@@ -13,6 +13,11 @@ import AuthenticationServices
 import FirebaseFirestore 
 import RevenueCat 
 
+
+enum AuthState {
+    case undefined, authenticated, unauthenticated, authenticating
+}
+
 @MainActor
 @Observable
 class AuthController: ObservableObject {
@@ -22,28 +27,45 @@ class AuthController: ObservableObject {
     private var db = Firestore.firestore() 
     var currentUser: UserData? = nil 
     
-    func startListeningToAuthState() async { 
-        _ = Auth.auth().addStateDidChangeListener { _, user in 
+//    func startListeningToAuthState() async { 
+//        _ = Auth.auth().addStateDidChangeListener { _, user in 
+//            DispatchQueue.main.async {
+//                if let user = user { 
+//                    self.authState = .authenticated 
+//                    Task {
+//                        do {
+//                            try await self.loadUserData(user: user) 
+//                        } catch {
+//                            print("Error loading user data: \(error.localizedDescription)") 
+//                        }
+//                    }
+//                } else {
+//                    self.authState = .unauthenticated 
+//                    self.currentUser = nil 
+//                }
+//            }
+//        }
+//    }
+    
+    func startListeningToAuthState() async {
+        Auth.auth().addStateDidChangeListener { _, user in
             DispatchQueue.main.async {
-                if let user = user { 
-                    self.authState = .authenticated 
-                    Task {
-                        do {
-                            try await self.loadUserData(user: user) 
-                        } catch {
-                            print("Error loading user data: \(error.localizedDescription)") 
+                if let user = user {
+                    // reload to get the latest emailVerified flag
+                    user.reload { error in
+                        if user.isEmailVerified {
+                            self.authState = .authenticated
+                        } else {
+                            self.authState = .unauthenticated
                         }
                     }
                 } else {
-                    self.authState = .unauthenticated 
-                    self.currentUser = nil 
+                    self.authState = .unauthenticated
                 }
             }
         }
     }
-    
-    
-    
+
     
     
     @MainActor

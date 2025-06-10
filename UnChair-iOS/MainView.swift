@@ -17,7 +17,6 @@ struct MainView: View {
     @EnvironmentObject var healthViewModel: HealthDataViewModel
     @Environment(\.requestReview) var requestReview : RequestReviewAction
     
-    // State to track subscription status
     @State private var isSubscriptionActive = false
     @State private var isLoadingSubscription = true
     @State private var customerInfo: CustomerInfo?
@@ -26,12 +25,13 @@ struct MainView: View {
         Group {
             switch authController.authState {
             case .undefined:
-                Authentication()
+                NavigationStack {
+                    SignupView()
+                }
             case .authenticated:
                 if isLoadingSubscription {
                     ProgressView("Checking subscription...")
                 } else if isSubscriptionActive {
-                    // User has active subscription - show main content
                     ContentView()
                         .onAppear {
                             if let userId = authController.currentUser?.uid {
@@ -39,22 +39,21 @@ struct MainView: View {
                             }
                         }
                 } else {
-                    // User doesn't have subscription - show paywall
                     PaywallView(displayCloseButton: false)
                         .onPurchaseCompleted { customerInfo in
-                            // Handle successful purchase
                             self.customerInfo = customerInfo
                             checkSubscriptionStatus()
                             requestReview()
                         }
                         .onRestoreCompleted { customerInfo in
-                            // Handle successful restore
                             self.customerInfo = customerInfo
                             checkSubscriptionStatus()
                         }
                 }
             case .unauthenticated:
-                Authentication()
+                NavigationStack {
+                    SigninView()
+                }
             case .authenticating:
                 ProgressView()
             }
@@ -64,7 +63,6 @@ struct MainView: View {
         }
         .onChange(of: authController.authState) { oldState, newState in
             if newState == .authenticated {
-                // When user becomes authenticated, check their subscription
                 checkSubscriptionStatus()
             }
         }
@@ -79,11 +77,9 @@ struct MainView: View {
                 
                 if let customerInfo = customerInfo {
                     self.customerInfo = customerInfo
-                    // Check if user has the "pro" entitlement
                     self.isSubscriptionActive = customerInfo.entitlements["pro"]?.isActive == true
                 } else if let error = error {
                     print("Error fetching customer info: \(error.localizedDescription)")
-                    // In case of error, assume no subscription
                     self.isSubscriptionActive = false
                 }
             }

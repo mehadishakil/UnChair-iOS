@@ -99,12 +99,12 @@ struct EditProfile: View {
                         saveProfileData()
                     }) {
                         Text("Save")
-                            .foregroundStyle(.whiteblack)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(.primary)
+                            .background(.blue)
                             .cornerRadius(8)
-                            .font(.title3)
+                            .font(.title2)
                             .bold()
                     }
                 }
