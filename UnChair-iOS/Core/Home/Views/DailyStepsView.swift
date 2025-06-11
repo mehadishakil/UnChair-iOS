@@ -10,6 +10,7 @@ import SwiftUI
 struct DailyStepsView: View {
     @EnvironmentObject private var healthVM: HealthDataViewModel
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    @Environment(\.colorScheme) private var colorScheme
     @AppStorage("stepsGoal") private var stepsGoal: Int = 10000
 
     var progress: Double {
@@ -19,9 +20,6 @@ struct DailyStepsView: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
-            
             VStack(spacing: 4) {
                 Image(systemName: "figure.walk")
                     .resizable()
@@ -60,6 +58,12 @@ struct DailyStepsView: View {
             .padding()
         }
         .frame(height: 170)
+        .background(
+            userTheme == .system
+            ? (colorScheme == .light ? .white : .darkGray)
+                : (userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+        )
+        .cornerRadius(20, corners: .allCorners)
         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
         .onDisappear {
             if healthVM.stepCount > 0 {

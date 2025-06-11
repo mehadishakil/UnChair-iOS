@@ -327,8 +327,8 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     private func scheduleNotification(for date: Date) {
         // Create notification content
         let content = UNMutableNotificationContent()
-        content.title = "Time to take a break!"
-        content.body = "Stand up, stretch, or walk for a few minutes."
+        content.title = "UnChair Yourself!"
+        content.body = "Let’s give your back a break. Time to stand, stretch, or stroll."
         content.sound = UNNotificationSound.default
         content.categoryIdentifier = breakReminderCategory
         

@@ -167,17 +167,13 @@ struct DailySleepView: View {
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @AppStorage("sleepGoalMins") private var sleepGoalMins: Int = 8 * 60
     
-    // Convert total minutes to hours and minutes for display
+    @Environment(\.colorScheme) private var colorScheme
     private var hours: Int { healthVM.sleepMinutes / 60 }
     private var minutes: Int { healthVM.sleepMinutes % 60 }
     
     var body: some View {
         Button(action: { showPicker.toggle() }) {
             ZStack {
-                // background & border
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
-                
                 VStack(alignment: .leading) {
                     Text("Sleep")
                         .font(.subheadline.weight(.medium))
@@ -217,6 +213,12 @@ struct DailySleepView: View {
                 }
                 .padding(20)
             }
+            .background(
+                userTheme == .system
+                ? (colorScheme == .light ? .white : .darkGray)
+                    : (userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+            )
+            .cornerRadius(20, corners: .allCorners)
         }
         .buttonStyle(PlainButtonStyle())
         .frame(height: 170)

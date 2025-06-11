@@ -21,7 +21,7 @@ struct SettingsScreen: View {
     
     @Binding var selectedDuration: TimeDuration
     @State private var language : Language = .English
-    @State private var isNotificationEnabled = false
+    @State private var isNotificationEnabled = true
     @State private var showPermissionAlert = false
     @State private var isDarkOn = true
     @State private var startTime = Calendar

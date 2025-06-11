@@ -16,6 +16,7 @@ struct SedentaryTime: View {
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     let onTakeBreak: () -> Void
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    @Environment(\.colorScheme) private var colorScheme
     
     init(notificationPermissionGranted: Binding<Bool>, selectedDuration: Binding<TimeDuration>, onTakeBreak: @escaping () -> Void) {
         self._notificationPermissionGranted = notificationPermissionGranted
@@ -25,14 +26,11 @@ struct SedentaryTime: View {
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(userTheme == .light ? Color(.systemBackground) : Color(.secondarySystemBackground))
-            
             HStack() {
                 Image(systemName: "hourglass.tophalf.filled")
                     .resizable()
                     .frame(width: 90)
-                    .foregroundColor(userTheme == .light ? .darkGray : .white)
+                    .foregroundColor(.primary.opacity(0.9))
                     .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
                     .padding(.leading)
                 
@@ -104,6 +102,12 @@ struct SedentaryTime: View {
             
         }
         .frame(height: 170)
+        .background(
+            userTheme == .system
+            ? (colorScheme == .light ? .white : .darkGray)
+                : (userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+        )
+        .cornerRadius(20, corners: .allCorners)
         .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
     }
     
