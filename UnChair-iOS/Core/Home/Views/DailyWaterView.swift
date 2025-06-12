@@ -11,17 +11,17 @@ struct DailyWaterView: View {
     @EnvironmentObject private var healthViewModel: HealthDataViewModel
     @State private var showWaterPicker = false
     @AppStorage("waterGoalML") private var waterGoalML: Int = 2000
-    private let maxIntake: Int = 6000
-    private let minIntake: Int = 0
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @Environment(\.colorScheme) private var colorScheme
+    private let maxIntake: Int = 6000
+    private let minIntake: Int = 0
     
     var body: some View {
         
         Button(action: { showWaterPicker.toggle() }) {
             ZStack{
-                    CircularProgressBar(current: healthViewModel.waterIntake, target: waterGoalML, maxIntake: maxIntake, minIntake: minIntake)
-                        .frame(maxWidth: .infinity, alignment: .center)
+                CircularProgressBar(current: healthViewModel.waterIntake, target: waterGoalML, maxIntake: maxIntake, minIntake: minIntake)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         .buttonStyle(PlainButtonStyle())
@@ -29,7 +29,7 @@ struct DailyWaterView: View {
         .background(
             userTheme == .system
             ? (colorScheme == .light ? .white : .darkGray)
-                : (userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+            : (userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
         )
         .cornerRadius(20, corners: .allCorners)
         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)

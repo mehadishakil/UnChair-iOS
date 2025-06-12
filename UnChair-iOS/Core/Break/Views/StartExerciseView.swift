@@ -172,7 +172,7 @@ struct StartExerciseView: View {
                                         // START
                                         timerRunning = true
                                         withAnimation(.spring(response: 0.5, dampingFraction: 0.5)) {
-                                            showControlButtons.toggle()
+                                            showControlButtons = true
                                         }
                                     }
                                 } label: {
@@ -305,17 +305,32 @@ struct StartExerciseView: View {
         resetExercise()
         dismiss()
     }
-    
+        
     private func updateExerciseRecord() {
         guard let user = Auth.auth().currentUser else { return }
-        let exerciseMinutes = totalDuration / 60
-        let breakKey = breakItem.title.lowercased().replacingOccurrences(of: " ", with: "_")
+
+        // 1️⃣ Compute only the minutes they actually exercised
+        let performedMinutes = totalElapsedTime / 60
+        guard performedMinutes > 0 else {
+            // they didn't hit a full minute, so do nothing
+            return
+        }
+
+        let breakKey = breakItem.title
+                         .lowercased()
+                         .replacingOccurrences(of: " ", with: "_")
         let service = HealthDataService()
+
         Task {
             do {
-                var data = try await service.fetchTodaysExerciseData(for: user.uid, date: Date()) ?? [:]
+                var data = try await service.fetchTodaysExerciseData(
+                               for: user.uid,
+                               date: Date()
+                           ) ?? [:]
+
                 let current = data[breakKey] ?? 0
-                data[breakKey] = current + exerciseMinutes
+                data[breakKey] = current + performedMinutes
+
                 try await service.updateDailyHealthData(
                     for: user.uid,
                     date: Date(),
@@ -323,12 +338,14 @@ struct StartExerciseView: View {
                     stepsTaken: nil,
                     sleepDuration: nil,
                     meditationDuration: nil,
-                    exerciseTime: data)
+                    exerciseTime: data
+                )
             } catch {
                 print("Failed to update exercise record: \(error.localizedDescription)")
             }
         }
     }
+
     
     private func remainingTime(for exercise: Exercise) -> Int {
         return exercise.duration - elapsedTime

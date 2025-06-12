@@ -55,7 +55,6 @@ class HealthDataViewModel: ObservableObject {
                 async let meditationTask = try healthService.fetchTodaysMeditationData(for: userId, date: Date())
 
                 let (water, minutes, steps, meditation) = await try (waterTask, sleepTask, stepsTask, meditationTask)
-
                 await MainActor.run {
                     self.waterIntake = water ?? 0
                     self.sleepMinutes = minutes ?? 0
@@ -208,12 +207,6 @@ class HealthDataViewModel: ObservableObject {
             }
         }
     }
-    
-//    // Backward compatibility method
-//    func updateSleepHours(_ hours: Float) {
-//        let minutes = Int(hours * 60)
-//        updateSleepMinutes(minutes)
-//    }
     
     func updateStepCount(_ steps: Int) {
         self.stepCount = steps

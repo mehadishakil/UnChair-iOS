@@ -46,17 +46,17 @@ struct HomeScreen: View {
                                 
                                 
                                 BreakSectionView(breakList: breakList)
+                                    .id("breakSection")
                                 
                                 
                                 CalmCorner()
                             }
                             .onAppear {
                                 requestNotificationPermission()
-                                healthViewModel.refreshData()
                             }
-                            .refreshable {
-                                healthViewModel.refreshData()
-                            }
+//                            .refreshable {
+//                                healthViewModel.refreshData()
+//                            }
                         }
                     }
                 }

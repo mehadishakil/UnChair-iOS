@@ -6,7 +6,6 @@
 import SwiftUI
 
 struct Meditation: View {
-    
     @EnvironmentObject var healthVM: HealthDataViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var meditationTime: Int
@@ -19,21 +18,21 @@ struct Meditation: View {
     @State private var timeRangeText = ""
     @State private var showControls = false
     let initialTime: Int
-    
+
     let timeFormatter: DateFormatter = {
         let f = DateFormatter()
         f.timeStyle = .short
         return f
     }()
-    
+
     init(initialTime: Int) {
         self.initialTime = initialTime
-        // hack to seed @State once
+        // seed @State
         _meditationTime = State(initialValue: initialTime)
         _totalTime      = State(initialValue: initialTime * 60)
         _remainingTime  = State(initialValue: initialTime * 60)
     }
-    
+
     var body: some View {
         VStack(spacing: 8) {
             Text("Session: \(meditationTime) min")
@@ -41,7 +40,7 @@ struct Meditation: View {
             Text("Relax and take deep breaths")
                 .font(.footnote)
                 .foregroundColor(.secondary)
-            
+
             ZStack {
                 Circle()
                     .stroke(lineWidth: 20)
@@ -59,52 +58,48 @@ struct Meditation: View {
                     .font(.system(size: 50, weight: .bold, design: .rounded))
             }
             .padding()
-            
+
             // Liquid Button Controls
             ZStack {
                 Rectangle()
                     .mask(liquidButtonCanvas)
                     .overlay {
                         ZStack {
-                            // Reset Button Icon (Left)
+                            // Reset Icon (Left)
                             LiquidButtonIcon(
                                 show: $showControls,
                                 icon: "arrow.clockwise",
                                 xOffset: -100,
                                 yOffset: 0,
                                 animationDelay: 0.12,
-                                action: {
-                                    resetTimer()
-                                }
+                                action: { resetTimer() }
                             )
                             
+                            // Pause/Resume (Right)
                             LiquidButtonIcon(
                                 show: $showControls,
                                 icon: isPaused ? "play.fill" : "stop.fill",
                                 xOffset: 100,
                                 yOffset: 0,
                                 animationDelay: 0.08,
-                                action: {
-                                    togglePause()
-                                }
+                                action: { togglePause() }
                             )
                             
                             // Main Action Button
                             Button {
                                 if isRunning {
-                                    timer?.invalidate()
-                                    isRunning = false
+                                    // user hit Stop → save only full minutes
                                     withAnimation(.spring(response: 0.5, dampingFraction: 0.5)) {
                                         showControls = false
                                     }
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        dismiss()
+                                        savePartialSessionAndDismiss()
                                     }
                                 } else {
                                     startTimer()
                                     updateTimeRange()
                                     withAnimation(.spring(response: 0.5, dampingFraction: 0.5)) {
-                                        showControls.toggle()
+                                        showControls = true
                                     }
                                 }
                             } label: {
@@ -119,70 +114,53 @@ struct Meditation: View {
                             }
 
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
             }
             .frame(height: 70)
         }
         .onAppear(perform: updateTimeRange)
     }
-    
+
     // MARK: Liquid Button Canvas
-    
     var liquidButtonCanvas: some View {
         Canvas { context, size in
             context.addFilter(.alphaThreshold(min: 0.4))
             context.addFilter(.blur(radius: 12))
             context.drawLayer { drawingContext in
-                let centerPoint = CGPoint(x: size.width / 2, y: size.height / 2)
-                for index in 1...4 {
-                    if let symbol = context.resolveSymbol(id: index) {
-                        drawingContext.draw(symbol, at: centerPoint)
+                let center = CGPoint(x: size.width/2, y: size.height/2)
+                for id in 1...4 {
+                    if let symbol = context.resolveSymbol(id: id) {
+                        drawingContext.draw(symbol, at: center)
                     }
                 }
             }
         } symbols: {
-            // Main button circle
-            Circle()
-                .frame(width: 52)
-                .tag(1)
-            
-            // Reset button circle (Left)
-            Circle()
-                .frame(width: 52)
-                .tag(2)
+            Circle().frame(width: 52).tag(1)
+            Circle().frame(width: 52).tag(2)
                 .offset(x: showControls ? -100 : 0)
                 .animation(.spring(response: 1, dampingFraction: 0.8).delay(showControls ? 0.12 : 0.08), value: showControls)
-            
-            // Pause/Resume button circle (Right)
-            Circle()
-                .frame(width: 52)
-                .tag(3)
+            Circle().frame(width: 52).tag(3)
                 .offset(x: showControls ? 100 : 0)
                 .animation(.spring(response: 1, dampingFraction: 0.8).delay(showControls ? 0.08 : 0.12), value: showControls)
-            
-            // Background blur circle for better blending
-            Circle()
-                .frame(width: 100)
-                .tag(4)
-                .opacity(0.6)
+            Circle().frame(width: 100).tag(4).opacity(0.6)
         }
     }
-    
-    // MARK: Timer Functions
+
+    // MARK: Timer
     func startTimer() {
         isRunning = true
         updateTimeRange()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if remainingTime > 0 {
-                remainingTime -= 1
-                progress = Float(totalTime - remainingTime) / Float(totalTime)
-            } else {
+            guard remainingTime > 0 else {
                 finishSession()
+                return
             }
+            remainingTime -= 1
+            progress = Float(totalTime - remainingTime) / Float(totalTime)
         }
     }
-    
+
     func resetTimer() {
         timer?.invalidate()
         meditationTime = initialTime
@@ -194,46 +172,40 @@ struct Meditation: View {
         showControls   = false
         updateTimeRange()
     }
-    
+
     func togglePause() {
         isPaused.toggle()
-        if isPaused {
-            timer?.invalidate()
-        } else {
-            startTimer()
-        }
+        if isPaused { timer?.invalidate() }
+        else { startTimer() }
     }
-    
+
     private func finishSession() {
+        savePartialSessionAndDismiss()
+    }
+
+    /// Computes full minutes, updates storage, then dismisses
+    private func savePartialSessionAndDismiss() {
         timer?.invalidate()
         isRunning = false
-        showControls = false
-
-        healthVM.updateMeditationDuration(meditationTime)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            dismiss()
+        let secondsElapsed = totalTime - remainingTime
+        let performedMinutes = secondsElapsed / 60
+        if performedMinutes > 0 {
+            healthVM.updateMeditationDuration(performedMinutes)
         }
+        dismiss()
     }
 
-    
     func updateTimeRange() {
         let now = Date()
-        let end = Calendar.current.date(
-            byAdding: .second,
-            value: totalTime,
-            to: now
-        ) ?? now
-        timeRangeText = "\(timeFormatter.string(from:now)) – \(timeFormatter.string(from:end))"
+        let end = Calendar.current.date(byAdding: .second, value: totalTime, to: now) ?? now
+        timeRangeText = "\(timeFormatter.string(from: now)) – \(timeFormatter.string(from: end))"
     }
-    
+
     func timeString(_ sec: Int) -> String {
         let m = (sec/60)%60, s = sec%60
         return String(format: "%2d:%02d", m, s)
     }
 }
-
-// MARK: Liquid Button Icon Component
 
 struct LiquidButtonIcon: View {
     @Binding var show: Bool
@@ -242,14 +214,11 @@ struct LiquidButtonIcon: View {
     var yOffset: CGFloat
     var animationDelay: CGFloat
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             ZStack {
-                Circle()
-                    .frame(width: 60)
-                    .foregroundColor(.white.opacity(0.2))
-                
+                Circle().frame(width: 60).foregroundColor(.white.opacity(0.2))
                 Image(systemName: icon)
                     .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.white)
@@ -258,11 +227,9 @@ struct LiquidButtonIcon: View {
         .offset(x: show ? xOffset : 0, y: show ? yOffset : 0)
         .scaleEffect(show ? 1 : 0)
         .opacity(show ? 1 : 0)
-        .animation(
-            .spring(response: 1, dampingFraction: 0.8)
+        .animation(.spring(response: 1, dampingFraction: 0.8)
             .delay(show ? animationDelay : animationDelay / 2),
-            value: show
-        )
+            value: show)
     }
 }
 

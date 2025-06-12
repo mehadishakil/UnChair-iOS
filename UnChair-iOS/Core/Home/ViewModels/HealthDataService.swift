@@ -19,30 +19,30 @@ class HealthDataService {
     private let db = Firestore.firestore()
     var healthStore: HKHealthStore?
     @Published var todayStepCount: Int = 0
-
+    
     init() {
         if HKHealthStore.isHealthDataAvailable() {
-                    healthStore = HKHealthStore()
-                } else {
-                    print("Your device does not support health services")
-                }
+            healthStore = HKHealthStore()
+        } else {
+            print("Your device does not support health services")
+        }
     }
     
     // request authorization
-        func requestHealthDataPermission() async throws {
-            guard let healthStore = healthStore else {
-                throw HealthDataServiceError.healthStoreNotAvailable
-            }
-            
-            let steps = HKQuantityType(.stepCount)
-            let healthTypes: Set = [steps]
-            
-            try await healthStore.requestAuthorization(toShare: [], read: healthTypes)
-            // Optionally, fetch today's steps immediately after authorization
-            try await fetchTodaySteps()
+    func requestHealthDataPermission() async throws {
+        guard let healthStore = healthStore else {
+            throw HealthDataServiceError.healthStoreNotAvailable
         }
-
-
+        
+        let steps = HKQuantityType(.stepCount)
+        let healthTypes: Set = [steps]
+        
+        try await healthStore.requestAuthorization(toShare: [], read: healthTypes)
+        // Optionally, fetch today's steps immediately after authorization
+        try await fetchTodaySteps()
+    }
+    
+    
     func updateDailyHealthData(
         for userId: String,
         date: Date,
@@ -83,21 +83,21 @@ class HealthDataService {
         try await logRef.setData(updatedData, merge: true)
         print("Daily health data for \(documentName) updated successfully.")
     }
-
+    
     // Function to fetch daily sleep data
     func fetchTodaysSleepData(for userId: String, date: Date) async throws -> Int? { // Changed to Int?
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy_MM_dd"
         let dateString = dateFormatter.string(from: date)
         let documentName = "daily_log_\(dateString)"
-
+        
         let logRef = db.collection("users")
             .document(userId)
             .collection("health_data")
             .document(documentName)
-
+        
         let document = try await logRef.getDocument()
-
+        
         // Ensure sleepDuration is stored and retrieved as Int
         if let data = document.data(), let sleepDuration = data["sleepDuration"] as? Int { // Changed to Int
             return sleepDuration
@@ -111,14 +111,16 @@ class HealthDataService {
         dateFormatter.dateFormat = "yyyy_MM_dd"
         let dateString = dateFormatter.string(from: date)
         let documentName = "daily_log_\(dateString)"
-
+        
         let logRef = db.collection("users")
             .document(userId)
             .collection("health_data")
             .document(documentName)
         
-
+        
         let document = try await logRef.getDocument()
+        
+        
         
         if let data = document.data(), let waterIntake = data["waterIntake"] as? Int {
             return waterIntake
@@ -134,7 +136,7 @@ class HealthDataService {
                 continuation.resume(throwing: HealthDataServiceError.healthStoreNotAvailable)
                 return
             }
-
+            
             let steps = HKQuantityType(.stepCount)
             let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
             let query = HKStatisticsQuery(quantityType: steps, quantitySamplePredicate: predicate) { [weak self] _, result, error in
@@ -143,12 +145,12 @@ class HealthDataService {
                     continuation.resume(throwing: error)
                     return
                 }
-
+                
                 guard let quantity = result?.sumQuantity() else {
                     continuation.resume(returning: 0) // No steps found, return 0
                     return
                 }
-
+                
                 let stepCount = quantity.doubleValue(for: .count())
                 DispatchQueue.main.async {
                     self?.todayStepCount = Int(stepCount) // Still update published property if needed elsewhere
@@ -158,7 +160,7 @@ class HealthDataService {
             healthStore.execute(query)
         }
     }
-
+    
     // You might want to define a custom error for clarity
     enum HealthDataServiceError: Error {
         case healthStoreNotAvailable
@@ -170,17 +172,17 @@ class HealthDataService {
         dateFormatter.dateFormat = "yyyy_MM_dd"
         let dateString = dateFormatter.string(from: date)
         let documentName = "daily_log_\(dateString)"
-
+        
         let logRef = db.collection("users")
             .document(userId)
             .collection("health_data")
             .document(documentName)
         
-
+        
         let document = try await logRef.getDocument()
         
-        if let data = document.data(), let waterIntake = data["meditationDuration"] as? Int {
-            return waterIntake
+        if let data = document.data(), let meditationData = data["meditationDuration"] as? Int {
+            return meditationData
         } else {
             return nil
         }
@@ -191,7 +193,7 @@ class HealthDataService {
         dateFormatter.dateFormat = "yyyy_MM_dd"
         let dateString = dateFormatter.string(from: date)
         let documentName = "daily_log_\(dateString)"
-
+        
         let logRef = db.collection("users")
             .document(userId)
             .collection("health_data")
