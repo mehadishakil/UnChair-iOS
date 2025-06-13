@@ -25,7 +25,7 @@ struct ContactUsView: View {
                     Image(systemName: "phone")
                     Text("Mobile")
                     Spacer()
-                    Text("+880 1796581711")
+                    Text("+966 50 389 2733")
                         .foregroundColor(.blue)
                         .font(.subheadline)
                 }
@@ -34,7 +34,7 @@ struct ContactUsView: View {
                     Image(systemName: "envelope")
                     Text("Email")
                     Spacer()
-                    Text("mehadihasan469@gmail.com")
+                    Text("unchair305@gmail.com")
                         .foregroundColor(.blue)
                         .font(.subheadline)
                 }
@@ -49,37 +49,37 @@ struct ContactUsView: View {
                     .font(.headline)
                 
                 HStack {
-                    Image("instagram") // You'll need to add this image to your assets
+                    Image("instagram")
                         .resizable()
                         .frame(width: 20, height: 20)
                     Text("Instagram")
                     Spacer()
-                    Text("@mehadi__shakil")
+                    Text("@unchair305")
                         .foregroundColor(.blue)
                         .font(.subheadline)
                 }
                 
                 HStack {
-                    Image("x") // You'll need to add this image to your assets
+                    Image("x")
                         .resizable()
                         .frame(width: 20, height: 20)
                     Text("Twitter")
                     Spacer()
-                    Text("@mehadi__shakil")
+                    Text("@UnChair305")
                         .foregroundColor(.blue)
                         .font(.subheadline)
                 }
-                
-                HStack {
-                    Image("facebook") // You'll need to add this image to your assets
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                    Text("Facebook")
-                    Spacer()
-                    Text("@mehadishakil469")
-                        .foregroundColor(.blue)
-                        .font(.subheadline)
-                }
+//                
+//                HStack {
+//                    Image("facebook") // You'll need to add this image to your assets
+//                        .resizable()
+//                        .frame(width: 20, height: 20)
+//                    Text("Facebook")
+//                    Spacer()
+//                    Text("@mehadishakil469")
+//                        .foregroundColor(.blue)
+//                        .font(.subheadline)
+//                }
             }
             .padding()
             .background(Color.gray.opacity(0.1))

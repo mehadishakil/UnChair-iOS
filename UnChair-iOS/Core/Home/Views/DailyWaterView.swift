@@ -53,6 +53,7 @@ struct CircularProgressBar: View {
         ZStack {
             Circle()
                 .stroke(Color.white.opacity(0.7), lineWidth: 10)
+                .shadow(radius: 4)
                 .padding(12)
             
             Circle()

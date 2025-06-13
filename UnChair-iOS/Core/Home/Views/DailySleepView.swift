@@ -197,12 +197,12 @@ struct DailySleepView: View {
                     
                     Spacer()
                     
-                    // custom progress bar - convert minutes to hours for percentage calculation
                     GeometryReader { geo in
                         let percent = CGFloat(healthVM.sleepMinutes) / CGFloat(sleepGoalMins)
                         ZStack(alignment: .leading) {
                             Capsule()
-                                .fill(Color.gray.opacity(0.2))
+                                .fill(Color.white.opacity(0.7))
+                                .shadow(radius: 4)
                                 .frame(height: 6)
                             Capsule()
                                 .fill(Color.blue)

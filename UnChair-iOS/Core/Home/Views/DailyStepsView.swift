@@ -19,14 +19,14 @@ struct DailyStepsView: View {
     }
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 4) {
+        
+        VStack {
                 Image(systemName: "figure.walk")
                     .resizable()
                     .scaledToFit()
                     .frame(height: 36)
                     .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
-                    .foregroundColor(userTheme == .light ? .darkGray : .white.opacity(0.9))
+                    .foregroundColor(.primary.opacity(0.9))
                 
                 Spacer()
                 
@@ -36,7 +36,7 @@ struct DailyStepsView: View {
                 
                 Spacer()
                 
-                VStack(spacing: 4) {
+                VStack {
                     Text("Steps")
                         .font(.system(.callout, weight: .medium))
                         .foregroundColor(.primary)
@@ -45,18 +45,19 @@ struct DailyStepsView: View {
                         let percent = CGFloat(healthVM.stepCount) / CGFloat(stepsGoal)
                         ZStack(alignment: .leading) {
                             Capsule()
-                                .fill(Color.gray.opacity(0.2))
+                                .fill(Color.white.opacity(0.7))
+                                .shadow(radius: 4)
                                 .frame(height: 6)
                             Capsule()
                                 .fill(Color.blue)
-                                .frame(width: geo.size.width * CGFloat(percent), height: 6)
+                                .frame(width: geo.size.width * CGFloat(percent), height:6)
                         }
                     }
                 }
-                .padding(.bottom, 4)
+                
             }
             .padding()
-        }
+        
         .frame(height: 170)
         .background(
             userTheme == .system
@@ -73,6 +74,9 @@ struct DailyStepsView: View {
     }
 }
 
-#Preview {
-    DailyStepsView()
+struct DailyStepsView_Previews: PreviewProvider {
+    static var previews: some View {
+        DailyStepsView()
+            .environmentObject(HealthDataViewModel())
+    }
 }
