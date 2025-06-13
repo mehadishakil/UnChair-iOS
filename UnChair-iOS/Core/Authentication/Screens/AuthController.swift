@@ -13,19 +13,17 @@ import AuthenticationServices
 import FirebaseFirestore 
 import RevenueCat 
 
-
-enum AuthState {
-    case undefined, authenticated, unauthenticated, authenticating
-}
-
 @MainActor
 @Observable
 class AuthController: ObservableObject {
+   
+    enum AuthState {
+        case undefined, authenticated, unauthenticated
+    }
     
-    
-    var authState: AuthState = .undefined 
-    private var db = Firestore.firestore() 
-    var currentUser: UserData? = nil 
+    var authState: AuthState = .undefined
+    private var db = Firestore.firestore()
+    var currentUser: User? { Auth.auth().currentUser }
     
 //    func startListeningToAuthState() async { 
 //        _ = Auth.auth().addStateDidChangeListener { _, user in 
@@ -48,23 +46,19 @@ class AuthController: ObservableObject {
 //    }
     
     func startListeningToAuthState() async {
-        Auth.auth().addStateDidChangeListener { _, user in
-            DispatchQueue.main.async {
-                if let user = user {
-                    // reload to get the latest emailVerified flag
-                    user.reload { error in
-                        if user.isEmailVerified {
-                            self.authState = .authenticated
-                        } else {
-                            self.authState = .unauthenticated
-                        }
-                    }
-                } else {
-                    self.authState = .unauthenticated
-                }
-            }
+        // Immediately reflect any already-signed‑in user:
+        if Auth.auth().currentUser != nil {
+          authState = .authenticated
+        } else {
+          authState = .unauthenticated
         }
-    }
+
+        // Then hook up Firebase’s listener for real‑time changes:
+        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+          guard let self = self else { return }
+          self.authState = (user != nil) ? .authenticated : .unauthenticated
+        }
+      }
 
     
     
@@ -174,7 +168,7 @@ class AuthController: ObservableObject {
             let provider = data["provider"] as? String ?? "" 
             
             // Update the AuthController’s currentUser property
-            self.currentUser = UserData(uid: user.uid, name: name, email: email, provider: provider) 
+            // self.currentUser = UserData(uid: user.uid, name: name, email: email, provider: provider)
             
             print("Fetched existing user data for \(name)") 
         } else {

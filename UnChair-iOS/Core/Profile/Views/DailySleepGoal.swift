@@ -55,9 +55,9 @@ struct DailySleepGoalPickerView: View {
     private let minutes = Array(0...59)
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             Capsule()
-                .frame(width: 80, height: 5)
+                .frame(width: 40, height: 5)
                 .foregroundColor(.gray.opacity(0.3))
                 .padding(.top, 8)
 
@@ -74,7 +74,6 @@ struct DailySleepGoalPickerView: View {
             Text("\(duration.hours) hr \(duration.minutes) min")
                 .font(.headline.weight(.bold))
                 .padding()
-                .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             Spacer()
@@ -109,7 +108,7 @@ struct DailySleepGoalPickerView: View {
                 }
             }
             .pickerStyle(.wheel)
-            .frame(width: 80, height: 100)
+            .frame(width: 80, height: 132)
             .clipped()
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct PrivacyPolicyView: View {
     @State private var isLoading = true
-    private let url = URL(string: "https://github.com/mehadishakil")!
+    private let url = URL(string: "https://un-chair-landing-page.vercel.app/privacy-policy")!
 
     var body: some View {
         ZStack {

@@ -247,7 +247,7 @@ struct SleepPickerView: View {
     }
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             // custom handle
             Capsule()
                 .frame(width: 40, height: 5)
@@ -267,9 +267,8 @@ struct SleepPickerView: View {
 
             // live preview
             Text("\(hours) hr \(minutes) min")
-                .font(.headline.weight(.bold))
+                .font(.headline.weight(.medium))
                 .padding()
-                .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             Spacer()
@@ -305,7 +304,7 @@ struct SleepPickerView: View {
                 }
             }
             .pickerStyle(.wheel)
-            .frame(width: 80, height: 100)
+            .frame(width: 80, height: 132)
             .clipped()
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))

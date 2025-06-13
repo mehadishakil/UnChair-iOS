@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-struct BreakTime: View {
-    // Use AppStorage instead of SettingsManager for consistency with onboarding
-    @AppStorage("breakIntervalMins") private var breakIntervalMins: Int = 60 // 1 hour default
+struct FocusTime: View {
+    @AppStorage("breakIntervalMins") private var breakIntervalMins: Int = 60
     
     @State private var tempDuration: TimeDuration = TimeDuration(hours: 1, minutes: 0)
     @State private var isPickerPresented = false
 
-    // Computed property to create TimeDuration from AppStorage value
     private var breakDuration: TimeDuration {
         TimeDuration(fromTotalMinutes: breakIntervalMins)
     }
@@ -73,7 +71,7 @@ struct BreakDurationPicker: View {
     private let minutes = Array(0...59)
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             // custom handle
             Capsule()
                 .frame(width: 40, height: 5)
@@ -93,9 +91,8 @@ struct BreakDurationPicker: View {
 
             // live preview
             Text("\(duration.hours) hr \(duration.minutes) min")
-                .font(.headline.weight(.bold))
+                .font(.headline.weight(.medium))
                 .padding()
-                .background(Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             Spacer()
@@ -131,7 +128,7 @@ struct BreakDurationPicker: View {
                 }
             }
             .pickerStyle(.wheel)
-            .frame(width: 80, height: 100)
+            .frame(width: 80, height: 132)
             .clipped()
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -140,5 +137,5 @@ struct BreakDurationPicker: View {
 }
 
 #Preview {
-    BreakTime()
+    FocusTime()
 }

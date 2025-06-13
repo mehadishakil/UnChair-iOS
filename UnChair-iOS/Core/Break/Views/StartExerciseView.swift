@@ -42,6 +42,7 @@ struct StartExerciseView: View {
     @State private var showControlButtons: Bool = false
     @State private var isPaused: Bool = false
     @AppStorage("userTheme") private var userTheme: Theme = .system
+    @AppStorage("LastBreakTime") private var lastBreakTime: Double = 0
     
     let breakItem: Break
     var exercises: [Exercise] { breakItem.exercises }
@@ -297,10 +298,12 @@ struct StartExerciseView: View {
     
     private func finishExercise() {
         // Save last break time
-        UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "lastBreakTime")
-        UserDefaults.standard.set(Calendar.current.dateComponents([.year, .month, .day], from: Date()).day,
-                                  forKey: "lastBreakDay")
-        
+//        UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "lastBreakTime")
+//        UserDefaults.standard.set(Calendar.current.dateComponents([.year, .month, .day], from: Date()).day,
+//                                  forKey: "lastBreakDay")
+    
+        lastBreakTime = Date().timeIntervalSince1970
+
         updateExerciseRecord()
         resetExercise()
         dismiss()

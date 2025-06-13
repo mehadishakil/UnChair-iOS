@@ -54,9 +54,9 @@ struct WaterGoalPickerView: View {
     private let waterRange: [Int] = Array(stride(from: 1000, through: 8000, by: 100))
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             Capsule()
-                .frame(width: 80, height: 5)
+                .frame(width: 40, height: 5)
                 .foregroundColor(.gray.opacity(0.3))
                 .padding(.top, 8)
 
@@ -99,7 +99,7 @@ struct WaterGoalPickerView: View {
                 }
             }
             .pickerStyle(.wheel)
-            .frame(width: 300, height: 200)
+            .frame(width: 250, height: 200)
             .clipped()
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))

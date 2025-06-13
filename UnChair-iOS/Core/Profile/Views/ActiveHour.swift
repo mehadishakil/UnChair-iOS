@@ -175,8 +175,8 @@ struct TimePickerView: View {
             // Save button
             Button {
                 onSave()
+                UserDefaults.standard.removeObject(forKey: "LastBreakTime")
                 presentationMode.wrappedValue.dismiss()
-                
             } label: {
                 Text("Save")
                     .font(.headline)

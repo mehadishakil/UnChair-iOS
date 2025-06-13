@@ -153,7 +153,7 @@ struct SettingsScreen: View {
                 Section(header: Text("Lifestyle Settings")) {
                     ActiveHour()
                     
-                    BreakTime()
+                    FocusTime()
                     
                     DailyWaterGoal()
                     
