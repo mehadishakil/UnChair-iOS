@@ -281,20 +281,28 @@ struct StartExerciseView: View {
     }
     
     private func updateTimer() {
-        if totalElapsedTime < totalDuration {
+        guard currentExerciseIndex < exercises.count else {
+            SoundManager.instance.allExerciseFinishBeep()
+            finishExercise()
+            return
+        }
+
+        if elapsedTime < exercises[currentExerciseIndex].duration {
+            elapsedTime += 1
             totalElapsedTime += 1
-            if elapsedTime < exercises[currentExerciseIndex].duration {
-                elapsedTime += 1
-            } else if currentExerciseIndex < exercises.count - 1 {
+        } else {
+            if currentExerciseIndex < exercises.count - 1 {
                 currentExerciseIndex += 1
                 elapsedTime = 0
                 SoundManager.instance.nextExerciseBeep()
+            } else {
+                // Last exercise just finished
+                SoundManager.instance.allExerciseFinishBeep()
+                finishExercise()
             }
-        } else {
-            SoundManager.instance.allExerciseFinishBeep()
-            finishExercise()
         }
     }
+
     
     private func finishExercise() {
         // Save last break time

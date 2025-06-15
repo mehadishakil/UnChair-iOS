@@ -43,10 +43,10 @@ let exercises: [Exercise] = [
     Exercise(image: "seated_marching", name: "Seated Marching", description: "While seated, lift your knees one at a time in a marching motion.", duration: 60),
 
     // Medium Break Exercises
+    Exercise(image: "seated_forward_bend", name: "Seated Forward Bend", description: "Sit straight, extend your legs, and bend forward to touch your toes.", duration: 60),
     Exercise(image: "leg_stretches", name: "Leg Stretches", description: "Stretch your legs while seated or standing.", duration: 60),
     Exercise(image: "standing_hamstring_stretch", name: "Standing Hamstring Stretch", description: "Stand, bend forward at the hips, and reach for your toes.", duration: 60),
     Exercise(image: "wall_push_ups", name: "Wall Push-Ups", description: "Stand facing a wall, place your hands on it, and perform push-ups.", duration: 60),
-    Exercise(image: "seated_forward_bend", name: "Seated Forward Bend", description: "Sit straight, extend your legs, and bend forward to touch your toes.", duration: 60),
     Exercise(image: "calf_raises", name: "Calf Raises", description: "Stand on your toes and lower yourself slowly.", duration: 60),
     Exercise(image: "seated_shoulder_stretch", name: "Seated Shoulder Stretch", description: "Cross one arm over your chest and gently pull it with the other.", duration: 60),
     Exercise(image: "seated_side_stretch", name: "Seated Side Stretch", description: "Sit and stretch your arms overhead, leaning to each side.", duration: 60),
@@ -88,7 +88,7 @@ let breakList: [Break] = [
           image: "mediumbreakimage",
           overview: "Standing & seated exercises with deep breathing",
           description: "A combination of standing and seated exercises targeting legs, shoulders, and back, paired with deep breathing for relaxation.",
-          duration: 600,
+          duration: 480,
           exercises: Array(exercises[11...18])
          ),
     Break(
@@ -96,7 +96,7 @@ let breakList: [Break] = [
         image: "longbreakimage",
         overview: "Stretching exercise & mindfulness to revitalize",
         description: "A comprehensive routine including stretching exercise, walking, and mindfulness to revitalize your body and mind for sustained productivity.",
-        duration: 1200,
+        duration: 960,
         exercises: Array(exercises[19...28])
     )
 ]
