@@ -45,12 +45,14 @@ struct CalmCorner: View {
     
     private func MeditationCardView() -> some View {
         ZStack(alignment: .bottomLeading) {
+            // Background image
             Image("meditation_image")
                 .resizable()
-                .aspectRatio(contentMode: .fit)
+                .aspectRatio(contentMode: .fill)
+                .frame(height: 170)
                 .clipped()
             
-            
+            // Ultra-thin material for frosted glass effect
             Rectangle()
                 .fill(.ultraThinMaterial)
                 .mask(
@@ -81,13 +83,12 @@ struct CalmCorner: View {
                 endPoint: .top
             )
             
+            // Text content
             VStack(alignment: .leading, spacing: 4) {
                 Text("Meditate")
                     .font(.title.bold())
-                    .foregroundColor(.white)
                 Text("Balance your thoughts with a calming meditation")
                     .font(.footnote)
-                    .foregroundColor(.white)
             }
             .padding()
             .foregroundColor(.white)
@@ -97,6 +98,7 @@ struct CalmCorner: View {
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.15), radius: 8, x: 5, y: 10)
     }
+    
     
     
 }
