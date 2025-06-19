@@ -11,7 +11,7 @@
 //import StoreKit
 //
 //struct MainView: View {
-//    
+//
 //    @EnvironmentObject var authController: AuthController
 //    @EnvironmentObject var healthViewModel: HealthDataViewModel
 //    @Environment(\.requestReview) var requestReview : RequestReviewAction
@@ -19,7 +19,7 @@
 //    @State private var isLoadingSubscription = true
 //    @State private var customerInfo: CustomerInfo?
 //    @State private var showSubscriptionError = false
-//    
+//
 //    var body: some View {
 //        ZStack{
 //            Group {
@@ -69,14 +69,14 @@
 //            Text("We couldn't verify your subscription. Please try again later.")
 //        }
 //    }
-//    
+//
 //    private func checkSubscriptionStatus() {
 //        isLoadingSubscription = true
-//        
+//
 //        Purchases.shared.getCustomerInfo { customerInfo, error in
 //            DispatchQueue.main.async {
 //                self.isLoadingSubscription = false
-//                
+//
 //                Purchases.shared.getOfferings { offerings, error in
 //                    if let error = error {
 //                        print("Detailed error: \(error.localizedDescription)")
@@ -84,10 +84,10 @@
 //                        print("Underlying error: \(error.userInfo)")
 //                    }
 //                }
-//                
+//
 //                if let customerInfo = customerInfo {
 //                    self.customerInfo = customerInfo
-//                    
+//
 //                    if let entitlement = customerInfo.entitlements["pro"] {
 //                        self.isSubscriptionActive = entitlement.isActive
 //                    } else {
@@ -95,12 +95,12 @@
 //                        self.isSubscriptionActive = false
 //                        self.showSubscriptionError = true
 //                    }
-//                    
+//
 //                    // Set user ID after successful subscription check
 //                    if let userId = authController.currentUser?.uid {
 //                        healthViewModel.setUserId(userId)
 //                    }
-//                    
+//
 //                } else if let error = error {
 //                    print("❌ Error fetching customer info: \(error.localizedDescription)")
 //                    self.isSubscriptionActive = false
@@ -120,7 +120,7 @@ import StoreKit
 struct MainView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var healthViewModel: HealthDataViewModel
-    @Environment(\ .requestReview) var requestReview : RequestReviewAction
+//    @Environment(\ .requestReview) var requestReview : RequestReviewAction
     @State private var isSubscriptionActive = false
     @State private var isLoadingSubscription = true
     @State private var customerInfo: CustomerInfo?
@@ -140,9 +140,9 @@ struct MainView: View {
                     .onPurchaseCompleted { info in
                         self.customerInfo = info
                         checkSubscriptionStatus()
-                        requestReview()
+                        // requestReview()
                         // Prompt user to create account optionally
-                        showAccountPrompt = true
+                        // showAccountPrompt = true
                     }
                     .onRestoreCompleted { info in
                         self.customerInfo = info
@@ -157,31 +157,26 @@ struct MainView: View {
             await authController.startListeningToAuthState()
             checkSubscriptionStatus()
         }
-        // Optional account prompt after purchase
-        .sheet(isPresented: $showAccountPrompt) {
-            VStack(spacing: 20) {
-                Text("Save your progress across devices")
-                    .font(.headline)
-                Text("Create an account to sync UnChair Pro on all your devices anytime.")
-                    .multilineTextAlignment(.center)
-                HStack {
-                    Button("Maybe Later") {
-                        showAccountPrompt = false
-                    }
-                    .padding(.horizontal)
-                    Button("Create Account") {
-                        showAccountPrompt = false
-                        // Show your SigninView modally
-                        authController.authState = .unauthenticated
-                        NavigationStack {
-                            SignupView()
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-            }
-            .padding()
-        }
+//        .alert("Save your progress across devices", isPresented: $showSyncAlert) {
+//            Button("Sign In") {
+//                // mark “we’ve prompted once”
+//                hasShownSyncPrompt = true
+//                showAuthSheet = true
+//            }
+//            Button("Not Now", role: .cancel) {
+//                // also don’t prompt again
+//                hasShownSyncPrompt = true
+//            }
+//        } message: {
+//            Text("To keep your data safe across devices, please sign in.")
+//        }
+//        .sheet(isPresented: $showAuthSheet) {
+//            NavigationStack {
+//                SigninView(showAuthSheet: $showAuthSheet)
+//            }
+//            .presentationDetents([.large])
+//            .presentationDragIndicator(.visible)
+//        }
     }
     
     private func checkSubscriptionStatus() {

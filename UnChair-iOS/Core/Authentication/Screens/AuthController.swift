@@ -24,6 +24,8 @@ class AuthController: ObservableObject {
     var authState: AuthState = .undefined
     private var db = Firestore.firestore()
     var currentUser: User? { Auth.auth().currentUser }
+    var displayName: String = "anonymous"
+    var isAnonymousUser: Bool = true
         
     @MainActor
     func startListeningToAuthState() async {

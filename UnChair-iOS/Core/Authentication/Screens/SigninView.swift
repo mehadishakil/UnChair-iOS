@@ -28,6 +28,9 @@ struct SigninView: View {
     @State private var showSignInView: Bool = false
     @State private var showResetAlert : Bool = false
     @State private var resetEmailAddress : String = ""
+    @Environment(\.dismiss) private var dismiss
+    @Binding var showAuthSheet: Bool
+
 
     var buttonStatus : Bool {
         return email.isEmpty || password.isEmpty || isLoading
@@ -95,7 +98,7 @@ struct SigninView: View {
             Spacer()
 
             Button(action: {
-                SignIn() // Call the SignIn function
+                SignIn()
             }) {
                 Text("Sign In")
                     .font(.title3.weight(.semibold))
@@ -147,6 +150,7 @@ struct SigninView: View {
                             do {
                                 try await authController.signInWithApple(authorization: authorization, nonce: nonce)
                                 logStatus = true
+                                await MainActor.run { showAuthSheet = false }
                             } catch {
                                 showError(error.localizedDescription)
                             }
@@ -169,6 +173,7 @@ struct SigninView: View {
                         do {
                             try await authController.signInWithGoogle()
                             logStatus = true
+                            await MainActor.run { showAuthSheet = false }
                         } catch {
                             showError(error.localizedDescription)
                         }
@@ -196,7 +201,7 @@ struct SigninView: View {
                 HStack {
                     Text("Don't have an account?")
                         .foregroundColor(.secondary)
-                    NavigationLink(destination: SignupView().environment(authController)) {
+                    NavigationLink(destination: SignupView(showAuthSheet: $showAuthSheet).environment(authController)) {
                         Text("Create account")
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
@@ -211,7 +216,6 @@ struct SigninView: View {
             Spacer()
         }
         .padding()
-        .navigationBarBackButtonHidden(true)
         .alert(alertMessage, isPresented: $showAlert) { }
         .sheet(isPresented: $showEmailVerificationView) {
             EmailVerificationView()
@@ -243,6 +247,7 @@ struct SigninView: View {
                 if result.user.isEmailVerified {
                     // verified user, redirect to homescreen
                     logStatus = true
+                    await MainActor.run { showAuthSheet = false }
                 } else {
                     try await result.user.sendEmailVerification()
                     showEmailVerificationView = true
@@ -378,6 +383,6 @@ fileprivate extension View {
 }
 
 #Preview {
-    SigninView()
+    SigninView(showAuthSheet: .constant(true))
         .environmentObject(AuthController()) // Provide a dummy AuthController for preview
 }

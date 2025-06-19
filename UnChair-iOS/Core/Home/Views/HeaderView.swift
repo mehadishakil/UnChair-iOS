@@ -11,6 +11,7 @@ import FirebaseAuth
 struct HeaderView: View {
     @State private var fullName: String = ""
     @State private var isAnonymousUser = false
+    @State private var showAuthSheet = false
 
     var body: some View {
         HStack {
@@ -21,20 +22,24 @@ struct HeaderView: View {
                      : "Good \(timeOfDay), \(fullName)")
                 .font(.title2.weight(.semibold))
 
-                
-            
-
             Spacer()
 
             // Avatar / Sign-in button
-            ProfileAvatarView(size: 36, isAnonymous: isAnonymousUser)
+            ProfileAvatarView(size: 36, isAnonymous: isAnonymousUser,
+            showAuthSheet: $showAuthSheet)
         }
         .padding(.horizontal)
         .padding(.vertical, 20)
         .onAppear(perform: fetchUserData)
-    }
+        .sheet(isPresented: $showAuthSheet, onDismiss: fetchUserData) {
+          NavigationStack {
+            SigninView(showAuthSheet: $showAuthSheet)
+          }
+          .presentationDetents([.large])
+          .presentationDragIndicator(.visible)
+        }
 
-    // MARK: - Helpers
+    }
 
     /// “Morning”, “Afternoon”, “Evening”, or “Night”
     private var timeOfDay: String {
@@ -75,10 +80,13 @@ struct HeaderView: View {
 struct ProfileAvatarView: View {
     let size: CGFloat
     let isAnonymous: Bool
+    @Binding var showAuthSheet: Bool
 
     var body: some View {
         if isAnonymous {
-            NavigationLink(destination: SigninView()) {
+            Button {
+                showAuthSheet = true
+            } label: {
                 Image(systemName: "person.crop.circle.fill.badge.plus")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -87,28 +95,26 @@ struct ProfileAvatarView: View {
                     .foregroundColor(.primary.opacity(0.7))
             }
         } else if let url = Auth.auth().currentUser?.photoURL {
-            AsyncImage(url: url) { phase in
-                NavigationLink(destination: EditProfile()) {
+            Button {
+                // Could navigate or show profile sheet
+            } label: {
+                AsyncImage(url: url) { phase in
                     switch phase {
                     case .success(let img):
                         img.resizable()
                            .aspectRatio(contentMode: .fill)
-                           .frame(width: size, height: size)
-                           .clipShape(Circle())
                     default:
                         Image(systemName: "person.circle.fill")
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: size, height: size)
-                            .clipShape(Circle())
-                            .foregroundColor(.primary.opacity(0.7))
                     }
                 }
+                .frame(width: size, height: size)
+                .clipShape(Circle())
             }
-            .frame(width: size, height: size)
-            .clipShape(Circle())
         } else {
-            NavigationLink(destination: EditProfile()) {
+            Button {
+                // Could navigate or show profile sheet
+            } label: {
                 Image(systemName: "person.circle.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)

@@ -23,122 +23,112 @@ struct EditProfile: View {
     
     
     var body: some View {
-            ZStack {
-                VStack(spacing: 20) {
-                    if let user = Auth.auth().currentUser, let profileImageURL = user.photoURL {
-                        
-                        AsyncImage(url: URL(string: profileImageURL.absoluteString)) { phase in
-                            switch phase {
-                            case .failure:
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 200, height: 200)
-                                    .clipShape(Circle())
-                                    .foregroundColor(.gray)
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 200, height: 200)
-                                    .clipShape(Circle())
-                                    .foregroundColor(.gray)
-                            default:
-                                ProgressView()
-                            }
-                        }
-                        
-                        
-                    } else {
-                        VStack {
+        ZStack {
+            VStack(spacing: 20) {
+                if let user = Auth.auth().currentUser, let profileImageURL = user.photoURL {
+                    
+                    AsyncImage(url: URL(string: profileImageURL.absoluteString)) { phase in
+                        switch phase {
+                        case .failure:
                             Image(systemName: "person.circle.fill")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 200, height: 200)
                                 .clipShape(Circle())
                                 .foregroundColor(.gray)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 200, height: 200)
+                                .clipShape(Circle())
+                                .foregroundColor(.gray)
+                        default:
+                            ProgressView()
                         }
-                        
-                        
                     }
-                    Text(isAnonymousUser ? "To update your profile, sign in with your social account" : "Your profile picture is updated from your linked social (Apple/Google) account")
-                        .foregroundColor(.gray)
-                        .font(.caption2)
-                        .multilineTextAlignment(.center)
                     
+                    
+                } else {
                     VStack {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Full Name")
-                                .foregroundColor(.gray)
-                                .font(.caption)
-                                .fontWeight(.bold)
-                            TextField("", text: $full_name)
-                                .padding(.leading)
-                                .frame(height: 50)
-                                .background(.ultraThinMaterial)
-                                .cornerRadius(8)
-                            
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Email")
-                                .foregroundColor(.gray)
-                                .font(.caption)
-                                .fontWeight(.bold)
-                            TextField("", text: $email)
-                                .padding(.leading)
-                                .frame(height: 50)
-                                .background(.ultraThinMaterial)
-                                .cornerRadius(8)
-                                .foregroundColor(.gray)
-                                .disabled(true)
-                        }
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 200, height: 200)
+                            .clipShape(Circle())
+                            .foregroundColor(.gray)
                     }
-                    .disabled(isAnonymousUser)
                     
                     
-                    
-                    
-                    Spacer()
-                    
-                    if isAnonymousUser {
-                        NavigationLink(destination: SigninView()) {
-                            Text("Sign in")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        }
-                    } else {
-                        Button(action: {
-                            saveProfileData()
-                        }) {
-                            Text("Save")
-                                .foregroundColor(.white)
-                                .font(.title3)
-                                .bold()
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(10)
-                        }
-                    }
-
                 }
-                .padding()
+                Text(isAnonymousUser ? "To update your profile, sign in with your social account" : "Your profile picture is updated from your linked social (Apple/Google) account")
+                    .foregroundColor(.gray)
+                    .font(.caption2)
+                    .multilineTextAlignment(.center)
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Full Name")
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                        .fontWeight(.bold)
+                    TextField("", text: $full_name)
+                        .padding(.leading)
+                        .frame(height: 50)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(8)
+                    
+                }
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Email")
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                        .fontWeight(.bold)
+                    TextField("", text: $email)
+                        .padding(.leading)
+                        .frame(height: 50)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(8)
+                        .foregroundColor(.gray)
+                        .disabled(true)
+                }
                 
                 
-                if isLoading {
-                    LoadingScreen()
+                
+                
+                
+                
+                Spacer()
+                
+                
+                Button(action: {
+                    saveProfileData()
+                }) {
+                    Text("Save")
+                        .foregroundColor(.white)
+                        .font(.title3)
+                        .bold()
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(10)
                 }
+                
+                
             }
+            .disabled(isAnonymousUser)
+            .padding()
             
-            .navigationBarTitle("Profile Info", displayMode: .inline)
-            .onAppear {
-                fetchUserData()
+            
+            if isLoading {
+                LoadingScreen()
             }
+        }
+        
+        .navigationBarTitle("Profile Info", displayMode: .inline)
+        .onAppear {
+            fetchUserData()
+        }
         
     }
     

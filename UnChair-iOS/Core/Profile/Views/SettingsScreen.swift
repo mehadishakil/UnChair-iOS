@@ -18,7 +18,6 @@ enum Language: String, CaseIterable, Identifiable {
 }
 
 struct SettingsScreen: View {
-    
     @Binding var selectedDuration: TimeDuration
     @State private var language : Language = .English
     @State private var isNotificationEnabled = true
@@ -41,7 +40,7 @@ struct SettingsScreen: View {
     @Environment(\.dismiss) var dismiss
     var db = Firestore.firestore()
     @State var isSignedIn: Bool = false
-    // MARK: - User Goals (stored locally)
+    @State private var showAuthSheet = false
     
     @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
     
@@ -213,8 +212,9 @@ struct SettingsScreen: View {
                 
                 Section {
                     if isAnonymousUser {
-                        // Show login/signup options
-                        NavigationLink(destination: SigninView()) {
+                        Button {
+                            showAuthSheet.toggle()
+                        } label: {
                             HStack {
                                 Image(systemName: "person.crop.circle.badge.plus")
                                     .frame(width: 20)
@@ -236,7 +236,7 @@ struct SettingsScreen: View {
                                 do {
                                     try authController.signOut()
                                     self.isSignedIn = false
-                                    // self.currentUser = nil
+                                    fetchUserData()
                                 } catch {
                                     print(error.localizedDescription)
                                 }
@@ -258,6 +258,13 @@ struct SettingsScreen: View {
         }
         .onChange(of: isSignedIn) {_ in
             fetchUserData()
+        }
+        .sheet(isPresented: $showAuthSheet, onDismiss: fetchUserData) {
+          NavigationStack {
+            SigninView(showAuthSheet: $showAuthSheet)
+          }
+          .presentationDetents([.large])
+          .presentationDragIndicator(.visible)
         }
     }
     

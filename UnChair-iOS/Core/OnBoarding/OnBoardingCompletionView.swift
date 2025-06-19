@@ -7,8 +7,11 @@
 
 
 import SwiftUI
+import StoreKit
 
 struct OnBoardingCompletionView: View {
+    @Environment(\ .requestReview) var requestReview : RequestReviewAction
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -41,6 +44,9 @@ struct OnBoardingCompletionView: View {
             .navigationBarHidden(true)
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear {
+            requestReview()
+        }
     }
 }
 

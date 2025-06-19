@@ -18,6 +18,10 @@ struct HomeScreen: View {
     @State private var selectedBreak: Break? = nil
     @AppStorage("userTheme") private var userTheme: Theme = .system
     
+    @State private var showSyncAlert = true
+    @State private var showAuthSheet = false
+    @AppStorage("hasShownSyncPrompt") private var hasShownSyncPrompt: Bool = false
+    
     var body: some View {
         ZStack {
             NavigationStack {
@@ -63,6 +67,30 @@ struct HomeScreen: View {
             }
         }
         .preferredColorScheme(userTheme.colorScheme)
+        .onAppear {
+            // Only show the alert if we’ve never shown it before:
+            showSyncAlert = !hasShownSyncPrompt
+        }
+        .alert("Save your progress across devices", isPresented: $showSyncAlert) {
+            Button("Sign In") {
+                // mark “we’ve prompted once”
+                hasShownSyncPrompt = true
+                showAuthSheet = true
+            }
+            Button("Not Now", role: .cancel) {
+                // also don’t prompt again
+                hasShownSyncPrompt = true
+            }
+        } message: {
+            Text("To keep your data safe across devices, please sign in.")
+        }
+        .sheet(isPresented: $showAuthSheet) {
+            NavigationStack {
+                SigninView(showAuthSheet: $showAuthSheet)
+            }
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
     }
     
     

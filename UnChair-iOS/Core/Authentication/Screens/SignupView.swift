@@ -28,6 +28,9 @@ struct SignupView: View {
     @State private var nonce: String?
     @AppStorage("log_status") private var logStatus: Bool = false
     @State private var showSignInView: Bool = false
+    @Environment(\.dismiss) private var dismiss
+    @Binding var showAuthSheet: Bool
+
     
     var buttonStatus : Bool {
         return full_name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty || isLoading
@@ -138,7 +141,7 @@ struct SignupView: View {
             HStack {
                 Text("Already have an account?")
                     .foregroundColor(.secondary)
-                NavigationLink(destination: SigninView()) {
+                NavigationLink(destination: SigninView(showAuthSheet: $showAuthSheet)) {
                     Text("Sign in")
                         .fontWeight(.semibold)
                         .foregroundColor(.blue)
@@ -258,6 +261,7 @@ struct SignupView: View {
                     // now really verified!
                     showEmailVerificationView = false
                     authController.authState = .authenticated
+                    showAuthSheet = false
                   }
                 }
             }
@@ -287,7 +291,7 @@ fileprivate extension View {
 }
 
 #Preview {
-    SignupView()
+    SignupView(showAuthSheet: .constant(true))
         .environmentObject(AuthController())
 }
 
