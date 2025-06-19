@@ -20,7 +20,7 @@
     "_applicationInternalID" : "6746067975",
     "_developerTeamID" : "828PG3Q6MA",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 769382538.38044202,
+    "_lastSynchronizedDate" : 771940241.69475901,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -73,11 +73,11 @@
   },
   "subscriptionGroups" : [
     {
-      "id" : "21688618",
+      "id" : "21709809",
       "localizations" : [
 
       ],
-      "name" : "Pro",
+      "name" : "UnChair Pro",
       "subscriptions" : [
         {
           "adHocOffers" : [
@@ -89,19 +89,24 @@
           "displayPrice" : "39.99",
           "familyShareable" : false,
           "groupNumber" : 1,
-          "internalID" : "6746068149",
-          "introductoryOffer" : null,
+          "internalID" : "6747418483",
+          "introductoryOffer" : {
+            "internalID" : "23C174D3",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
             {
-              "description" : "All Access",
-              "displayName" : "All Access",
+              "description" : "Unlimited access",
+              "displayName" : "Unlimited access",
               "locale" : "en_US"
             }
           ],
-          "productID" : "unchair__3999_1y",
+          "productID" : "unchair_3999_1y_1w0",
           "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Annual, $39.99",
-          "subscriptionGroupID" : "21688618",
+          "referenceName" : "Annual $39.99, 1-week free",
+          "subscriptionGroupID" : "21709809",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
 
@@ -117,19 +122,24 @@
           "displayPrice" : "3.99",
           "familyShareable" : false,
           "groupNumber" : 2,
-          "internalID" : "6746068109",
-          "introductoryOffer" : null,
+          "internalID" : "6747420042",
+          "introductoryOffer" : {
+            "internalID" : "43EDDB45",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
             {
-              "description" : "All Access",
-              "displayName" : "All Access",
+              "description" : "Unlimited access",
+              "displayName" : "Unlimited access",
               "locale" : "en_US"
             }
           ],
-          "productID" : "unchair_399_1m",
+          "productID" : "unchair_399_1m_1w0",
           "recurringSubscriptionPeriod" : "P1M",
-          "referenceName" : "Monthly, $3.99",
-          "subscriptionGroupID" : "21688618",
+          "referenceName" : "Monthly $3.99, 1-week free",
+          "subscriptionGroupID" : "21709809",
           "type" : "RecurringSubscription",
           "winbackOffers" : [
 

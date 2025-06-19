@@ -24,42 +24,29 @@ class AuthController: ObservableObject {
     var authState: AuthState = .undefined
     private var db = Firestore.firestore()
     var currentUser: User? { Auth.auth().currentUser }
-    
-//    func startListeningToAuthState() async { 
-//        _ = Auth.auth().addStateDidChangeListener { _, user in 
-//            DispatchQueue.main.async {
-//                if let user = user { 
-//                    self.authState = .authenticated 
-//                    Task {
-//                        do {
-//                            try await self.loadUserData(user: user) 
-//                        } catch {
-//                            print("Error loading user data: \(error.localizedDescription)") 
-//                        }
-//                    }
-//                } else {
-//                    self.authState = .unauthenticated 
-//                    self.currentUser = nil 
-//                }
-//            }
-//        }
-//    }
-    
+        
+    @MainActor
     func startListeningToAuthState() async {
-        // Immediately reflect any already-signed‑in user:
-        if Auth.auth().currentUser != nil {
-          authState = .authenticated
+        // 1. If no user, sign in anonymously
+        if Auth.auth().currentUser == nil {
+            Auth.auth().signInAnonymously { [weak self] result, error in
+                if let error = error {
+                    print("❌ Anonymous sign‑in failed:", error)
+                    self?.authState = .unauthenticated
+                } else if let user = result?.user {
+                    print("✅ Signed in anon as", user.uid)
+                    self?.authState = .authenticated
+                    self?.identifyUserWithRevenueCat(uid: user.uid)
+                }
+            }
         } else {
-          authState = .unauthenticated
+            authState = .authenticated
         }
 
-        // Then hook up Firebase’s listener for real‑time changes:
         Auth.auth().addStateDidChangeListener { [weak self] _, user in
-          guard let self = self else { return }
-          self.authState = (user != nil) ? .authenticated : .unauthenticated
+            self?.authState = (user != nil) ? .authenticated : .unauthenticated
         }
-      }
-
+    }
     
     
     @MainActor
@@ -73,48 +60,60 @@ class AuthController: ObservableObject {
         guard let idToken = result.user.idToken?.tokenString else { return } 
         let accessToken = result.user.accessToken.tokenString 
         
-        let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken) 
-        try await Auth.auth().signIn(with: credential) 
+        let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
         
-        if let user = Auth.auth().currentUser { 
-            try await saveUserData(user: user, provider: "google") 
-            try await loadUserData(user: user) 
-            identifyUserWithRevenueCat(uid: user.uid) 
-        }
+        if let anonUser = Auth.auth().currentUser, anonUser.isAnonymous {
+                let authResult = try await anonUser.link(with: credential)
+                print("🔗 Linked anon user to Google:", authResult.user.uid)
+            } else {
+                let authResult = try await Auth.auth().signIn(with: credential)
+                print("Signed in existing user:", authResult.user.uid)
+            }
+
+            if let user = Auth.auth().currentUser {
+                try await saveUserData(user: user, provider: "google")
+                try await loadUserData(user: user)
+                identifyUserWithRevenueCat(uid: user.uid)
+            }
     }
     
     @MainActor
-    func signInWithApple(authorization: ASAuthorization, nonce: String?) async throws { 
-        do {
-            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else { 
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid Apple ID Credential"]) 
-            }
-            
-            guard let nonce = nonce else { 
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid state: A login callback was received, but no login request was sent."]) 
-            }
-            
-            guard let appleIDToken = appleIDCredential.identityToken else { 
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to fetch identity token"]) 
-            }
-            
-            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else { 
-                throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to serialize token string from data: \(appleIDToken.debugDescription)"]) 
-            }
-            
-            let credential = OAuthProvider.appleCredential(withIDToken: idTokenString, rawNonce: nonce, fullName: appleIDCredential.fullName) 
-            try await Auth.auth().signIn(with: credential) 
-            
-            if let user = Auth.auth().currentUser { 
-                try await saveUserData(user: user, provider: "apple") 
-                try await loadUserData(user: user) 
-                identifyUserWithRevenueCat(uid: user.uid) 
-            }
-        } catch {
-            print("Apple Sign-In Error: \(error.localizedDescription)") 
-            throw error 
+    func signInWithApple(authorization: ASAuthorization, nonce: String?) async throws {
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid Apple ID Credential"])
+        }
+        guard let rawNonce = nonce else {
+            throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid state: A login callback was received, but no login request was sent."])
+        }
+        guard let appleIDToken = appleIDCredential.identityToken,
+              let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+            throw NSError(domain: "AuthController", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unable to fetch or serialize identity token"])
+        }
+
+        let credential = OAuthProvider.appleCredential(
+            withIDToken: idTokenString,
+            rawNonce: rawNonce,
+            fullName: appleIDCredential.fullName
+        )
+
+        // 1️⃣ If we already have an anonymous user, link to it
+        if let anonUser = Auth.auth().currentUser, anonUser.isAnonymous {
+            let authResult = try await anonUser.link(with: credential)
+            print("🔗 Linked anonymous user to Apple account:", authResult.user.uid)
+        } else {
+            // 2️⃣ Otherwise do a normal sign‑in (existing or new non‑anon user)
+            let authResult = try await Auth.auth().signIn(with: credential)
+            print("🔑 Signed in via Apple:", authResult.user.uid)
+        }
+
+        // 3️⃣ After link/sign‑in, load/save your user data as before
+        if let user = Auth.auth().currentUser {
+            try await saveUserData(user: user, provider: "apple")
+            try await loadUserData(user: user)
+            identifyUserWithRevenueCat(uid: user.uid)
         }
     }
+
     
     
     func signOut() throws { 

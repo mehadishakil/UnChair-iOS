@@ -76,7 +76,7 @@ struct WorkHourSelectionView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 NotificationManager.shared.requestAuthorization { granted in
                     if granted {
                         print("Notification permission granted")

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct TermsOfUseView: View {
     @State private var isLoading = true
-    private let url = URL(string: "https://un-chair-landing-page.vercel.app/terms-of-use")!
+    private let url = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
 
     var body: some View {
         ZStack {

@@ -35,10 +35,12 @@ struct SettingsScreen: View {
     @EnvironmentObject var authController: AuthController
     @State private var full_name: String = ""
     @State private var email: String = ""
+    @State private var isAnonymousUser = false
     @State private var signoutAlert: Bool = false
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) var dismiss
     var db = Firestore.firestore()
+    @State var isSignedIn: Bool = false
     // MARK: - User Goals (stored locally)
     
     @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
@@ -46,6 +48,7 @@ struct SettingsScreen: View {
     var body: some View {
         NavigationView {
             Form {
+                // user details
                 Section {
                     NavigationLink(destination: EditProfile()) {
                         HStack {
@@ -208,29 +211,40 @@ struct SettingsScreen: View {
                     }
                 }
                 
-                Button {
-                    signoutAlert.toggle()
-                } label: {
-                    Text("Sign Out")
-                        .foregroundColor(.primary)
-                }
-                .alert("Sign Out", isPresented: $signoutAlert) {
-                    Button {
-                        presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        Text("Cancel")
-                    }
-                    Button {
-                        do {
-                            try authController.signOut()
-                        } catch {
-                            print(error.localizedDescription)
+                Section {
+                    if isAnonymousUser {
+                        // Show login/signup options
+                        NavigationLink(destination: SigninView()) {
+                            HStack {
+                                Image(systemName: "person.crop.circle.badge.plus")
+                                    .frame(width: 20)
+                                Text("Sign In / Sign Up")
+                                Spacer()
+                            }
                         }
-                    } label: {
-                        Text("Yes")
+                    } else {
+                        // Show sign out
+                        Button {
+                            signoutAlert.toggle()
+                        } label: {
+                            Text("Sign Out")
+                                .foregroundColor(.primary)
+                        }
+                        .alert("Sign Out", isPresented: $signoutAlert) {
+                            Button("Cancel", role: .cancel) { }
+                            Button("Yes", role: .destructive) {
+                                do {
+                                    try authController.signOut()
+                                    self.isSignedIn = false
+                                    // self.currentUser = nil
+                                } catch {
+                                    print(error.localizedDescription)
+                                }
+                            }
+                        } message: {
+                            Text("Are you sure you want to sign out?")
+                        }
                     }
-                } message: {
-                    Text("Are you sure?")
                 }
             }
         }
@@ -242,7 +256,9 @@ struct SettingsScreen: View {
                 NotificationManager.shared.scheduleDailyBreakNotifications()
             }
         }
-
+        .onChange(of: isSignedIn) {_ in
+            fetchUserData()
+        }
     }
     
     // MARK: - Updated notification handling methods
@@ -309,12 +325,23 @@ struct SettingsScreen: View {
     }
     
     private func fetchUserData() {
-        if let currentUser = Auth.auth().currentUser {
+        guard let user = Auth.auth().currentUser else {
+            isAnonymousUser = true
+            full_name = "anonymous"
+            email     = "anonymous"
+            return
+        }
+        if user.isAnonymous {
+            isAnonymousUser = true
+            full_name = "anonymous"
+            email     = "anonymous"
+        } else {
+            isAnonymousUser = false
             Task {
                 do {
-                    if let userData = try await UserManager.shared.fetchUserData(uid: currentUser.uid) {
-                        full_name = userData["name"] as? String ?? ""
-                        email = userData["email"] as? String ?? ""
+                    if let data = try await UserManager.shared.fetchUserData(uid: user.uid) {
+                        full_name = data["name"] as? String ?? "Unknown"
+                        email     = data["email"] as? String ?? ""
                     }
                 } catch {
                     print("Error loading user data: \(error)")
@@ -322,6 +349,7 @@ struct SettingsScreen: View {
             }
         }
     }
+    
 }
 
 #Preview {

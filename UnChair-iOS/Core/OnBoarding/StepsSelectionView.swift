@@ -77,7 +77,7 @@ struct StepsSelectionView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {                    Task {
+            DispatchQueue.main.asyncAfter(deadline: .now()) {                    Task {
                 do {
                     try await healthViewModel.healthService.requestHealthDataPermission()
                     healthViewModel.loadAllData()

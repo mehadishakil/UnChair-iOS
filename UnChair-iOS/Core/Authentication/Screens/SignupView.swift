@@ -103,7 +103,7 @@ struct SignupView: View {
                             .stroke(Color.gray.opacity(0.5), lineWidth: 1)
                     )
                 
-                    Text("By signing up you agree to our [Privacy policy](https://your-terms-url.com) & [Terms](https://your-terms-url.com)")
+                    Text("By signing up you agree to our [Privacy policy](https://un-chair-landing-page.vercel.app/privacy-policy) & [Terms of Use](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         
@@ -148,7 +148,6 @@ struct SignupView: View {
             
         }
         .padding()
-        .navigationBarBackButtonHidden(true)
         .alert(alertMessage, isPresented: $showAlert) { } // Alert for errors
         .sheet(isPresented: $showEmailVerificationView) {
             EmailVerificationView()
