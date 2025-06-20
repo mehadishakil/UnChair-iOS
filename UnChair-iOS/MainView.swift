@@ -157,26 +157,6 @@ struct MainView: View {
             await authController.startListeningToAuthState()
             checkSubscriptionStatus()
         }
-//        .alert("Save your progress across devices", isPresented: $showSyncAlert) {
-//            Button("Sign In") {
-//                // mark “we’ve prompted once”
-//                hasShownSyncPrompt = true
-//                showAuthSheet = true
-//            }
-//            Button("Not Now", role: .cancel) {
-//                // also don’t prompt again
-//                hasShownSyncPrompt = true
-//            }
-//        } message: {
-//            Text("To keep your data safe across devices, please sign in.")
-//        }
-//        .sheet(isPresented: $showAuthSheet) {
-//            NavigationStack {
-//                SigninView(showAuthSheet: $showAuthSheet)
-//            }
-//            .presentationDetents([.large])
-//            .presentationDragIndicator(.visible)
-//        }
     }
     
     private func checkSubscriptionStatus() {

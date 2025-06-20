@@ -160,22 +160,17 @@ struct SignupView: View {
         }
     }
     
-    func SignUp(){
+    func SignUp() {
         isLoading = true
-        Task { //
+        Task {
             do {
-                if password == confirmPassword {
-                    let result = try await Auth.auth().createUser(withEmail: email, password: password)
-                    try await result.user.sendEmailVerification()
-                    showEmailVerificationView = true
-                    
-                    let changeRequest = result.user.createProfileChangeRequest()
-                    changeRequest.displayName = full_name
-                    try await changeRequest.commitChanges()
-                    try await authController.saveUserData(user: result.user, provider: "email")
-                } else {
-                    await presentAlert("Missmatching passwords")
-                }
+                try await authController.signUpWithEmail(
+                    email: email,
+                    password: password,
+                    confirmPassword: confirmPassword,
+                    fullName: full_name
+                )
+                showEmailVerificationView = true
             } catch {
                 await presentAlert(error.localizedDescription)
             }

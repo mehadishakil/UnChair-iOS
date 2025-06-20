@@ -241,15 +241,13 @@ struct SigninView: View {
 
     func SignIn() {
         isLoading = true
-        Task { //
+        Task {
             do {
-                let result = try await Auth.auth().signIn(withEmail: email, password: password)
-                if result.user.isEmailVerified {
-                    // verified user, redirect to homescreen
+                let isVerified = try await authController.signInWithEmail(email: email, password: password)
+                if isVerified {
                     logStatus = true
                     await MainActor.run { showAuthSheet = false }
                 } else {
-                    try await result.user.sendEmailVerification()
                     showEmailVerificationView = true
                 }
             } catch {
