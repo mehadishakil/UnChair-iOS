@@ -167,7 +167,7 @@ struct SignupView: View {
                 try await authController.signUpWithEmail(
                     email: email,
                     password: password,
-                    confirmPassword: confirmPassword,
+                    confirm: confirmPassword,
                     fullName: full_name
                 )
                 showEmailVerificationView = true

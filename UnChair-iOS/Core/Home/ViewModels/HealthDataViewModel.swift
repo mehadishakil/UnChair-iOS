@@ -276,7 +276,7 @@ import SwiftUI
 class HealthDataViewModel: ObservableObject {
     // Persisted daily metrics
     @Published var waterIntake: Int = UserDefaults.standard.integer(forKey: "dailyWaterIntake") {
-        didSet { UserDefaults.standard.set(waterIntake, forKey: "dailyWaterIntake") }
+        didSet { UserDefaults.standard.set (waterIntake, forKey: "dailyWaterIntake") }
     }
     @Published var sleepMinutes: Int = UserDefaults.standard.integer(forKey: "dailySleepMinutes") {
         didSet { UserDefaults.standard.set(sleepMinutes, forKey: "dailySleepMinutes") }
@@ -290,26 +290,39 @@ class HealthDataViewModel: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var dailyData: [String: Any] = [:]
     @Published var errorMessage: String?
-
     let healthService = HealthDataService()
+    private var authListener: AuthStateDidChangeListenerHandle?
     private let firestoreService = FirestoreService()
     private var userId: String?
     private var firestoreListener: ListenerRegistration?
     private var todayKey: String {
-        DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none)
+      let f = ISO8601DateFormatter()
+      f.formatOptions = [.withFullDate]
+      return f.string(from: Date())
     }
+
+
 
     init() {
-        if let currentUser = Auth.auth().currentUser {
-            setUserId(currentUser.uid)
-        } else {
-            isLoading = false
+        // 1) Listen for user changes
+        authListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
+          guard let self = self else { return }
+          if let user = user {
+            self.setUserId(user.uid)
+          } else {
+            self.removeListener()
+            self.isLoading = false
+          }
         }
-    }
+      }
 
-    deinit {
+      deinit {
+        // clean up both listeners
+        if let handle = authListener {
+          Auth.auth().removeStateDidChangeListener(handle)
+        }
         removeListener()
-    }
+      }
 
     func setUserId(_ id: String) {
         userId = id

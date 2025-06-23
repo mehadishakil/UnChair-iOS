@@ -227,8 +227,12 @@ struct SettingsScreen: View {
                         Button {
                             signoutAlert.toggle()
                         } label: {
-                            Text("Sign Out")
-                                .foregroundColor(.primary)
+                            HStack {
+                                Spacer()
+                                Text("Sign Out")
+                                    .foregroundColor(.red)
+                                Spacer()
+                            }
                         }
                         .alert("Sign Out", isPresented: $signoutAlert) {
                             Button("Cancel", role: .cancel) { }
@@ -260,11 +264,11 @@ struct SettingsScreen: View {
             fetchUserData()
         }
         .sheet(isPresented: $showAuthSheet, onDismiss: fetchUserData) {
-          NavigationStack {
-            SigninView(showAuthSheet: $showAuthSheet)
-          }
-          .presentationDetents([.large])
-          .presentationDragIndicator(.visible)
+            NavigationStack {
+                SigninView(showAuthSheet: $showAuthSheet)
+            }
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
     }
     
