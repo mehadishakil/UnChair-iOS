@@ -287,6 +287,7 @@ class HealthDataViewModel: ObservableObject {
     @Published var meditationDuration: Int = UserDefaults.standard.integer(forKey: "dailyMeditationDuration") {
         didSet { UserDefaults.standard.set(meditationDuration, forKey: "dailyMeditationDuration") }
     }
+    @Published var exerciseTime: [String:Int] = [:]
     @Published var isLoading: Bool = true
     @Published var dailyData: [String: Any] = [:]
     @Published var errorMessage: String?
@@ -296,9 +297,9 @@ class HealthDataViewModel: ObservableObject {
     private var userId: String?
     private var firestoreListener: ListenerRegistration?
     private var todayKey: String {
-      let f = ISO8601DateFormatter()
-      f.formatOptions = [.withFullDate]
-      return f.string(from: Date())
+      let formatter = DateFormatter()
+      formatter.dateFormat = "yyyy_MM_dd"
+      return "daily_log_\(formatter.string(from: Date()))"
     }
 
 
@@ -383,11 +384,11 @@ class HealthDataViewModel: ObservableObject {
                 }
                 if let data = snapshot.data() {
                     DispatchQueue.main.async {
-                        self.dailyData = data
-                        if let w = data["waterConsumption"] as? Int     { self.waterIntake = w }
-                        if let s = data["sleepMinutes"] as? Int         { self.sleepMinutes = s }
-                        if let st = data["steps"] as? Int               { self.stepCount = st }
+                        if let w = data["waterIntake"] as? Int     { self.waterIntake = w }
+                        if let s = data["sleepDuration"] as? Int         { self.sleepMinutes = s }
+                        if let st = data["stepsTaken"] as? Int               { self.stepCount = st }
                         if let med = data["meditationDuration"] as? Int { self.meditationDuration = med }
+                        if let et = data["exerciseTime"] as? [String:Int] { self.exerciseTime    = et }
                     }
                 }
             }
@@ -403,10 +404,11 @@ class HealthDataViewModel: ObservableObject {
     private func createInitialDocument() {
         guard let userId = userId else { return }
         let initialData: [String: Any] = [
-            "waterConsumption": waterIntake,
-            "sleepMinutes": sleepMinutes,
-            "steps": stepCount,
+            "waterIntake": waterIntake,
+            "sleepDuration": sleepMinutes,
+            "stepsTaken": stepCount,
             "meditationDuration": meditationDuration,
+            "exerciseTime": exerciseTime,
             "lastUpdated": Date()
         ]
         firestoreService.createDocument(for: todayKey, initialData: initialData) { error in
@@ -494,10 +496,11 @@ class HealthDataViewModel: ObservableObject {
     private func syncDataToFirestore() {
         guard let userId = userId else { return }
         let updatedData: [String: Any] = [
-            "waterConsumption": waterIntake,
-            "sleepMinutes": sleepMinutes,
-            "steps": stepCount,
+            "waterIntake": waterIntake,
+            "sleepDuration": sleepMinutes,
+            "stepsTaken": stepCount,
             "meditationDuration": meditationDuration,
+            "exerciseTime" : exerciseTime,
             "lastUpdated": Date()
         ]
         firestoreService.syncData(for: todayKey, updatedData: updatedData) { error in

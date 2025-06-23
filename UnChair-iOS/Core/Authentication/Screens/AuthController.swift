@@ -771,39 +771,16 @@ class AuthController: ObservableObject {
           .collection("health_data")
 
         let snapshot = try await anonRef.getDocuments()
-        print("👀 Merging anon docs: \(snapshot.documents.map(\.documentID))")
-
-        guard !snapshot.documents.isEmpty else {
-          print("⚠️ No anonymous docs to merge.")
-          return
-        }
-
         let batch = db.batch()
 
-        snapshot.documents.forEach { doc in
-          let oldKey = doc.documentID
-
-          // normalize:
-          let newKey: String
-          if oldKey.hasPrefix("daily_log_") {
-            newKey = oldKey
-          } else {
-            // assume ISO "yyyy-MM-dd"
-            let safe = oldKey.replacingOccurrences(of: "-", with: "_")
-            newKey = "daily_log_\(safe)"
-          }
-
-          let target = realRef.document(newKey)
+        for doc in snapshot.documents {
+          let target = realRef.document(doc.documentID)   // same ID, no renaming needed
           batch.setData(doc.data(), forDocument: target, merge: true)
           batch.deleteDocument(doc.reference)
-          print(" → batching copy \(oldKey) → \(newKey)")
         }
 
         try await batch.commit()
-        print("✅ Committed merge batch of \(snapshot.documents.count) docs.")
-
         try await db.collection("users").document(anonUid).delete()
-        print("🗑 Deleted anon user document \(anonUid)")
     }
 
 
