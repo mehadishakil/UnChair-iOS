@@ -16,7 +16,7 @@ struct OnBoarding: View {
     // AppStorage for all user preferences
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
-    @AppStorage("stepsGoal") private var stepsGoal: Int = 10000
+    @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
     @AppStorage("waterGoalML") private var waterGoalML: Int = 2500
     @AppStorage("sleepGoalMins") private var sleepGoalMins: Int = 480 // 8 hours default
     @AppStorage("breakIntervalMins") private var breakIntervalMins: Int = 90 // 1 hour default
@@ -25,7 +25,7 @@ struct OnBoarding: View {
     @AppStorage("workEndHour") private var workEndHour: Int = 17  // 5 PM
     @AppStorage("workEndMinute") private var workEndMinute: Int = 0
     
-    @State private var selectedSteps: Int = 10000
+    @State private var selectedSteps: Int = 5000
     @State private var selectedWater: Int = 2500
     @State private var selectedSleep: TimeDuration = TimeDuration(hours: 8, minutes: 0)
     @State private var selectedBreakInterval: TimeDuration = TimeDuration(hours: 1, minutes: 0)

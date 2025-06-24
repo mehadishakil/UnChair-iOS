@@ -4,6 +4,7 @@
 //
 //  Created by Mehadi Hasan on 1/8/24.
 //
+//
 
 import SwiftUI
 
@@ -50,7 +51,7 @@ struct StepsLineChartView: View {
                     Text("Month").tag("Month")
                     Text("Year").tag("Year")
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
                 .onChange(of: currentTab) { _, newValue in
                     fetchData(for: newValue)
                 }

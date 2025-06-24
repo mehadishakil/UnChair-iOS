@@ -35,6 +35,7 @@
 		E866CDF02D30F2DC00F62142 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E866CDEF2D30F2DC00F62142 /* FirebaseStorage */; };
 		E866CDFC2D3143F500F62142 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E866CDFB2D3143F500F62142 /* UserData.swift */; };
 		E866CE042D3151D900F62142 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E866CE032D3151D900F62142 /* UserManager.swift */; };
+		E8675D382E0AFEC0000492BF /* Dropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8675D372E0AFEC0000492BF /* Dropdown.swift */; };
 		E868E3342C5CCE87005DFFE0 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */; };
 		E869831D2C441877007A695F /* StartExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E869831C2C441877007A695F /* StartExerciseView.swift */; };
 		E872E6C72DE9DB56006F4F57 /* DailyWaterGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = E872E6C62DE9DB56006F4F57 /* DailyWaterGoal.swift */; };
@@ -63,7 +64,6 @@
 		E8AFBAA32C9C45B200AEE292 /* SleepCapsuleChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9B2C9C45B100AEE292 /* SleepCapsuleChart.swift */; };
 		E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9C2C9C45B100AEE292 /* SleepCapsuleChartView.swift */; };
 		E8AFBAA52C9C45B200AEE292 /* StepsLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9D2C9C45B100AEE292 /* StepsLineChart.swift */; };
-		E8AFBAA62C9C45B200AEE292 /* WaterBarChart2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9E2C9C45B200AEE292 /* WaterBarChart2.swift */; };
 		E8AFBAA72C9C45B200AEE292 /* ExerciseBarChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBA9F2C9C45B200AEE292 /* ExerciseBarChart.swift */; };
 		E8AFBAA82C9C45B200AEE292 /* StepsLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAA02C9C45B200AEE292 /* StepsLineChartView.swift */; };
 		E8AFBAA92C9C45B200AEE292 /* WaterBarChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AFBAA12C9C45B200AEE292 /* WaterBarChartView.swift */; };
@@ -148,6 +148,7 @@
 		E863CBD52C5A700B009CB2A1 /* MultiLineChartModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineChartModel.swift; sourceTree = "<group>"; };
 		E866CDFB2D3143F500F62142 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserData.swift; path = "UnChair-iOS/Core/Authentication/UserData.swift"; sourceTree = SOURCE_ROOT; };
 		E866CE032D3151D900F62142 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		E8675D372E0AFEC0000492BF /* Dropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dropdown.swift; sourceTree = "<group>"; };
 		E868E3332C5CCE87005DFFE0 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
 		E869831C2C441877007A695F /* StartExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartExerciseView.swift; sourceTree = "<group>"; };
 		E872E6C62DE9DB56006F4F57 /* DailyWaterGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWaterGoal.swift; sourceTree = "<group>"; };
@@ -175,7 +176,6 @@
 		E8AFBA9B2C9C45B100AEE292 /* SleepCapsuleChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepCapsuleChart.swift; sourceTree = "<group>"; };
 		E8AFBA9C2C9C45B100AEE292 /* SleepCapsuleChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SleepCapsuleChartView.swift; sourceTree = "<group>"; };
 		E8AFBA9D2C9C45B100AEE292 /* StepsLineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsLineChart.swift; sourceTree = "<group>"; };
-		E8AFBA9E2C9C45B200AEE292 /* WaterBarChart2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterBarChart2.swift; sourceTree = "<group>"; };
 		E8AFBA9F2C9C45B200AEE292 /* ExerciseBarChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExerciseBarChart.swift; sourceTree = "<group>"; };
 		E8AFBAA02C9C45B200AEE292 /* StepsLineChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepsLineChartView.swift; sourceTree = "<group>"; };
 		E8AFBAA12C9C45B200AEE292 /* WaterBarChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterBarChartView.swift; sourceTree = "<group>"; };
@@ -498,8 +498,8 @@
 				E8AFBAA12C9C45B200AEE292 /* WaterBarChartView.swift */,
 				E82A72712DA472DE005EA6A6 /* MeditationLollipopChart.swift */,
 				E82A72732DA47354005EA6A6 /* MeditationLollipopChartView.swift */,
-				E8AFBA9E2C9C45B200AEE292 /* WaterBarChart2.swift */,
 				E82A726F2DA3EDF3005EA6A6 /* PointLineChart.swift */,
+				E8675D372E0AFEC0000492BF /* Dropdown.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -647,7 +647,6 @@
 				E872E6C92DE9E99B006F4F57 /* DailySleepGoal.swift in Sources */,
 				E8FE7D1B2DE87A5600D9779F /* PrivacyPolicyView.swift in Sources */,
 				E83A7EF12C68DFBC00709773 /* CalmCorner.swift in Sources */,
-				E8AFBAA62C9C45B200AEE292 /* WaterBarChart2.swift in Sources */,
 				E84B469B2DDBA5C500108CCC /* Secrets.swift in Sources */,
 				E8829A4F2C3AB16300B197DD /* DailyWaterView.swift in Sources */,
 				E8C5AC1B2DEB7C7700E27B78 /* BreakIntervalSelectionView.swift in Sources */,
@@ -675,6 +674,7 @@
 				E8FE7D132DE8590500D9779F /* WebView.swift in Sources */,
 				E8C5AC192DEB6AEA00E27B78 /* SleepSelectionView.swift in Sources */,
 				E8AFBAA32C9C45B200AEE292 /* SleepCapsuleChart.swift in Sources */,
+				E8675D382E0AFEC0000492BF /* Dropdown.swift in Sources */,
 				E85889352DB349E900883430 /* NotificationManager.swift in Sources */,
 				E8AFBAA22C9C45B200AEE292 /* ExerciseBarChartView.swift in Sources */,
 				E8AFBAA42C9C45B200AEE292 /* SleepCapsuleChartView.swift in Sources */,

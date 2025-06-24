@@ -11,7 +11,7 @@ struct DailyStepsView: View {
     @EnvironmentObject private var healthVM: HealthDataViewModel
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @Environment(\.colorScheme) private var colorScheme
-    @AppStorage("stepsGoal") private var stepsGoal: Int = 10000
+    @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
 
     var progress: Double {
         guard stepsGoal > 0 else { return 0.0 }

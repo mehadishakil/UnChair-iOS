@@ -268,25 +268,32 @@
 //}
 
 
+
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 import SwiftUI
 
 class HealthDataViewModel: ObservableObject {
+    
+    @Published var dailyLogs: [String: DailyHealthLog] = [:] // Key: "daily_log_yyyy_MM_dd"
+    @Published var currentDayLog: DailyHealthLog? {
+        // Automatically get today's log from dailyLogs
+        didSet {
+            waterIntake = currentDayLog?.waterIntake ?? 0
+            sleepMinutes = currentDayLog?.sleepDuration ?? 0
+            stepCount = currentDayLog?.stepsTaken ?? 0
+            meditationDuration = currentDayLog?.meditationDuration ?? 0
+            exerciseTime = currentDayLog?.exerciseTime ?? [:]
+        }
+    }
+    
+    
     // Persisted daily metrics
-    @Published var waterIntake: Int = UserDefaults.standard.integer(forKey: "dailyWaterIntake") {
-        didSet { UserDefaults.standard.set (waterIntake, forKey: "dailyWaterIntake") }
-    }
-    @Published var sleepMinutes: Int = UserDefaults.standard.integer(forKey: "dailySleepMinutes") {
-        didSet { UserDefaults.standard.set(sleepMinutes, forKey: "dailySleepMinutes") }
-    }
-    @Published var stepCount: Int = UserDefaults.standard.integer(forKey: "dailyStepCount") {
-        didSet { UserDefaults.standard.set(stepCount, forKey: "dailyStepCount") }
-    }
-    @Published var meditationDuration: Int = UserDefaults.standard.integer(forKey: "dailyMeditationDuration") {
-        didSet { UserDefaults.standard.set(meditationDuration, forKey: "dailyMeditationDuration") }
-    }
+    @Published var waterIntake: Int = 0
+    @Published var sleepMinutes: Int = 0
+    @Published var stepCount: Int = 0
+    @Published var meditationDuration: Int = 0
     @Published var exerciseTime: [String:Int] = [:]
     @Published var isLoading: Bool = true
     @Published var dailyData: [String: Any] = [:]
@@ -511,5 +518,24 @@ class HealthDataViewModel: ObservableObject {
     /// Manually refresh both local and remote data
     func refreshData() {
         loadAllData()
+    }
+}
+
+
+
+struct DailyHealthLog: Identifiable, Codable {
+    @DocumentID var id: String? // This will store the document ID, e.g., "daily_log_2024_01_01"
+    var waterIntake: Int
+    var sleepDuration: Int
+    var stepsTaken: Int
+    var meditationDuration: Int
+    var exerciseTime: [String: Int]
+    var lastUpdated: Date
+    // Add a computed property for the actual date if needed
+    var date: Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy_MM_dd"
+        let dateString = id?.replacingOccurrences(of: "daily_log_", with: "")
+        return dateString.flatMap { formatter.date(from: $0) }
     }
 }

@@ -12,7 +12,7 @@ import HealthKit
 struct StepsSelectionView: View {
     @Binding var selectedSteps: Int
     @State private var showNextScreen: Bool = false
-    @State private var config: WheelPicker.Config = .init(count: 30, steps: 5, spacing: 15, multiplier: 1000)
+    @State private var config: WheelPicker.Config = .init(count: 20, steps: 5, spacing: 15, multiplier: 1000)
     @State private var value: CGFloat = 10
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @EnvironmentObject var healthViewModel: HealthDataViewModel

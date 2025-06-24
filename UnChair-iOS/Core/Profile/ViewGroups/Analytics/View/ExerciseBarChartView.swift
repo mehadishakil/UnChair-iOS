@@ -39,7 +39,7 @@ struct ExerciseBarChartView: View {
                     Text("Month").tag("Month")
                     Text("Year").tag("Year")
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
                 .onChange(of: currentTab) { _, newValue in
                     fetchData(for: newValue)
                 }

@@ -217,25 +217,14 @@ struct ExerciseMultiLineChart: View {
             .chartForegroundStyleScale(domain: allBreakTypes, range: allBreakTypes.map { colorForBreakType($0) })
             .chartLegend(.hidden)
             
-            VStack() {
-                HStack {
-                    HStack() {
-                        legendItem(for: allBreakTypes.first ?? "Long Break")
-                        if allBreakTypes.count > 3 {
-                            Spacer()
-                            legendItem(for: allBreakTypes[1])
-                            Spacer()
-                            legendItem(for: allBreakTypes[2])
-                            Spacer()
-                            legendItem(for: allBreakTypes[3])
+            VStack(alignment: .leading) { // Changed to VStack for better top-level alignment of grid
+                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80, maximum: 120))], alignment: .leading, spacing: 8) {
+                                ForEach(allBreakTypes, id: \.self) { breakType in
+                                    legendItem(for: breakType)
+                                }
+                            }
                         }
-                    }
-                    .frame(maxWidth: .infinity)
-                    Spacer()
-                }
-                
-            }
-            .padding(.top, 4)
+                        .padding(.top, 4)
         }
         .padding(.horizontal)
         .onAppear {

@@ -774,7 +774,7 @@ class AuthController: ObservableObject {
         let batch = db.batch()
 
         for doc in snapshot.documents {
-          let target = realRef.document(doc.documentID)   // same ID, no renaming needed
+          let target = realRef.document(doc.documentID)
           batch.setData(doc.data(), forDocument: target, merge: true)
           batch.deleteDocument(doc.reference)
         }
