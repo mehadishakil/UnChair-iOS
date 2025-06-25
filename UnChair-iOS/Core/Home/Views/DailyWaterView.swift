@@ -16,6 +16,9 @@ struct DailyWaterView: View {
     private let maxIntake: Int = 6000
     private let minIntake: Int = 0
     
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass // for ipad wide screen
+
+    
     var body: some View {
         
         Button(action: { showWaterPicker.toggle() }) {
@@ -37,7 +40,7 @@ struct DailyWaterView: View {
             WaterPickerView(currentMl: healthViewModel.waterIntake, waterGoalML: waterGoalML, maxIntake: maxIntake, minIntake: minIntake, onUpdate: { newValue in
                 healthViewModel.updateWaterIntake(newValue)
             })
-            .presentationDetents([.medium])
+            .presentationDetents([horizontalSizeClass == .compact ? .medium : .large])
             .presentationDragIndicator(.visible)
         }
     }
@@ -114,8 +117,8 @@ enum WaterUnit: String, CaseIterable, Identifiable {
     /// how many ml are in one unit
     var mlPerUnit: Int {
         switch self {
-        case .glass:  return 200
-        case .bottle: return 300 // or whatever your bottle size is
+        case .glass:  return 100
+        case .bottle: return 250 // or whatever your bottle size is
         }
     }
 }
@@ -147,6 +150,7 @@ struct WaterPickerView: View {
                 
                 Text("Adjust Water Intake")
                     .font(.headline.bold())
+                    .padding(.top)
                 
                 Picker("", selection: $selectedUnit) {
                     ForEach(WaterUnit.allCases) { unit in

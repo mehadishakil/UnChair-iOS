@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct AboutView: View {
-    let url = URL(string: "https://github.com/mehadishakil")!
+    let url = URL(string: "https://un-chair-landing-page.vercel.app/")!
     @State private var isLoading = true
 
     var body: some View {

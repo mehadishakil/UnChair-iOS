@@ -17,6 +17,9 @@ struct ActiveHour: View {
     @State private var tempEndTime: Date = Date()
     @State private var isStartTimePickerPresented = false
     
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass // for ipad wide screen
+
+    
     // Computed properties to create Date objects from AppStorage values
     private var startTime: Date {
         var components = DateComponents()
@@ -79,7 +82,7 @@ struct ActiveHour: View {
                         syncWithSettingsManager()
                     }
                 )
-                .presentationDetents([.fraction(0.65), .large])
+                .presentationDetents([horizontalSizeClass == .compact ? .fraction(0.7) : .large])
                 .presentationDragIndicator(.visible)
             }
         }
@@ -124,7 +127,10 @@ struct TimePickerView: View {
 
             Text("Set Time Range")
                 .font(.title2.weight(.bold))
+                .padding(.top)
 
+            Spacer()
+            
             // Start / End pickers
             HStack(spacing: 16) {
                 timeField(
@@ -151,11 +157,14 @@ struct TimePickerView: View {
                     .foregroundColor(.secondary)
                 Spacer()
                 Text("\(durationHours) h \(durationMinutes) m")
-                    .font(.body.weight(.bold))
+                    .font(.headline.weight(.bold))
+                    .foregroundColor(.gray)
             }
             .padding()
             .background(Color.secondary.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            
+            Spacer()
 
             // Time wheel
             DatePicker(
@@ -172,6 +181,8 @@ struct TimePickerView: View {
             .onChange(of: startTime) { _ in updateDuration() }
             .onChange(of: endTime)   { _ in updateDuration() }
 
+            Spacer()
+            
             // Save button
             Button {
                 onSave()

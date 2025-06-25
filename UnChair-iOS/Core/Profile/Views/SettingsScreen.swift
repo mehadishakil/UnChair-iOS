@@ -45,7 +45,7 @@ struct SettingsScreen: View {
     @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 // user details
                 Section {

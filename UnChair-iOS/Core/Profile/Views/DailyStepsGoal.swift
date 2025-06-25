@@ -12,6 +12,8 @@ struct DailyStepsGoal: View {
     @AppStorage("stepsGoal") private var stepsGoal: Int = 5000
     @State private var steps: Int = UserDefaults.standard.integer(forKey: "stepsGoal")
     @State private var isPickerPresented = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass // for ipad wide screen
+
 
     var body: some View {
         HStack {
@@ -39,7 +41,7 @@ struct DailyStepsGoal: View {
                     stepsGoal = steps
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
-                .presentationDetents([.medium])
+                .presentationDetents([horizontalSizeClass == .compact ? .medium : .large])
                 .presentationDragIndicator(.hidden)
             }
         }

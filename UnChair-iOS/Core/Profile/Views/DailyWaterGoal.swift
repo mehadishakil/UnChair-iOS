@@ -11,6 +11,9 @@ struct DailyWaterGoal: View {
     @AppStorage("waterGoalML") private var waterGoalML: Int = 2000
     @State private var water: Int = UserDefaults.standard.integer(forKey: "waterGoalML")
     @State private var isPickerPresented = false
+    
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass // for ipad wide screen
+
 
     var body: some View {
         HStack {
@@ -37,7 +40,7 @@ struct DailyWaterGoal: View {
                     waterGoalML = water
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
-                .presentationDetents([.medium])
+                .presentationDetents([horizontalSizeClass == .compact ? .medium : .large])
                 .presentationDragIndicator(.hidden)
             }
         }

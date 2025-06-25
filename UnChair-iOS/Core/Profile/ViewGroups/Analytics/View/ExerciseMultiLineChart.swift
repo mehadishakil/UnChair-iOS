@@ -49,7 +49,7 @@ struct ExerciseMultiLineChart: View {
         }
         
         if types.isEmpty {
-            types = ["Short Break", "Quick Break", "Medium Break", "Long Break"]
+            types = ["Short", "Quick", "Medium", "Long"]
         }
         
         return Array(types).sorted()
@@ -96,10 +96,10 @@ struct ExerciseMultiLineChart: View {
     
     private func colorForBreakType(_ type: String) -> Color {
         switch type {
-        case "Long Break": return .yellow
-        case "Medium Break": return .indigo
-        case "Quick Break": return .cyan
-        case "Short Break": return .pink
+        case "Long": return .yellow
+        case "Medium": return .indigo
+        case "Quick": return .cyan
+        case "Short": return .pink
         default: return .pink
         }
     }
@@ -165,7 +165,7 @@ struct ExerciseMultiLineChart: View {
                             .foregroundStyle(.white)
                             .padding(8)
                             .background(RoundedRectangle(cornerRadius: 8).fill(.blue.gradient))
-//                            .offset(y: 40)
+                            //                            .offset(y: 40)
                         }
                 }
             }
@@ -218,13 +218,16 @@ struct ExerciseMultiLineChart: View {
             .chartLegend(.hidden)
             
             VStack(alignment: .leading) { // Changed to VStack for better top-level alignment of grid
-                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80, maximum: 120))], alignment: .leading, spacing: 8) {
-                                ForEach(allBreakTypes, id: \.self) { breakType in
-                                    legendItem(for: breakType)
-                                }
-                            }
+                HStack {
+                    ForEach(allBreakTypes, id: \.self) { breakType in
+                        legendItem(for: breakType)
+                        if breakType != allBreakTypes.last {
+                            Spacer()
                         }
-                        .padding(.top, 4)
+                    }
+                }
+            }
+            .padding(.top, 4)
         }
         .padding(.horizontal)
         .onAppear {
@@ -240,9 +243,13 @@ struct ExerciseMultiLineChart: View {
                 .fill(colorForBreakType(breakType))
                 .frame(width: 8, height: 8)
             
-            Text(breakType)
-                .font(.caption)
-                .lineLimit(2)
+            VStack(alignment: .leading) {
+                Text(breakType)
+                    .font(.caption)
+                
+                Text("Break")
+                    .font(.caption)
+            }
         }
         .padding(.vertical, 2)
         .padding(.horizontal, 6)

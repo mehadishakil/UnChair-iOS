@@ -106,6 +106,18 @@ struct HomeScreen: View {
         private var sideInset: CGFloat { cardInset / 2 }
         private let cardHeight: CGFloat = 170
         
+        @Environment(\.horizontalSizeClass) var horizontalSizeClass // To differentiate between compact (iPhone) and regular (iPad/Plus sizes)
+
+        var responsiveCardHeight: CGFloat {
+            if horizontalSizeClass == .regular {
+                // Adjust for iPad or larger screens
+                return UIScreen.main.bounds.width * 0.3 // Example: 35% of screen width, adjust as needed
+            } else {
+                // For iPhones
+                return 170 // Your existing cardHeight for mobile
+            }
+        }
+        
         var body: some View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Breaks")
@@ -135,12 +147,12 @@ struct HomeScreen: View {
                                 OverlayView(item: breakList[idx])
                             }
                             .padding(.horizontal)
-                            .frame(height: cardHeight)
+                            .frame(height: responsiveCardHeight)
                             .tag(idx)
                         }
                     }
                 }
-                .frame(height: cardHeight)
+                .frame(height: responsiveCardHeight)
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 
                 // MARK: - Active Item Indicator

@@ -171,6 +171,9 @@ struct DailySleepView: View {
     private var hours: Int { healthVM.sleepMinutes / 60 }
     private var minutes: Int { healthVM.sleepMinutes % 60 }
     
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass // for ipad wide screen
+
+    
     var body: some View {
         Button(action: { showPicker.toggle() }) {
             ZStack {
@@ -197,8 +200,10 @@ struct DailySleepView: View {
                     
                     Spacer()
                     
+                    // progressbar
                     GeometryReader { geo in
-                        let percent = CGFloat(healthVM.sleepMinutes) / CGFloat(sleepGoalMins)
+                        let percent = min(CGFloat(healthVM.sleepMinutes) / CGFloat(sleepGoalMins), 1.0)
+
                         ZStack(alignment: .leading) {
                             Capsule()
                                 .fill(Color.white.opacity(0.7))
@@ -227,7 +232,7 @@ struct DailySleepView: View {
             SleepPickerView(initialSleepMinutes: healthVM.sleepMinutes) { newMinutes in
                 healthVM.updateSleepMinutes(newMinutes)
             }
-            .presentationDetents([.medium])
+            .presentationDetents([horizontalSizeClass == .compact ? .medium : .large])
             .presentationDragIndicator(.hidden)
         }
     }

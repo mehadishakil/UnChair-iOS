@@ -11,6 +11,8 @@ struct DailySleepGoal: View {
     @AppStorage("sleepGoalMins") private var sleepGoalMins: Int = 8 * 60
     @State private var tempDuration: TimeDuration
     @State private var isPickerPresented = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass // for ipad wide screen
+
 
     init() {
         let saved = UserDefaults.standard.integer(forKey: "sleepGoalMins")
@@ -39,7 +41,7 @@ struct DailySleepGoal: View {
                     sleepGoalMins = tempDuration.totalMinutes
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
-                .presentationDetents([.medium])
+                .presentationDetents([horizontalSizeClass == .compact ? .medium : .large])
                 .presentationDragIndicator(.hidden)
             }
         }
@@ -65,6 +67,8 @@ struct DailySleepGoalPickerView: View {
                 .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
+            
+            Spacer()
 
             HStack(spacing: 32) {
                 wheelPicker(selection: $duration.hours, data: hours, label: "hr")
@@ -73,6 +77,7 @@ struct DailySleepGoalPickerView: View {
 
             Text("\(duration.hours) hr \(duration.minutes) min")
                 .font(.headline.weight(.bold))
+                .foregroundColor(.gray)
                 .padding()
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 

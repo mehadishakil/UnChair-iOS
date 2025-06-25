@@ -16,6 +16,9 @@ struct FocusTime: View {
     private var breakDuration: TimeDuration {
         TimeDuration(fromTotalMinutes: breakIntervalMins)
     }
+    
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass // for ipad wide screen
+
 
     var body: some View {
         HStack {
@@ -49,7 +52,7 @@ struct FocusTime: View {
                     // Post notification for other parts of the app that might depend on it
                     NotificationCenter.default.post(name: .breakSettingsChanged, object: nil)
                 }
-                .presentationDetents([.fraction(0.55), .medium])
+                .presentationDetents([horizontalSizeClass == .compact ? .fraction(0.55) : .large])
                 .presentationDragIndicator(.hidden)
             }
         }
@@ -91,7 +94,8 @@ struct BreakDurationPicker: View {
 
             // live preview
             Text("\(duration.hours) hr \(duration.minutes) min")
-                .font(.headline.weight(.medium))
+                .font(.headline.weight(.bold))
+                .foregroundColor(.gray)
                 .padding()
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 

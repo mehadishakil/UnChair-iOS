@@ -12,6 +12,18 @@ struct CalmCorner: View {
     @State private var selectedTime = 5
     @State private var navigate = false
     
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass // To differentiate between compact (iPhone) and regular (iPad/Plus sizes)
+
+    var responsiveCardHeight: CGFloat {
+        if horizontalSizeClass == .regular {
+            // Adjust for iPad or larger screens
+            return UIScreen.main.bounds.width * 0.3 // Example: 35% of screen width, adjust as needed
+        } else {
+            // For iPhones
+            return 170 // Your existing cardHeight for mobile
+        }
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Meditation")
@@ -49,8 +61,8 @@ struct CalmCorner: View {
             Image("meditation_image")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-                .frame(height: 170)
-                .clipped()
+                .frame(height: responsiveCardHeight)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
             
             // Ultra-thin material for frosted glass effect
             Rectangle()
@@ -93,10 +105,11 @@ struct CalmCorner: View {
             .padding()
             .foregroundColor(.white)
         }
-        .frame(maxWidth: .infinity, maxHeight: 170)
+        .frame(maxWidth: .infinity, maxHeight: responsiveCardHeight)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.15), radius: 8, x: 5, y: 10)
+        .frame(height: responsiveCardHeight)
     }
     
     

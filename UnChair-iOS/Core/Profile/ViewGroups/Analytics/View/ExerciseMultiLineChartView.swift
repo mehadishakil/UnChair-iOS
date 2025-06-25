@@ -403,7 +403,7 @@ struct ExerciseMultiLineChartView: View {
         
         // If no data exists yet, add default break types
         if breakTypes.isEmpty {
-            breakTypes = ["Long Break", "Medium Break", "Quick Break", "Short Break"]
+            breakTypes = ["Long", "Medium", "Quick", "Short"]
         }
         
         return Array(breakTypes).sorted()

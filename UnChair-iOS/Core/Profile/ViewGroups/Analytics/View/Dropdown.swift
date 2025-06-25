@@ -10,10 +10,8 @@ import SwiftUI
 struct SourceDropdownView : View {
     @Binding var config: DropdownConfig
     var body: some View {
-        HStack {
+        HStack(spacing: 8) {
             Text(config.activeText)
-            
-            Spacer(minLength: 0)
             
             Image(systemName: "chevron.down")
         }
