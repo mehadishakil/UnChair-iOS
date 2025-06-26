@@ -341,10 +341,10 @@ class FirestoreService: ObservableObject {
     /// Transforms keys like "long_break" → "Long Break" for user-friendly display.
     private func transformBreakKey(_ key: String) -> String {
         switch key {
-        case "long_break":   return "Long Break"
-        case "medium_break": return "Medium Break"
-        case "quick_break":  return "Quick Break"
-        case "short_break":  return "Short Break"
+        case "long_break":   return "Long"
+        case "medium_break": return "Medium"
+        case "quick_break":  return "Quick"
+        case "short_break":  return "Short"
         default:             return key // Fallback to the raw key
         }
     }
