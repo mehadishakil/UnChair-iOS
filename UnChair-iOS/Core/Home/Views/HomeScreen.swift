@@ -67,10 +67,10 @@ struct HomeScreen: View {
             }
         }
         .preferredColorScheme(userTheme.colorScheme)
-        .onAppear {
-            // Only show the alert if we’ve never shown it before:
-            showSyncAlert = !hasShownSyncPrompt
-        }
+//        .onAppear {
+//            // Only show the alert if we’ve never shown it before:
+//            showSyncAlert = !hasShownSyncPrompt
+//        }
         .alert("Save your progress across devices", isPresented: $showSyncAlert) {
             Button("Sign In") {
                 // mark “we’ve prompted once”

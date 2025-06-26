@@ -42,7 +42,7 @@
 //        setupFirestoreListener()
 //        loadAllData()
 //    }
-//    
+//
 //    func loadAllData() {
 //        guard let userId = userId else { return }
 //        isLoading = true
@@ -131,7 +131,7 @@
 //            }
 //        }
 //    }
-//    
+//
 //    private func syncDataToFirestore() {
 //        guard let userId = userId else { return }
 //        
@@ -522,18 +522,10 @@ import SwiftUI
 
 class HealthDataViewModel: ObservableObject {
     // Persisted daily metrics
-    @Published var waterIntake: Int = UserDefaults.standard.integer(forKey: "dailyWaterIntake") {
-        didSet { UserDefaults.standard.set(waterIntake, forKey: "dailyWaterIntake") }
-    }
-    @Published var sleepMinutes: Int = UserDefaults.standard.integer(forKey: "dailySleepMinutes") {
-        didSet { UserDefaults.standard.set(sleepMinutes, forKey: "dailySleepMinutes") }
-    }
-    @Published var stepCount: Int = UserDefaults.standard.integer(forKey: "dailyStepCount") {
-        didSet { UserDefaults.standard.set(stepCount, forKey: "dailyStepCount") }
-    }
-    @Published var meditationDuration: Int = UserDefaults.standard.integer(forKey: "dailyMeditationDuration") {
-        didSet { UserDefaults.standard.set(meditationDuration, forKey: "dailyMeditationDuration") }
-    }
+    @Published var waterIntake: Int = 0
+    @Published var sleepDuration: Int = 0 // in minutes
+    @Published var stepCount: Int = 0
+    @Published var meditationDuration: Int = 0
     @Published var exerciseTime: [String:Int] = [:]
     @Published var isLoading: Bool = true
     @Published var dailyData: [String: Any] = [:]
@@ -560,7 +552,7 @@ class HealthDataViewModel: ObservableObject {
             if let user = user {
                 self.setUserId(user.uid)
             } else {
-                self.removeListeners()
+                self.removeListener()
                 self.isLoading = false
             }
         }
@@ -570,217 +562,101 @@ class HealthDataViewModel: ObservableObject {
         if let handle = authListener {
             Auth.auth().removeStateDidChangeListener(handle)
         }
-        removeListeners()
+        removeListener()
     }
 
     func setUserId(_ id: String) {
         userId = id
-        setupFirestoreListeners()
+        setupFirestoreListener()
         loadAllData()
     }
 
     /// Loads both local and remote data, including historical data
     func loadAllData() {
-        guard let userId = userId else { isLoading = false; return }
+        guard let userId = userId else { return }
         isLoading = true
         
         Task {
             do {
-                // Load today's data from HealthKit and other sources
                 async let waterTask = try healthService.fetchTodaysWaterData(for: userId, date: Date())
                 async let sleepTask = try healthService.fetchTodaysSleepData(for: userId, date: Date())
                 async let stepsTask = try healthService.fetchTodaySteps()
                 async let meditationTask = try healthService.fetchTodaysMeditationData(for: userId, date: Date())
-                
-                // Load historical data to get the most recent values if today is empty
-                let historicalDataTask = await loadHistoricalData()
-                
+
                 let (water, minutes, steps, meditation) = await try (waterTask, sleepTask, stepsTask, meditationTask)
-                await historicalDataTask
-                
                 await MainActor.run {
-                    // Use today's data if available, otherwise use most recent historical data
-                    self.waterIntake = water ?? self.getMostRecentValue(for: "waterIntake") ?? self.waterIntake
-                    self.sleepMinutes = minutes ?? self.getMostRecentValue(for: "sleepDuration") ?? self.sleepMinutes
-                    self.stepCount = steps > 0 ? steps : self.getMostRecentValue(for: "stepsTaken") ?? self.stepCount
-                    self.meditationDuration = meditation ?? self.getMostRecentValue(for: "meditationDuration") ?? self.meditationDuration
-                    
-                    // Load most recent exercise data
-                    if let recentExercise = self.getMostRecentExerciseData() {
-                        self.exerciseTime = recentExercise
-                    }
-                    
+                    self.waterIntake = water ?? 0
+                    self.sleepDuration = minutes ?? 0
+                    self.stepCount = steps ?? 0
+                    self.meditationDuration = meditation ?? 0
                     self.isLoading = false
+                    self.syncDataToFirestore()
                 }
+
             } catch {
                 print("Error loading health data: \(error.localizedDescription)")
                 await MainActor.run {
                     self.isLoading = false
-                    self.errorMessage = error.localizedDescription
+                    self.errorMessage = "Failed to load health data: \(error.localizedDescription)"
                 }
             }
         }
     }
     
-    /// Load historical data from Firestore
-    private func loadHistoricalData() async {
+    func setupFirestoreListener() {
+        removeListener()
+        
         guard let userId = userId else { return }
         
-        do {
-            let snapshot = try await Firestore.firestore()
-                .collection("users")
-                .document(userId)
-                .collection("health_data")
-                .getDocuments()
-            
-            await MainActor.run {
-                self.historicalData.removeAll()
-                for document in snapshot.documents {
-                    self.historicalData[document.documentID] = document.data()
-                }
-                print("Loaded \(self.historicalData.count) historical documents")
-            }
-        } catch {
-            print("Error loading historical data: \(error.localizedDescription)")
-        }
-    }
-    
-    /// Get the most recent value for a specific field from historical data
-    private func getMostRecentValue(for field: String) -> Int? {
-        let sortedData = historicalData.sorted { (first, second) in
-            // Sort by document ID (which contains the date)
-            return first.key > second.key
-        }
-        
-        for (_, data) in sortedData {
-            if let value = data[field] as? Int, value > 0 {
-                return value
-            }
-        }
-        return nil
-    }
-    
-    /// Get the most recent exercise data from historical data
-    private func getMostRecentExerciseData() -> [String: Int]? {
-        let sortedData = historicalData.sorted { (first, second) in
-            return first.key > second.key
-        }
-        
-        for (_, data) in sortedData {
-            if let exerciseData = data["exerciseTime"] as? [String: Int], !exerciseData.isEmpty {
-                return exerciseData
-            }
-        }
-        return nil
-    }
-
-    private func setupFirestoreListeners() {
-        removeListeners()
-        guard let userId = userId else { return }
-
-        // Listen to today's document
-        let todayDoc = Firestore.firestore()
+        let userDoc = Firestore.firestore()
             .collection("users")
             .document(userId)
             .collection("health_data")
             .document(todayKey)
-
-        firestoreListener = todayDoc.addSnapshotListener { [weak self] snapshot, error in
-            guard let self = self else { return }
-            if let error = error {
-                print("Today's snapshot listener error: \(error.localizedDescription)")
-                return
-            }
-            if let snapshot = snapshot {
-                if !snapshot.exists {
-                    self.createInitialDocument()
-                }
-                if let data = snapshot.data() {
-                    DispatchQueue.main.async {
-                        // Only update if the values are greater than 0 or if current values are 0
-                        if let w = data["waterIntake"] as? Int, (w > 0 || self.waterIntake == 0) {
-                            self.waterIntake = w
-                        }
-                        if let s = data["sleepDuration"] as? Int, (s > 0 || self.sleepMinutes == 0) {
-                            self.sleepMinutes = s
-                        }
-                        if let st = data["stepsTaken"] as? Int, (st > 0 || self.stepCount == 0) {
-                            self.stepCount = st
-                        }
-                        if let med = data["meditationDuration"] as? Int, (med > 0 || self.meditationDuration == 0) {
-                            self.meditationDuration = med
-                        }
-                        if let et = data["exerciseTime"] as? [String:Int] {
-                            self.exerciseTime = et
-                        }
-                    }
-                }
-            }
-        }
         
-        // Listen to the entire health_data collection for historical changes
-        let healthDataCollection = Firestore.firestore()
-            .collection("users")
-            .document(userId)
-            .collection("health_data")
-            
-        historicalListener = healthDataCollection.addSnapshotListener { [weak self] snapshot, error in
+        firestoreListener = userDoc.addSnapshotListener { [weak self] snapshot, error in
             guard let self = self else { return }
+            
             if let error = error {
-                print("Historical snapshot listener error: \(error.localizedDescription)")
+                print("Error listening for data: \(error.localizedDescription)")
                 return
             }
-            if let snapshot = snapshot {
+            
+            // Inside setupFirestoreListener()
+            if let data = snapshot?.data() {
                 DispatchQueue.main.async {
-                    // Update historical data
-                    for document in snapshot.documents {
-                        self.historicalData[document.documentID] = document.data()
-                    }
-                    
-                    // If today's data is empty, load from historical data
-                    if self.waterIntake == 0, let recentWater = self.getMostRecentValue(for: "waterIntake") {
-                        self.waterIntake = recentWater
-                    }
-                    if self.sleepMinutes == 0, let recentSleep = self.getMostRecentValue(for: "sleepDuration") {
-                        self.sleepMinutes = recentSleep
-                    }
-                    if self.stepCount == 0, let recentSteps = self.getMostRecentValue(for: "stepsTaken") {
-                        self.stepCount = recentSteps
-                    }
-                    if self.meditationDuration == 0, let recentMeditation = self.getMostRecentValue(for: "meditationDuration") {
-                        self.meditationDuration = recentMeditation
-                    }
-                    if self.exerciseTime.isEmpty, let recentExercise = self.getMostRecentExerciseData() {
-                        self.exerciseTime = recentExercise
-                    }
+                    self.dailyData = data
+                    self.waterIntake = data["waterConsumption"] as? Int ?? self.waterIntake
+                    self.sleepDuration = data["sleepMinutes"] as? Int ?? self.sleepDuration
+                    self.stepCount = data["steps"] as? Int ?? self.stepCount
                 }
             }
         }
     }
-
-    private func removeListeners() {
+    
+    private func removeListener() {
         firestoreListener?.remove()
         firestoreListener = nil
-        historicalListener?.remove()
-        historicalListener = nil
     }
-
-    /// Creates the initial document for today's health data
+    
     private func createInitialDocument() {
         guard let userId = userId else { return }
+        
         let initialData: [String: Any] = [
-            "waterIntake": waterIntake,
-            "sleepDuration": sleepMinutes,
-            "stepsTaken": stepCount,
+            "steps": stepCount,
+            "waterConsumption": waterIntake,
+            "sleepDuration": sleepDuration,  // Store as minutes
             "meditationDuration": meditationDuration,
-            "exerciseTime": exerciseTime,
+            "activities": [],
             "lastUpdated": Date()
         ]
+        
         firestoreService.createDocument(for: todayKey, initialData: initialData) { error in
             if let error = error {
-                print("Error creating initial document: \(error.localizedDescription)")
+                print("Error creating document: \(error.localizedDescription)")
             } else {
-                print("Initial document created for \(self.todayKey)")
+                print("Initial document created successfully")
+                self.dailyData = initialData
             }
         }
     }
@@ -798,7 +674,7 @@ class HealthDataViewModel: ObservableObject {
     }
 
     func updateSleepMinutes(_ minutes: Int) {
-        sleepMinutes = minutes
+        sleepDuration = minutes
         performUpdate(
             waterIntake: nil,
             stepsTaken: nil,
@@ -861,7 +737,7 @@ class HealthDataViewModel: ObservableObject {
         guard let userId = userId else { return }
         let updatedData: [String: Any] = [
             "waterIntake": waterIntake,
-            "sleepDuration": sleepMinutes,
+            "sleepDuration": sleepDuration,
             "stepsTaken": stepCount,
             "meditationDuration": meditationDuration,
             "exerciseTime": exerciseTime,
