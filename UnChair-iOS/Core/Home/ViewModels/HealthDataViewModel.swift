@@ -521,23 +521,21 @@ import FirebaseFirestore
 import SwiftUI
 
 class HealthDataViewModel: ObservableObject {
-    // Persisted daily metrics
     @Published var waterIntake: Int = 0
-    @Published var sleepDuration: Int = 0 // in minutes
+    @Published var sleepDuration: Int = 0
     @Published var stepCount: Int = 0
     @Published var meditationDuration: Int = 0
     @Published var exerciseTime: [String:Int] = [:]
     @Published var isLoading: Bool = true
     @Published var dailyData: [String: Any] = [:]
     @Published var errorMessage: String?
-    @Published var historicalData: [String: [String: Any]] = [:] // Store all historical data
+    @Published var historicalData: [String: [String: Any]] = [:]
     
     let healthService = HealthDataService()
     private var authListener: AuthStateDidChangeListenerHandle?
     private let firestoreService = FirestoreService()
     private var userId: String?
     private var firestoreListener: ListenerRegistration?
-    private var historicalListener: ListenerRegistration?
     
     private var todayKey: String {
         let formatter = DateFormatter()
@@ -546,7 +544,6 @@ class HealthDataViewModel: ObservableObject {
     }
 
     init() {
-        // Listen for user changes
         authListener = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             guard let self = self else { return }
             if let user = user {
@@ -576,30 +573,92 @@ class HealthDataViewModel: ObservableObject {
         guard let userId = userId else { return }
         isLoading = true
         
-        Task {
-            do {
-                async let waterTask = try healthService.fetchTodaysWaterData(for: userId, date: Date())
-                async let sleepTask = try healthService.fetchTodaysSleepData(for: userId, date: Date())
-                async let stepsTask = try healthService.fetchTodaySteps()
-                async let meditationTask = try healthService.fetchTodaysMeditationData(for: userId, date: Date())
-
-                let (water, minutes, steps, meditation) = await try (waterTask, sleepTask, stepsTask, meditationTask)
-                await MainActor.run {
-                    self.waterIntake = water ?? 0
-                    self.sleepDuration = minutes ?? 0
-                    self.stepCount = steps ?? 0
-                    self.meditationDuration = meditation ?? 0
-                    self.isLoading = false
-                    self.syncDataToFirestore()
-                }
-
-            } catch {
-                print("Error loading health data: \(error.localizedDescription)")
-                await MainActor.run {
-                    self.isLoading = false
-                    self.errorMessage = "Failed to load health data: \(error.localizedDescription)"
+        // First try to load from Firestore
+        fetchFirestoreData { [weak self] in
+            guard let self = self else { return }
+            
+            // Then try to fetch from HealthKit if needed
+            Task {
+                do {
+                    // Only fetch from HealthKit if we don't have local data
+                    if self.waterIntake == 0 {
+                        if let water = try await self.healthService.fetchTodaysWaterData(for: userId, date: Date()) {
+                            await MainActor.run { self.waterIntake = water }
+                        }
+                    }
+                    
+                    if self.sleepDuration == 0 {
+                        if let sleep = try await self.healthService.fetchTodaysSleepData(for: userId, date: Date()) {
+                            await MainActor.run { self.sleepDuration = sleep }
+                        }
+                    }
+                    
+                    if self.stepCount == 0 {
+                        let steps = try await self.healthService.fetchTodaySteps()
+                        await MainActor.run { self.stepCount = steps }
+                    }
+                    
+                    if self.meditationDuration == 0 {
+                        if let meditation = try await self.healthService.fetchTodaysMeditationData(for: userId, date: Date()) {
+                            await MainActor.run { self.meditationDuration = meditation }
+                        }
+                    }
+                    
+                    await MainActor.run {
+                        self.isLoading = false
+                        self.syncDataToFirestore() // Ensure all data is synced
+                    }
+                } catch {
+                    print("Error loading health data: \(error.localizedDescription)")
+                    await MainActor.run {
+                        self.isLoading = false
+                        self.errorMessage = "Failed to load health data: \(error.localizedDescription)"
+                    }
                 }
             }
+        }
+    }
+    
+    private func fetchFirestoreData(completion: @escaping () -> Void) {
+        guard let userId = userId else {
+            isLoading = false
+            completion()
+            return
+        }
+        
+        let docRef = Firestore.firestore()
+            .collection("users")
+            .document(userId)
+            .collection("health_data")
+            .document(todayKey)
+        
+        docRef.getDocument { [weak self] snapshot, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Error fetching document: \(error.localizedDescription)")
+                self.isLoading = false
+                completion()
+                return
+            }
+            
+            if let data = snapshot?.data() {
+                DispatchQueue.main.async {
+                    self.dailyData = data
+                    self.waterIntake = data["waterIntake"] as? Int ?? (data["waterConsumption"] as? Int ?? 0)
+                    self.sleepDuration = data["sleepDuration"] as? Int ?? (data["sleepMinutes"] as? Int ?? 0)
+                    self.stepCount = data["stepsTaken"] as? Int ?? (data["steps"] as? Int ?? 0)
+                    self.meditationDuration = data["meditationDuration"] as? Int ?? 0
+                    self.exerciseTime = data["exerciseTime"] as? [String: Int] ?? [:]
+                    self.isLoading = false
+                }
+            } else {
+                // No document exists yet
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                }
+            }
+            completion()
         }
     }
     
@@ -622,13 +681,25 @@ class HealthDataViewModel: ObservableObject {
                 return
             }
             
-            // Inside setupFirestoreListener()
             if let data = snapshot?.data() {
                 DispatchQueue.main.async {
                     self.dailyData = data
-                    self.waterIntake = data["waterConsumption"] as? Int ?? self.waterIntake
-                    self.sleepDuration = data["sleepMinutes"] as? Int ?? self.sleepDuration
-                    self.stepCount = data["steps"] as? Int ?? self.stepCount
+                    // Update properties only if they're different to avoid unnecessary UI updates
+                    if let water = data["waterIntake"] as? Int, self.waterIntake != water {
+                        self.waterIntake = water
+                    }
+                    if let sleep = data["sleepDuration"] as? Int, self.sleepDuration != sleep {
+                        self.sleepDuration = sleep
+                    }
+                    if let steps = data["stepsTaken"] as? Int, self.stepCount != steps {
+                        self.stepCount = steps
+                    }
+                    if let meditation = data["meditationDuration"] as? Int, self.meditationDuration != meditation {
+                        self.meditationDuration = meditation
+                    }
+                    if let exercise = data["exerciseTime"] as? [String: Int] {
+                        self.exerciseTime = exercise
+                    }
                 }
             }
         }
