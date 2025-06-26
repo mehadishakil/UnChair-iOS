@@ -994,23 +994,99 @@ class AuthController: ObservableObject {
         self.isAnonymousUser = user.isAnonymous
         self.authState = .authenticated
     }
-
+    
     @MainActor
-    func signUpWithEmail(email: String, password: String, confirmPassword: String, fullName: String) async throws {
+    func signUpWithEmail(
+        email: String,
+        password: String,
+        confirmPassword: String,
+        fullName: String
+    ) async throws {
         guard password == confirmPassword else {
             throw NSError(domain: "AuthController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Passwords do not match"])
         }
 
         let credential = EmailAuthProvider.credential(withEmail: email, password: password)
-        try await handleCredentialSignIn(credential: credential, provider: "email")
 
-        if let user = Auth.auth().currentUser {
-            try await user.sendEmailVerification()
-            let changeRequest = user.createProfileChangeRequest()
+        if let anonUser = Auth.auth().currentUser, anonUser.isAnonymous {
+            
+            // collecting anonymous user data
+            let anonUID = Auth.auth().currentUser?.uid
+
+            var anonData: [QueryDocumentSnapshot] = []
+            if let anonUID = anonUID {
+                let snapshot = try await db.collection("users").document(anonUID).collection("health_data").getDocuments()
+                anonData = snapshot.documents
+            }
+            
+            
+            // linking new account
+            let authResult = try await anonUser.link(with: credential)
+            
+            
+            
+            try await authResult.user.sendEmailVerification()
+
+            let changeRequest = authResult.user.createProfileChangeRequest()
             changeRequest.displayName = fullName
             try await changeRequest.commitChanges()
+            
+            
+            // transfering data to new account
+            if let anonUID = anonUID, anonUID != authResult.user.uid {
+                for doc in anonData {
+                    let data = doc.data()
+                    try await db.collection("users").document(authResult.user.uid)
+                        .collection("health_data").document(doc.documentID)
+                        .setData(data)
+                }
+                try? await db.collection("users").document(anonUID).delete()
+            }
+            
+
+            try await saveUserData(user: authResult.user, provider: "email")
+            try await loadUserData(user: authResult.user)
+            identifyUserWithRevenueCat(uid: authResult.user.uid)
+            
+            
+            self.displayName = authResult.user.displayName ?? "User"
+            self.isAnonymousUser = authResult.user.isAnonymous
+            self.authState = .authenticated
+        } else {
+            // fallback: create user normally
+            let result = try await Auth.auth().createUser(withEmail: email, password: password)
+            try await result.user.sendEmailVerification()
+
+            let changeRequest = result.user.createProfileChangeRequest()
+            changeRequest.displayName = fullName
+            try await changeRequest.commitChanges()
+
+            try await saveUserData(user: result.user, provider: "email")
+            try await loadUserData(user: result.user)
+            identifyUserWithRevenueCat(uid: result.user.uid)
+            
+            self.displayName = result.user.displayName ?? "User"
+            self.isAnonymousUser = result.user.isAnonymous
+            self.authState = .authenticated
         }
     }
+
+//    @MainActor
+//    func signUpWithEmail(email: String, password: String, confirmPassword: String, fullName: String) async throws {
+//        guard password == confirmPassword else {
+//            throw NSError(domain: "AuthController", code: 400, userInfo: [NSLocalizedDescriptionKey: "Passwords do not match"])
+//        }
+//
+//        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+//        try await handleCredentialSignIn(credential: credential, provider: "email")
+//
+//        if let user = Auth.auth().currentUser {
+//            try await user.sendEmailVerification()
+//            let changeRequest = user.createProfileChangeRequest()
+//            changeRequest.displayName = fullName
+//            try await changeRequest.commitChanges()
+//        }
+//    }
 
     @MainActor
         func signInWithEmail(email: String, password: String) async throws -> Bool {

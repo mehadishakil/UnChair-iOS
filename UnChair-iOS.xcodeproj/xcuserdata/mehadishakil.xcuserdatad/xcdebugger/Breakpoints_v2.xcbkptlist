@@ -36,5 +36,51 @@
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "161458E7-08FF-4C02-B6E7-8E7A328A9CD3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UnChair-iOS/Core/Authentication/Screens/AuthController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1107"
+            endingLineNumber = "1107"
+            landmarkName = "signInWithEmail(email:password:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "161458E7-08FF-4C02-B6E7-8E7A328A9CD3 - f80dc2525fedffc7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for UnChair_iOS.AuthController.signInWithEmail(email: Swift.String, password: Swift.String) async throws -&gt; Swift.Bool"
+                  moduleName = "UnChair-iOS.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mehadishakil/Documents/UnChair-iOS/UnChair-iOS/Core/Authentication/Screens/AuthController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1107"
+                  endingLineNumber = "1107">
+               </Location>
+               <Location
+                  uuid = "161458E7-08FF-4C02-B6E7-8E7A328A9CD3 - 2ec23bbfb9d4bbc5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for UnChair_iOS.AuthController.signInWithEmail(email: Swift.String, password: Swift.String) async throws -&gt; Swift.Bool"
+                  moduleName = "UnChair-iOS.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mehadishakil/Documents/UnChair-iOS/UnChair-iOS/Core/Authentication/Screens/AuthController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1107"
+                  endingLineNumber = "1107">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
