@@ -120,11 +120,12 @@ import StoreKit
 struct MainView: View {
     @EnvironmentObject var authController: AuthController
     @EnvironmentObject var healthViewModel: HealthDataViewModel
-//    @Environment(\ .requestReview) var requestReview : RequestReviewAction
     @State private var isSubscriptionActive = false
     @State private var isLoadingSubscription = true
     @State private var customerInfo: CustomerInfo?
     @State private var showAccountPrompt = false  // For optional sign-up
+    
+    private let premiumEntitlementID = "UnChair Premium"
     
     var body: some View {
         ZStack {
@@ -140,9 +141,6 @@ struct MainView: View {
                     .onPurchaseCompleted { info in
                         self.customerInfo = info
                         checkSubscriptionStatus()
-                        // requestReview()
-                        // Prompt user to create account optionally
-                        // showAccountPrompt = true
                     }
                     .onRestoreCompleted { info in
                         self.customerInfo = info
@@ -160,25 +158,33 @@ struct MainView: View {
     }
     
     private func checkSubscriptionStatus() {
-        isLoadingSubscription = true
-        Purchases.shared.getCustomerInfo { info, error in
-            DispatchQueue.main.async {
-                self.isLoadingSubscription = false
-                if let info = info {
+            isLoadingSubscription = true
+            Purchases.shared.getCustomerInfo { info, error in
+                DispatchQueue.main.async {
+                    self.isLoadingSubscription = false
+
+                    if let error = error {
+                        print("❌ RevenueCat error: \(error.localizedDescription)")
+                        self.isSubscriptionActive = false
+                        return
+                    }
+
+                    guard let info = info else {
+                        self.isSubscriptionActive = false
+                        return
+                    }
+
                     self.customerInfo = info
-                    if let entitlement = info.entitlements["pro"] {
+                    if let entitlement = info.entitlements[premiumEntitlementID] {
                         self.isSubscriptionActive = entitlement.isActive
                     } else {
                         self.isSubscriptionActive = false
                     }
-                    // Set user ID for data storage (anon or auth'd)
+
                     if let uid = authController.currentUser?.uid {
                         healthViewModel.setUserId(uid)
                     }
-                } else {
-                    self.isSubscriptionActive = false
                 }
             }
         }
-    }
 }

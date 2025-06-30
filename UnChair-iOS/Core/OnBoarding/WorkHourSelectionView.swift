@@ -14,7 +14,8 @@ struct WorkHourSelectionView: View {
     @Binding var selectedEndMinute: Int
     
     @AppStorage("userTheme") private var userTheme: Theme = .system
-    
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+
     // State for the custom picker
     @State private var startTime: Date = {
         var components = DateComponents()
@@ -76,13 +77,15 @@ struct WorkHourSelectionView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                NotificationManager.shared.requestAuthorization { granted in
-                    if granted {
-                        print("Notification permission granted")
-                        NotificationManager.shared.scheduleNextBreakNotification()
-                    } else {
-                        print("Notification permission denied")
+            if !hasCompletedOnboarding {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    NotificationManager.shared.requestAuthorization { granted in
+                        if granted {
+                            print("Notification permission granted")
+                            NotificationManager.shared.scheduleNextBreakNotification()
+                        } else {
+                            print("Notification permission denied")
+                        }
                     }
                 }
             }

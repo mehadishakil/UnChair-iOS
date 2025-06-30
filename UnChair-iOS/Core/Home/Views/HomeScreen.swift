@@ -55,9 +55,6 @@ struct HomeScreen: View {
                                 
                                 CalmCorner()
                             }
-                            .onAppear {
-                                requestNotificationPermission()
-                            }
 //                            .refreshable {
 //                                healthViewModel.refreshData()
 //                            }
@@ -71,19 +68,19 @@ struct HomeScreen: View {
 //            // Only show the alert if we’ve never shown it before:
 //            showSyncAlert = !hasShownSyncPrompt
 //        }
-        .alert("Save your progress across devices", isPresented: $showSyncAlert) {
-            Button("Sign In") {
-                // mark “we’ve prompted once”
-                hasShownSyncPrompt = true
-                showAuthSheet = true
-            }
-            Button("Not Now", role: .cancel) {
-                // also don’t prompt again
-                hasShownSyncPrompt = true
-            }
-        } message: {
-            Text("To keep your data safe across devices, please sign in.")
-        }
+//        .alert("Save your progress across devices", isPresented: $showSyncAlert) {
+//            Button("Sign In") {
+//                // mark “we’ve prompted once”
+//                hasShownSyncPrompt = true
+//                showAuthSheet = true
+//            }
+//            Button("Not Now", role: .cancel) {
+//                // also don’t prompt again
+//                hasShownSyncPrompt = true
+//            }
+//        } message: {
+//            Text("To keep your data safe across devices, please sign in.")
+//        }
         .sheet(isPresented: $showAuthSheet) {
             NavigationStack {
                 SigninView(showAuthSheet: $showAuthSheet)
@@ -220,17 +217,6 @@ struct HomeScreen: View {
                 .padding()
             }
             .clipShape(RoundedRectangle(cornerRadius: 20))
-        }
-    }
-    
-    private func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
-            DispatchQueue.main.async {
-                notificationPermissionGranted = success
-                if !success, let error = error {
-                    print("Error requesting notification permission: \(error.localizedDescription)")
-                }
-            }
         }
     }
     

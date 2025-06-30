@@ -159,7 +159,7 @@ struct ManageSubscription: View {
         }
         
         let productId = entitlement.productIdentifier
-        planTitle = productId.contains("unchair_399_1m") ? "Monthly" : "Annual"
+        planTitle = productId.contains("unchair_monthly_subscription") ? "Monthly" : "Annual"
 
         
         // Fetch price from RevenueCat offerings (optional)
