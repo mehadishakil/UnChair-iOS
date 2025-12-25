@@ -241,16 +241,60 @@ struct SedentaryTime: View {
 
                     Spacer()
 
-                    Button(action: onTakeBreak) {
-                        Text("Unchair")
-                            .font(.headline)
-                            .foregroundColor(.white)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 16)
-                            .background(RoundedRectangle(cornerRadius: 12).fill(Color.blue))
-                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                    HStack(spacing: 8) {
+                        Button(action: {
+                            onTakeBreak()
+
+                            // Update Live Activity
+                            if #available(iOS 16.1, *) {
+                                LiveActivityManager.shared.handleBreakTaken()
+                            }
+                        }) {
+                            Text("Unchair")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 16)
+                                .background(RoundedRectangle(cornerRadius: 12).fill(Color.blue))
+                                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                        }
+                        .buttonStyle(.plain)
+
+                        // Debug: Start/Stop Live Activity
+                        if #available(iOS 16.1, *) {
+                            Menu {
+                                Button("Reset & Start Fresh") {
+                                    // Reset break time to now
+                                    let now = Date()
+                                    lastBreakTime = now.timeIntervalSince1970
+                                    AppGroupStorage.shared.lastBreakTime = now.timeIntervalSince1970
+
+                                    // Clean up and start fresh
+                                    LiveActivityManager.shared.endAllActivities()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        LiveActivityManager.shared.startActivity()
+                                    }
+                                }
+                                Button("Start Live Activity") {
+                                    LiveActivityManager.shared.startActivity()
+                                }
+                                Button("End Live Activity") {
+                                    LiveActivityManager.shared.endActivity()
+                                }
+                                Button("Clean Up All") {
+                                    LiveActivityManager.shared.endAllActivities()
+                                }
+                                Button("Print Status") {
+                                    LiveActivityManager.shared.printAllActivitiesStatus()
+                                }
+                            } label: {
+                                Image(systemName: "bolt.circle")
+                                    .font(.title3)
+                                    .foregroundColor(.blue)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
 
                 Spacer()
@@ -294,6 +338,19 @@ struct SedentaryTime: View {
         let baselineTime = max(lastBreakTime, start.timeIntervalSince1970)
         let elapsed = Int(now.timeIntervalSince1970 - baselineTime)
         timeElapsed = max(elapsed, 0)
+
+        // Update App Group storage for widget
+        AppGroupStorage.shared.lastBreakTime = lastBreakTime
+        AppGroupStorage.shared.breakIntervalMins = selectedDuration.totalMinutes
+        AppGroupStorage.shared.workStartHour = workStartHour
+        AppGroupStorage.shared.workStartMinute = workStartMinute
+        AppGroupStorage.shared.workEndHour = workEndHour
+        AppGroupStorage.shared.workEndMinute = workEndMinute
+
+        // Check and update Live Activity if thresholds crossed
+        if #available(iOS 16.1, *) {
+            LiveActivityManager.shared.checkAndUpdateForTimeElapsed(timeElapsed)
+        }
 
         // Schedule notification if needed
         if notificationPermissionGranted && timeElapsed >= (selectedDuration.totalMinutes * 60)

@@ -27,10 +27,27 @@ struct UnChair_iOSApp: App {
                 MainView()
                     .environmentObject(authController)
                     .environmentObject(healthViewModel)
+                    .onAppear {
+                        // Migrate data to App Group on launch
+                        AppGroupStorage.shared.migrateFromStandardUserDefaults()
+
+                        // Auto-start Live Activity if within active hours
+                        if #available(iOS 16.1, *) {
+                            LiveActivityManager.shared.checkAndAutoStart()
+                        }
+                    }
                     .onChange(of: scenePhase) { _, newPhase in
                         if newPhase == .active {
                             NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
                             NotificationManager.shared.scheduleNextBreakNotification()
+
+                            // Auto-start Live Activity if within active hours
+                            if #available(iOS 16.1, *) {
+                                LiveActivityManager.shared.checkAndAutoStart()
+                            }
+                        } else if newPhase == .background {
+                            // Sync data to App Group when going to background
+                            AppGroupStorage.shared.migrateFromStandardUserDefaults()
                         }
                     }
             } else {

@@ -2,81 +2,158 @@
 //  SedentaryActivityAttributes.swift
 //  UnChair-iOS
 //
-//  Created by Claude Code on 24/8/25.
+//  Live Activity attributes for sedentary time tracking
 //
 
 import ActivityKit
 import Foundation
+import SwiftUI
 
 struct SedentaryActivityAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         // Dynamic data that changes during the Live Activity
-        var sedentaryTime: TimeInterval
-        var timeUntilNextBreak: TimeInterval
+        var sessionStartTime: Date      // When tracking started
+        var breakIntervalSeconds: TimeInterval
         var isOnBreak: Bool
-        var lastBreakTime: Date?
-        var breakCount: Int
-        
-        init(sedentaryTime: TimeInterval = 0, timeUntilNextBreak: TimeInterval = 0, isOnBreak: Bool = false, lastBreakTime: Date? = nil, breakCount: Int = 0) {
-            self.sedentaryTime = sedentaryTime
-            self.timeUntilNextBreak = timeUntilNextBreak
+
+        init(sessionStartTime: Date, breakIntervalSeconds: TimeInterval, isOnBreak: Bool = false) {
+            self.sessionStartTime = sessionStartTime
+            self.breakIntervalSeconds = breakIntervalSeconds
             self.isOnBreak = isOnBreak
-            self.lastBreakTime = lastBreakTime
-            self.breakCount = breakCount
         }
-    }
-    
-    // Static data that doesn't change during the Live Activity
-    var workStartTime: Date
-    var workEndTime: Date
-    var breakInterval: TimeInterval // Time between breaks in seconds
-    var userName: String
-    
-    init(workStartTime: Date, workEndTime: Date, breakInterval: TimeInterval, userName: String = "User") {
-        self.workStartTime = workStartTime
-        self.workEndTime = workEndTime
-        self.breakInterval = breakInterval
-        self.userName = userName
-    }
-}
 
-extension SedentaryActivityAttributes {
-    // Helper computed properties for the ContentState
-    var contentState: ContentState {
-        return ContentState()
-    }
-}
+        // MARK: - Computed Properties
 
-extension SedentaryActivityAttributes.ContentState {
-    // Formatted strings for display
-    var formattedSedentaryTime: String {
-        let hours = Int(sedentaryTime) / 3600
-        let minutes = Int(sedentaryTime) % 3600 / 60
-        let seconds = Int(sedentaryTime) % 60
-        
-        if hours > 0 {
-            return String(format: "%d:%02d:%02d", hours, minutes, seconds)
-        } else {
+        /// Calculated elapsed time from session start
+        var elapsedTime: TimeInterval {
+            Date().timeIntervalSince(sessionStartTime)
+        }
+
+        /// Progress percentage (0.0 to >1.0 if over limit)
+        var progressPercentage: Double {
+            guard breakIntervalSeconds > 0 else { return 0 }
+            return elapsedTime / breakIntervalSeconds
+        }
+
+        /// Time remaining until break (can be negative if over limit)
+        var timeRemaining: TimeInterval {
+            breakIntervalSeconds - elapsedTime
+        }
+
+        /// Color state based on progress thresholds
+        var colorState: ColorState {
+            let percentage = progressPercentage
+            if percentage >= 1.0 {
+                return .red      // Over limit (100%+)
+            } else if percentage >= 0.8 {
+                return .orange   // Warning zone (80-100%)
+            } else {
+                return .green    // Safe zone (0-80%)
+            }
+        }
+
+        // MARK: - Formatted Strings
+
+        /// Formatted elapsed time (HH:MM:SS)
+        var formattedElapsedTime: String {
+            formatTime(elapsedTime)
+        }
+
+        /// Formatted time remaining or over limit
+        var formattedTimeRemaining: String {
+            if timeRemaining >= 0 {
+                return formatTime(timeRemaining)
+            } else {
+                return "Over by \(formatTime(abs(timeRemaining)))"
+            }
+        }
+
+        /// Short formatted elapsed time (MM:SS)
+        var shortFormattedElapsedTime: String {
+            let minutes = Int(elapsedTime) / 60
+            let seconds = Int(elapsedTime) % 60
             return String(format: "%02d:%02d", minutes, seconds)
         }
-    }
-    
-    var formattedTimeUntilNextBreak: String {
-        let minutes = Int(timeUntilNextBreak) / 60
-        let seconds = Int(timeUntilNextBreak) % 60
-        
-        if minutes > 0 {
-            return "\(minutes)m \(seconds)s"
-        } else {
-            return "\(seconds)s"
+
+        /// Progress percentage as string
+        var formattedProgress: String {
+            let percentage = min(progressPercentage * 100, 999)
+            return String(format: "%.0f%%", percentage)
+        }
+
+        // MARK: - Helper Methods
+
+        private func formatTime(_ seconds: TimeInterval) -> String {
+            let hours = Int(seconds) / 3600
+            let minutes = (Int(seconds) % 3600) / 60
+            let secs = Int(seconds) % 60
+
+            if hours > 0 {
+                return String(format: "%d:%02d:%02d", hours, minutes, secs)
+            } else {
+                return String(format: "%02d:%02d", minutes, secs)
+            }
+        }
+
+        // MARK: - Color State Enum
+
+        enum ColorState: Codable, Hashable {
+            case green, orange, red
+
+            var backgroundColor: Color {
+                switch self {
+                case .green:
+                    return Color.green.opacity(0.2)
+                case .orange:
+                    return Color.orange.opacity(0.3)
+                case .red:
+                    return Color.red.opacity(0.4)
+                }
+            }
+
+            var accentColor: Color {
+                switch self {
+                case .green:
+                    return .green
+                case .orange:
+                    return .orange
+                case .red:
+                    return .red
+                }
+            }
+
+            var progressColor: Color {
+                switch self {
+                case .green:
+                    return Color.green
+                case .orange:
+                    return Color.orange
+                case .red:
+                    return Color.red
+                }
+            }
+
+            var statusText: String {
+                switch self {
+                case .green:
+                    return "Active"
+                case .orange:
+                    return "Warning"
+                case .red:
+                    return "Over Limit"
+                }
+            }
         }
     }
-    
-    func progressValue(breakInterval: TimeInterval) -> Double {
-        // Calculate progress as a percentage (0.0 to 1.0)
-        guard breakInterval > 0 else { return 0.0 }
-        guard timeUntilNextBreak > 0 else { return 1.0 }
-        let elapsed = breakInterval - timeUntilNextBreak
-        return max(0.0, min(1.0, elapsed / breakInterval))
+
+    // Static attributes (don't change during activity)
+    var workStartTime: Date
+    var workEndTime: Date
+    var userName: String
+
+    init(workStartTime: Date, workEndTime: Date, userName: String = "User") {
+        self.workStartTime = workStartTime
+        self.workEndTime = workEndTime
+        self.userName = userName
     }
 }
