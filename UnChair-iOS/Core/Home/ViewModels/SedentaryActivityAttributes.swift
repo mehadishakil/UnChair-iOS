@@ -115,13 +115,9 @@ struct SedentaryActivityAttributes: ActivityAttributes {
         private func formatTime(_ seconds: TimeInterval) -> String {
             let hours = Int(seconds) / 3600
             let minutes = (Int(seconds) % 3600) / 60
-            let secs = Int(seconds) % 60
 
-            if hours > 0 {
-                return String(format: "%d:%02d:%02d", hours, minutes, secs)
-            } else {
-                return String(format: "%02d:%02d", minutes, secs)
-            }
+            // Format as HH:MM without seconds for Live Activity
+            return String(format: "%02d:%02d", hours, minutes)
         }
 
         // MARK: - Color State Enum

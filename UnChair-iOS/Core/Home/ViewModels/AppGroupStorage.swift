@@ -29,6 +29,38 @@ class AppGroupStorage {
         }
     }
 
+    // MARK: - Break State Persistence
+
+    var isOnBreak: Bool {
+        get {
+            userDefaults?.bool(forKey: "isOnBreak") ?? false
+        }
+        set {
+            userDefaults?.set(newValue, forKey: "isOnBreak")
+            userDefaults?.synchronize()
+        }
+    }
+
+    var breakEndTime: Double {
+        get {
+            userDefaults?.double(forKey: "breakEndTime") ?? 0
+        }
+        set {
+            userDefaults?.set(newValue, forKey: "breakEndTime")
+            userDefaults?.synchronize()
+        }
+    }
+
+    var breakDurationMinutes: Int {
+        get {
+            userDefaults?.integer(forKey: "breakDurationMinutes") ?? 0
+        }
+        set {
+            userDefaults?.set(newValue, forKey: "breakDurationMinutes")
+            userDefaults?.synchronize()
+        }
+    }
+
     // MARK: - Break Interval Settings
 
     var breakIntervalMins: Int {

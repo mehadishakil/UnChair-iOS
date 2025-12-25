@@ -21,123 +21,86 @@ struct SedentaryLiveActivityLiveActivity: Widget {
             DynamicIsland {
                 // MARK: Expanded State
                 DynamicIslandExpandedRegion(.leading) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "figure.walk")
-                            .foregroundColor(context.state.colorState.accentColor)
-                            .font(.title3)
+                    VStack {
+                        
+                        
+                        HStack(spacing: 6) {
+                            Image(systemName: context.state.isOnBreak ? "cup.and.saucer.fill" : "figure.walk")
+                                .foregroundColor(context.state.isOnBreak ? .green : context.state.colorState.accentColor)
+                                .font(.title2)
+                            
+                            Text(context.state.isOnBreak ? "Break Time" : "Active Time")
+                                .font(.caption)
+                                .foregroundColor(.primary)
+                        }
                     }
                 }
 
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text(context.state.colorState.statusText)
-                            .font(.caption2)
-                            .foregroundColor(context.state.colorState.accentColor)
+                        // Auto-updating timer
+                        if context.state.isOnBreak, let breakEnd = context.state.breakEndTime {
+                            Text("remaining")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.trailing)
 
-                        Text(context.state.formattedProgress)
-                            .font(.caption)
-                            .bold()
-                            .foregroundColor(.secondary)
+                            Text(timerInterval: Date()...breakEnd, countsDown: true)
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundColor(.green)
+                                .monospacedDigit()
+                                .multilineTextAlignment(.trailing)
+                        } else {
+                            Text("elapsed")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.trailing)
+
+                            Text(context.state.sessionStartTime, style: .timer)
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundColor(context.state.colorState.accentColor)
+                                .monospacedDigit()
+                                .multilineTextAlignment(.trailing)
+                        }
                     }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
 
                 DynamicIslandExpandedRegion(.center) {
-                    VStack(spacing: 4) {
-                        Text("ACTIVE TIME")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundColor(.secondary)
-                            .tracking(0.3)
-
-                        Text(context.state.formattedElapsedTime)
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .foregroundColor(context.state.colorState.accentColor)
-                            .monospacedDigit()
-                    }
+                    // Empty - content is in leading and trailing
                 }
 
                 DynamicIslandExpandedRegion(.bottom) {
-                    VStack(spacing: 8) {
-                        // Progress Bar
-                        GeometryReader { geometry in
-                            ZStack(alignment: .leading) {
-                                RoundedRectangle(cornerRadius: 5)
-                                    .fill(Color.gray.opacity(0.15))
-                                    .frame(height: 6)
-
-                                RoundedRectangle(cornerRadius: 5)
-                                    .fill(
-                                        LinearGradient(
-                                            colors: [
-                                                context.state.colorState.progressColor,
-                                                context.state.colorState.progressColor.opacity(0.8)
-                                            ],
-                                            startPoint: .leading,
-                                            endPoint: .trailing
-                                        )
-                                    )
-                                    .frame(
-                                        width: geometry.size.width * min(context.state.progressPercentage, 1.0),
-                                        height: 6
-                                    )
-                            }
-                        }
-                        .frame(height: 6)
-
-                        // Time Remaining / Over Limit
-                        HStack {
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text("REMAINING")
-                                    .font(.system(size: 8, weight: .semibold))
-                                    .foregroundColor(.secondary)
-                                    .tracking(0.2)
-                                Text(context.state.formattedTimeRemaining)
-                                    .font(.system(size: 12, weight: .bold))
-                                    .foregroundColor(.primary)
-                            }
-
-                            Spacer()
-
-                            // Take Break Button
-                            Button(intent: TakeBreakIntent()) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "figure.stand")
-                                        .font(.system(size: 11, weight: .semibold))
-                                    Text("Take Break")
-                                        .font(.system(size: 12, weight: .bold))
-                                }
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(
-                                    LinearGradient(
-                                        colors: [
-                                            context.state.colorState.accentColor,
-                                            context.state.colorState.accentColor.opacity(0.9)
-                                        ],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    )
-                                )
-                                .cornerRadius(8)
-                            }
-                        }
+                    // Centered status text for both modes
+                    HStack {
+                        Spacer()
+                        Text(context.state.isOnBreak ? "In Break" : "At Work")
+                            .font(.caption)
+                            .foregroundColor(context.state.isOnBreak ? .green : context.state.colorState.accentColor)
+                        Spacer()
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 2)
                 }
 
             } compactLeading: {
                 // MARK: Compact Leading
-                Image(systemName: "figure.walk")
-                    .foregroundColor(context.state.colorState.accentColor)
-                    .font(.system(size: 16))
+                Image(systemName: context.state.isOnBreak ? "cup.and.saucer.fill" : "figure.walk")
+                    .foregroundColor(context.state.isOnBreak ? .green : context.state.colorState.accentColor)
+                    .font(.system(size: 14))
 
             } compactTrailing: {
                 // MARK: Compact Trailing
-                Text(context.state.shortFormattedElapsedTime)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(context.state.colorState.accentColor)
-                    .monospacedDigit()
+                // Auto-updating timer
+                if context.state.isOnBreak, let breakEnd = context.state.breakEndTime {
+                    Text(timerInterval: Date()...breakEnd, countsDown: true)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.green)
+                        .monospacedDigit()
+                } else {
+                    Text(context.state.sessionStartTime, style: .timer)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(context.state.colorState.accentColor)
+                        .monospacedDigit()
+                }
 
             } minimal: {
                 // MARK: Minimal
@@ -178,117 +141,48 @@ struct WorkModeView: View {
     let context: ActivityViewContext<SedentaryActivityAttributes>
 
     var body: some View {
-        VStack(spacing: 10) {
-            // Header
-            HStack {
-                Image(systemName: "figure.walk")
-                    .foregroundColor(context.state.colorState.accentColor)
-                    .font(.title3)
-                    .fontWeight(.semibold)
+        HStack(spacing: 12) {
+            // Icon
+            Image(systemName: "figure.walk")
+                .foregroundColor(context.state.colorState.accentColor)
+                .font(.title)
+                .frame(width: 44, height: 44)
+                .background(context.state.colorState.accentColor.opacity(0.15))
+                .clipShape(Circle())
 
-                Text("UnChair Active Time")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.primary)
-
-                Spacer()
-
-                Text(context.state.colorState.statusText)
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(context.state.colorState.accentColor)
-                    .cornerRadius(8)
-            }
-
-            // Time Display
-            HStack(alignment: .bottom, spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("ELAPSED TIME")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.secondary)
-                        .tracking(0.3)
-
-                    Text(context.state.formattedElapsedTime)
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundColor(context.state.colorState.accentColor)
-                        .monospacedDigit()
-                }
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text("REMAINING")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.secondary)
-                        .tracking(0.3)
-
-                    Text(context.state.formattedTimeRemaining)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.primary)
-                        .monospacedDigit()
-                }
-            }
-
-            // Progress Bar
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.gray.opacity(0.15))
-                        .frame(height: 8)
-
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    context.state.colorState.progressColor,
-                                    context.state.colorState.progressColor.opacity(0.8)
-                                ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .frame(
-                            width: geometry.size.width * min(context.state.progressPercentage, 1.0),
-                            height: 8
-                        )
-                }
-            }
-            .frame(height: 8)
-
-            // Progress Percentage & Button
-            HStack {
-                Text(context.state.formattedProgress)
+            // Time and Info
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Active Time")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.primary)
 
-                Spacer()
+                // Auto-updating timer
+                Text(context.state.sessionStartTime, style: .timer)
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundColor(context.state.colorState.accentColor)
+                    .monospacedDigit()
 
-                // Take Break Button
-                Button(intent: TakeBreakIntent()) {
-                    HStack(spacing: 5) {
-                        Image(systemName: "figure.stand")
-                            .font(.system(size: 13, weight: .semibold))
-                        Text("Take Break")
-                            .font(.system(size: 14, weight: .bold))
-                    }
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 9)
-                    .background(
-                        LinearGradient(
-                            colors: [
-                                context.state.colorState.accentColor,
-                                context.state.colorState.accentColor.opacity(0.9)
-                            ],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .cornerRadius(10)
-                }
-                .buttonStyle(.plain)
+                Text(context.state.colorState.statusText)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.secondary)
             }
+
+            Spacer()
+
+            // Take Break Button
+            Button(intent: TakeBreakIntent()) {
+                VStack(spacing: 4) {
+                    Image(systemName: "figure.stand")
+                        .font(.system(size: 18, weight: .semibold))
+                    Text("Break")
+                        .font(.system(size: 11, weight: .bold))
+                }
+                .foregroundColor(.white)
+                .frame(width: 60, height: 60)
+                .background(context.state.colorState.accentColor)
+                .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
         }
         .padding(16)
         .activityBackgroundTint(context.state.colorState.backgroundColor)
@@ -302,95 +196,48 @@ struct BreakModeView: View {
     let context: ActivityViewContext<SedentaryActivityAttributes>
 
     var body: some View {
-        VStack(spacing: 10) {
-            // Header
-            HStack {
-                Image(systemName: "cup.and.saucer.fill")
-                    .foregroundColor(.green)
-                    .font(.title3)
-                    .fontWeight(.semibold)
+        HStack(spacing: 12) {
+            // Icon
+            Image(systemName: "cup.and.saucer.fill")
+                .foregroundColor(.green)
+                .font(.title)
+                .frame(width: 44, height: 44)
+                .background(Color.green.opacity(0.15))
+                .clipShape(Circle())
 
+            // Time and Info
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Break Time")
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.primary)
 
-                Spacer()
-
-                Text("On Break")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color.green)
-                    .cornerRadius(8)
-            }
-
-            // Time Display
-            HStack(alignment: .bottom, spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("TIME REMAINING")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.secondary)
-                        .tracking(0.3)
-
-                    Text(context.state.formattedBreakTimeRemaining)
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                // Auto-updating countdown timer
+                if let breakEnd = context.state.breakEndTime {
+                    Text(timerInterval: Date()...breakEnd, countsDown: true)
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(.green)
+                        .monospacedDigit()
+                } else {
+                    Text("00:00")
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
                         .foregroundColor(.green)
                         .monospacedDigit()
                 }
 
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text("PROGRESS")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundColor(.secondary)
-                        .tracking(0.3)
-
-                    Text("\(Int(context.state.breakProgress * 100))%")
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundColor(.primary)
-                }
-            }
-
-            // Progress Bar
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.gray.opacity(0.15))
-                        .frame(height: 8)
-
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color.green,
-                                    Color.green.opacity(0.8)
-                                ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .frame(
-                            width: geometry.size.width * context.state.breakProgress,
-                            height: 8
-                        )
-                }
-            }
-            .frame(height: 8)
-
-            // Message
-            HStack {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 12))
-                    .foregroundColor(.green)
-
                 Text("Enjoy your break!")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(.primary)
-
-                Spacer()
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.secondary)
             }
+
+            Spacer()
+
+            // Icon indicator
+            Image(systemName: "sparkles")
+                .font(.title)
+                .foregroundColor(.green)
+                .frame(width: 60, height: 60)
+                .background(Color.green.opacity(0.15))
+                .clipShape(Circle())
         }
         .padding(16)
         .activityBackgroundTint(Color.green.opacity(0.1))

@@ -38,16 +38,26 @@ struct UnChair_iOSApp: App {
                     }
                     .onChange(of: scenePhase) { _, newPhase in
                         if newPhase == .active {
+                            print("🔵 App became active")
+
                             NotificationManager.shared.checkAndResetLastBreakTimeIfNeeded()
                             NotificationManager.shared.scheduleNextBreakNotification()
 
-                            // Auto-start Live Activity if within active hours
+                            // Check and restore Live Activity state (including break mode)
                             if #available(iOS 16.1, *) {
-                                LiveActivityManager.shared.checkAndAutoStart()
+                                // Small delay to ensure storage is ready
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    LiveActivityManager.shared.checkAndAutoStart()
+                                }
                             }
                         } else if newPhase == .background {
+                            print("🔵 App going to background")
                             // Sync data to App Group when going to background
                             AppGroupStorage.shared.migrateFromStandardUserDefaults()
+
+                            // Also sync break state
+                            let storage = AppGroupStorage.shared
+                            print("🔵 Break state at background: isOnBreak=\(storage.isOnBreak), breakEndTime=\(storage.breakEndTime)")
                         }
                     }
             } else {

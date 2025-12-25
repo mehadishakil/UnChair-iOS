@@ -73,6 +73,11 @@ class LiveActivityManager: ObservableObject {
             return
         }
 
+        // Check if we're currently on a break
+        let isOnBreak = storage.isOnBreak
+        let breakEndTime = storage.breakEndTime
+        print("🟢 Is on break: \(isOnBreak), breakEndTime: \(breakEndTime)")
+
         // Validate storage data
         print("🟢 Break interval: \(storage.breakIntervalMins) mins")
         print("🟢 Last break time: \(storage.lastBreakTime > 0 ? Date(timeIntervalSince1970: storage.lastBreakTime).description : "Never")")
@@ -86,28 +91,6 @@ class LiveActivityManager: ObservableObject {
                 return
             }
 
-            // Calculate session start time
-            let sessionStart: Date
-
-            if lastBreakTime > 0 {
-                // Use last break time if it exists and is today
-                let lastBreakDate = Date(timeIntervalSince1970: lastBreakTime)
-                let calendar = Calendar.current
-
-                if calendar.isDateInToday(lastBreakDate) {
-                    sessionStart = lastBreakDate
-                    print("🟢 Using last break time from today: \(sessionStart)")
-                } else {
-                    // If last break was not today, use active hour start
-                    sessionStart = getActiveHourStartForToday()
-                    print("🟢 Last break was not today, using active hour start: \(sessionStart)")
-                }
-            } else {
-                // No previous break, use active hour start
-                sessionStart = getActiveHourStartForToday()
-                print("🟢 No previous break, using active hour start: \(sessionStart)")
-            }
-
             // Create attributes
             let attributes = SedentaryActivityAttributes(
                 workStartTime: getActiveHourStartForToday(),
@@ -115,14 +98,43 @@ class LiveActivityManager: ObservableObject {
                 userName: "User"
             )
 
-            // Create initial content state
-            let initialState = SedentaryActivityAttributes.ContentState(
-                sessionStartTime: sessionStart,
-                breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
-                isOnBreak: false
-            )
+            // Check if we need to restore break state
+            let initialState: SedentaryActivityAttributes.ContentState
 
-            print("🟢 Initial state - Elapsed: \(initialState.formattedElapsedTime), Progress: \(initialState.formattedProgress)")
+            if isOnBreak && breakEndTime > 0 {
+                let breakEnd = Date(timeIntervalSince1970: breakEndTime)
+                let now = Date()
+
+                // Check if break is still active
+                if breakEnd > now {
+                    // Restore break state
+                    let breakDuration = breakEnd.timeIntervalSince(now)
+                    initialState = SedentaryActivityAttributes.ContentState(
+                        sessionStartTime: now,
+                        breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
+                        isOnBreak: true,
+                        breakDurationSeconds: breakDuration,
+                        breakEndTime: breakEnd
+                    )
+                    print("🟢 Restoring break state - \(Int(breakDuration / 60)) minutes remaining")
+                } else {
+                    // Break has ended, start work mode
+                    initialState = SedentaryActivityAttributes.ContentState(
+                        sessionStartTime: getSessionStart(storage: storage),
+                        breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
+                        isOnBreak: false
+                    )
+                    print("🟢 Break ended, starting work mode")
+                }
+            } else {
+                // Normal work mode
+                initialState = SedentaryActivityAttributes.ContentState(
+                    sessionStartTime: getSessionStart(storage: storage),
+                    breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
+                    isOnBreak: false
+                )
+                print("🟢 Starting work mode - Elapsed: \(initialState.formattedElapsedTime)")
+            }
 
             // Create activity content
             let content = ActivityContent(
@@ -141,9 +153,7 @@ class LiveActivityManager: ObservableObject {
             print("✅ Live Activity started successfully!")
             print("✅ Activity ID: \(currentActivity?.id ?? "none")")
             print("✅ Activity state: \(String(describing: currentActivity?.activityState))")
-            print("✅ Break interval: \(breakIntervalMins) mins")
-            print("✅ Session start: \(sessionStart)")
-            print("✅ Color state: \(initialState.colorState.statusText)")
+            print("✅ Mode: \(initialState.isOnBreak ? "BREAK" : "WORK")")
 
         } catch let error as NSError {
             print("❌ Error starting Live Activity")
@@ -167,6 +177,21 @@ class LiveActivityManager: ObservableObject {
             print("❌ Unexpected error starting Live Activity: \(error)")
             print("❌ Error type: \(type(of: error))")
         }
+    }
+
+    private func getSessionStart(storage: AppGroupStorage) -> Date {
+        let lastBreakTime = storage.lastBreakTime
+
+        if lastBreakTime > 0 {
+            let lastBreakDate = Date(timeIntervalSince1970: lastBreakTime)
+            let calendar = Calendar.current
+
+            if calendar.isDateInToday(lastBreakDate) {
+                return lastBreakDate
+            }
+        }
+
+        return getActiveHourStartForToday()
     }
 
     /// Update the activity state (called when thresholds crossed)
@@ -241,11 +266,18 @@ class LiveActivityManager: ObservableObject {
 
     /// Start a break with specified duration
     func startBreak(durationMinutes: Int) {
+        print("🔵 LiveActivityManager.startBreak called - duration: \(durationMinutes)")
+        print("🔵 currentActivity: \(String(describing: currentActivity?.id))")
+        print("🔵 activityState: \(String(describing: currentActivity?.activityState))")
+
         guard let activity = currentActivity else {
             print("⚠️ No active Live Activity to start break")
             return
         }
-        guard activity.activityState == .active else { return }
+        guard activity.activityState == .active else {
+            print("⚠️ Live Activity not active, state: \(activity.activityState)")
+            return
+        }
 
         Task {
             let now = Date()
@@ -253,8 +285,17 @@ class LiveActivityManager: ObservableObject {
             let breakDuration = TimeInterval(durationMinutes * 60)
             let breakEndTime = now.addingTimeInterval(breakDuration)
 
+            print("🔵 Break start: now=\(now), endTime=\(breakEndTime)")
+
             // Update last break time in storage
             storage.lastBreakTime = now.timeIntervalSince1970
+
+            // CRITICAL: Save break state to App Group storage for persistence
+            storage.isOnBreak = true
+            storage.breakEndTime = breakEndTime.timeIntervalSince1970
+            storage.breakDurationMinutes = durationMinutes
+
+            print("🔵 Saved break state to storage: isOnBreak=\(storage.isOnBreak), breakEndTime=\(storage.breakEndTime)")
 
             // Create new state for break mode
             let newState = SedentaryActivityAttributes.ContentState(
@@ -265,6 +306,8 @@ class LiveActivityManager: ObservableObject {
                 breakEndTime: breakEndTime
             )
 
+            print("🔵 Updating Live Activity with isOnBreak=true, breakEndTime=\(breakEndTime)")
+
             await activity.update(
                 ActivityContent(
                     state: newState,
@@ -272,7 +315,8 @@ class LiveActivityManager: ObservableObject {
                 )
             )
 
-            print("✅ Live Activity switched to break mode - \(durationMinutes) minutes")
+            print("✅ Live Activity updated to break mode - \(durationMinutes) minutes")
+            print("✅ Break end time: \(breakEndTime)")
 
             // Schedule notification for when break ends
             scheduleBreakEndNotification(endTime: breakEndTime)
@@ -293,6 +337,13 @@ class LiveActivityManager: ObservableObject {
 
             // Update last break time to now (starting fresh work session)
             storage.lastBreakTime = now.timeIntervalSince1970
+
+            // CRITICAL: Clear break state from App Group storage
+            storage.isOnBreak = false
+            storage.breakEndTime = 0
+            storage.breakDurationMinutes = 0
+
+            print("🔵 Cleared break state from storage")
 
             // Create new state for work mode
             let newState = SedentaryActivityAttributes.ContentState(
@@ -382,6 +433,12 @@ class LiveActivityManager: ObservableObject {
     func checkAndAutoStart() {
         print("🔵 checkAndAutoStart() called")
 
+        let storage = AppGroupStorage.shared
+        let isOnBreak = storage.isOnBreak
+        let breakEndTime = storage.breakEndTime
+
+        print("🔵 Current break state: isOnBreak=\(isOnBreak), breakEndTime=\(breakEndTime)")
+
         // Check if within active hours first
         guard isWithinActiveHours() else {
             print("🔴 Not within active hours, skipping auto-start")
@@ -398,7 +455,32 @@ class LiveActivityManager: ObservableObject {
 
         // If we have an active activity, check if it's the current one we're tracking
         if let tracked = currentActivity, tracked.activityState == .active {
-            print("🟢 Already have active tracked activity, no action needed")
+            print("🟢 Already have active tracked activity")
+
+            // Check if we need to restore break state
+            if isOnBreak && breakEndTime > 0 {
+                let breakEnd = Date(timeIntervalSince1970: breakEndTime)
+                let now = Date()
+
+                if breakEnd > now {
+                    print("🟢 Break is active, restoring break state in existing activity")
+                    let breakDuration = breakEnd.timeIntervalSince(now)
+
+                    Task {
+                        let newState = SedentaryActivityAttributes.ContentState(
+                            sessionStartTime: now,
+                            breakIntervalSeconds: TimeInterval(storage.breakIntervalMins * 60),
+                            isOnBreak: true,
+                            breakDurationSeconds: breakDuration,
+                            breakEndTime: breakEnd
+                        )
+
+                        await tracked.update(ActivityContent(state: newState, staleDate: nil))
+                        print("✅ Break state restored in existing Live Activity")
+                    }
+                }
+            }
+
             return
         }
 
@@ -414,7 +496,7 @@ class LiveActivityManager: ObservableObject {
         }
 
         print("🟢 Conditions met, calling startActivity()")
-        // Start activity
+        // Start activity (will automatically restore break state if needed)
         startActivity()
     }
 

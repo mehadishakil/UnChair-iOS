@@ -204,6 +204,7 @@ struct SedentaryTime: View {
     @State private var isOnBreak: Bool = false
     @State private var breakEndTime: Date?
     @State private var breakTimeRemaining: Int = 0
+    @State private var showCancelBreakAlert: Bool = false
 
     // Active hours from AppStorage
     @AppStorage("workStartHour") private var workStartHour: Int = 9
@@ -260,6 +261,18 @@ struct SedentaryTime: View {
                     Spacer()
                 }
                 .padding()
+                .onTapGesture {
+                    showCancelBreakAlert = true
+                }
+                .rotation3DEffect(
+                    .degrees(isOnBreak ? 0 : 180),
+                    axis: (x: 1.0, y: 0.0, z: 0.0),
+                    perspective: 0.5
+                )
+                .transition(.asymmetric(
+                    insertion: .opacity.combined(with: .scale),
+                    removal: .opacity.combined(with: .scale)
+                ))
             } else {
                 // Work Mode UI (Original)
                 HStack {
@@ -348,6 +361,15 @@ struct SedentaryTime: View {
                 Spacer()
             }
             .padding()
+            .rotation3DEffect(
+                .degrees(isOnBreak ? 180 : 0),
+                axis: (x: 1.0, y: 0.0, z: 0.0),
+                perspective: 0.5
+            )
+            .transition(.asymmetric(
+                insertion: .opacity.combined(with: .scale),
+                removal: .opacity.combined(with: .scale)
+            ))
             }
         }
         .frame(height: 170)
@@ -358,7 +380,20 @@ struct SedentaryTime: View {
         )
         .cornerRadius(20)
         .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
+        .alert("Cancel Break?", isPresented: $showCancelBreakAlert) {
+            Button("Cancel Break", role: .destructive) {
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                    cancelBreak()
+                }
+            }
+            Button("Continue Break", role: .cancel) { }
+        } message: {
+            Text("Are you sure you want to end your break early?")
+        }
         .onAppear {
+            // Restore break state if app was closed during break
+            restoreBreakStateIfNeeded()
+
             updateTimeElapsed()
             NotificationCenter.default.addObserver(forName: .breakNotificationTapped, object: nil, queue: .main) { _ in
                 updateTimeElapsed()
@@ -382,6 +417,17 @@ struct SedentaryTime: View {
     private func startBreak(duration: Int) {
         // DON'T call onTakeBreak() to avoid scrolling to exercise section
 
+        // Calculate break end time
+        let endTime = Date().addingTimeInterval(TimeInterval(duration * 60))
+
+        // Persist break state to App Group storage
+        let storage = AppGroupStorage.shared
+        storage.isOnBreak = true
+        storage.breakEndTime = endTime.timeIntervalSince1970
+        storage.breakDurationMinutes = duration
+
+        print("🔵 startBreak called - duration: \(duration) min, endTime: \(endTime)")
+
         // Ensure Live Activity is running before switching to break mode
         if #available(iOS 16.1, *) {
             let manager = LiveActivityManager.shared
@@ -391,21 +437,24 @@ struct SedentaryTime: View {
                 print("🟡 No Live Activity running, starting one first...")
                 manager.startActivity()
 
-                // Give it a moment to start, then switch to break mode
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    print("🟢 Starting break mode: \(duration) minutes")
+                // Give it more time to start, then switch to break mode
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    print("🟢 Now starting break mode: \(duration) minutes")
+                    print("🟢 Activity state: \(String(describing: manager.currentActivity?.activityState))")
                     manager.startBreak(durationMinutes: duration)
                 }
             } else {
-                print("🟢 Live Activity exists, starting break: \(duration) minutes")
+                print("🟢 Live Activity exists (state: \(String(describing: manager.currentActivity?.activityState))), starting break: \(duration) minutes")
                 manager.startBreak(durationMinutes: duration)
             }
         }
 
-        // Set local state for card UI
-        isOnBreak = true
-        breakEndTime = Date().addingTimeInterval(TimeInterval(duration * 60))
-        breakTimeRemaining = duration * 60
+        // Set local state for card UI with animation
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+            isOnBreak = true
+            breakEndTime = endTime
+            breakTimeRemaining = duration * 60
+        }
     }
 
     private func updateTimeElapsed() {
@@ -489,20 +538,63 @@ struct SedentaryTime: View {
     }
 
     private func endBreak() {
-        // Switch back to work mode
-        isOnBreak = false
-        breakEndTime = nil
-        breakTimeRemaining = 0
+        // Clear persisted break state
+        let storage = AppGroupStorage.shared
+        storage.isOnBreak = false
+        storage.breakEndTime = 0
+        storage.breakDurationMinutes = 0
+
+        // Switch back to work mode with animation
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+            isOnBreak = false
+            breakEndTime = nil
+            breakTimeRemaining = 0
+        }
 
         // Reset work tracking - start fresh session
         let now = Date()
         lastBreakTime = now.timeIntervalSince1970
-        AppGroupStorage.shared.lastBreakTime = now.timeIntervalSince1970
+        storage.lastBreakTime = now.timeIntervalSince1970
 
         // Live Activity will auto-switch via LiveActivityManager.endBreak()
         // (the timer in LiveActivityManager will handle this automatically)
 
         print("✅ Break ended - switched back to work mode")
+    }
+
+    private func cancelBreak() {
+        // End break through Live Activity manager
+        if #available(iOS 16.1, *) {
+            LiveActivityManager.shared.endBreak()
+        }
+
+        // Call endBreak to clean up local state
+        endBreak()
+
+        print("🚫 Break cancelled by user")
+    }
+
+    private func restoreBreakStateIfNeeded() {
+        let storage = AppGroupStorage.shared
+
+        // Check if we were on break
+        if storage.isOnBreak && storage.breakEndTime > 0 {
+            let endTime = Date(timeIntervalSince1970: storage.breakEndTime)
+            let now = Date()
+
+            // Check if break is still active
+            if endTime > now {
+                // Restore break state
+                isOnBreak = true
+                breakEndTime = endTime
+                breakTimeRemaining = Int(endTime.timeIntervalSinceNow)
+                print("✅ Restored break state - \(breakTimeRemaining)s remaining")
+            } else {
+                // Break already ended, clean up
+                endBreak()
+                print("🟡 Break already ended, cleaning up")
+            }
+        }
     }
 }
 
