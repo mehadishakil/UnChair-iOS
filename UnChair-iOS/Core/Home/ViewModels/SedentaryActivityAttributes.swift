@@ -15,11 +15,15 @@ struct SedentaryActivityAttributes: ActivityAttributes {
         var sessionStartTime: Date      // When tracking started
         var breakIntervalSeconds: TimeInterval
         var isOnBreak: Bool
+        var breakDurationSeconds: TimeInterval  // Duration of the break
+        var breakEndTime: Date?  // When the break should end
 
-        init(sessionStartTime: Date, breakIntervalSeconds: TimeInterval, isOnBreak: Bool = false) {
+        init(sessionStartTime: Date, breakIntervalSeconds: TimeInterval, isOnBreak: Bool = false, breakDurationSeconds: TimeInterval = 0, breakEndTime: Date? = nil) {
             self.sessionStartTime = sessionStartTime
             self.breakIntervalSeconds = breakIntervalSeconds
             self.isOnBreak = isOnBreak
+            self.breakDurationSeconds = breakDurationSeconds
+            self.breakEndTime = breakEndTime
         }
 
         // MARK: - Computed Properties
@@ -81,6 +85,31 @@ struct SedentaryActivityAttributes: ActivityAttributes {
             return String(format: "%.0f%%", percentage)
         }
 
+        // MARK: - Break Mode Properties
+
+        /// Time remaining in break
+        var breakTimeRemaining: TimeInterval {
+            guard let endTime = breakEndTime else { return 0 }
+            return max(0, endTime.timeIntervalSinceNow)
+        }
+
+        /// Formatted break time remaining
+        var formattedBreakTimeRemaining: String {
+            formatTime(breakTimeRemaining)
+        }
+
+        /// Break progress (0.0 to 1.0)
+        var breakProgress: Double {
+            guard breakDurationSeconds > 0 else { return 0 }
+            let elapsed = breakDurationSeconds - breakTimeRemaining
+            return min(elapsed / breakDurationSeconds, 1.0)
+        }
+
+        /// Is break finished
+        var isBreakFinished: Bool {
+            breakTimeRemaining <= 0
+        }
+
         // MARK: - Helper Methods
 
         private func formatTime(_ seconds: TimeInterval) -> String {
@@ -103,33 +132,33 @@ struct SedentaryActivityAttributes: ActivityAttributes {
             var backgroundColor: Color {
                 switch self {
                 case .green:
-                    return Color.green.opacity(0.2)
+                    return Color.green.opacity(0.12)
                 case .orange:
-                    return Color.orange.opacity(0.3)
+                    return Color.orange.opacity(0.15)
                 case .red:
-                    return Color.red.opacity(0.4)
+                    return Color.red.opacity(0.18)
                 }
             }
 
             var accentColor: Color {
                 switch self {
                 case .green:
-                    return .green
+                    return Color(red: 0.2, green: 0.78, blue: 0.35) // Brighter green
                 case .orange:
-                    return .orange
+                    return Color(red: 1.0, green: 0.58, blue: 0.0) // Brighter orange
                 case .red:
-                    return .red
+                    return Color(red: 1.0, green: 0.23, blue: 0.19) // Brighter red
                 }
             }
 
             var progressColor: Color {
                 switch self {
                 case .green:
-                    return Color.green
+                    return Color(red: 0.2, green: 0.78, blue: 0.35)
                 case .orange:
-                    return Color.orange
+                    return Color(red: 1.0, green: 0.58, blue: 0.0)
                 case .red:
-                    return Color.red
+                    return Color(red: 1.0, green: 0.23, blue: 0.19)
                 }
             }
 

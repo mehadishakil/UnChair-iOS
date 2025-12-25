@@ -9,9 +9,12 @@ import Foundation
 import AppIntents
 import ActivityKit
 
-struct TakeBreakIntent: LiveActivityIntent {
+struct TakeBreakIntent: AppIntent {
     static var title: LocalizedStringResource = "Take Break"
     static var description = IntentDescription("Mark that you've taken a break from sitting")
+
+    // Open app when this intent runs
+    static var openAppWhenRun: Bool = true
 
     func perform() async throws -> some IntentResult {
         // Update break time in App Group storage
@@ -19,31 +22,21 @@ struct TakeBreakIntent: LiveActivityIntent {
         AppGroupStorage.shared.lastBreakTime = now.timeIntervalSince1970
 
         // Update all active Live Activities
-        await MainActor.run {
-            Task {
-                // Get all active sedentary activities
-                for activity in Activity<SedentaryActivityAttributes>.activities {
-                    let newState = SedentaryActivityAttributes.ContentState(
-                        sessionStartTime: now,  // Reset to now
-                        breakIntervalSeconds: activity.content.state.breakIntervalSeconds,
-                        isOnBreak: false
-                    )
+        for activity in Activity<SedentaryActivityAttributes>.activities {
+            let newState = SedentaryActivityAttributes.ContentState(
+                sessionStartTime: now,  // Reset to now
+                breakIntervalSeconds: activity.content.state.breakIntervalSeconds,
+                isOnBreak: false
+            )
 
-                    await activity.update(
-                        ActivityContent(
-                            state: newState,
-                            staleDate: nil
-                        )
-                    )
-                }
-            }
+            await activity.update(
+                ActivityContent(
+                    state: newState,
+                    staleDate: nil
+                )
+            )
         }
 
         return .result()
     }
-}
-
-// Extension to control behavior
-extension TakeBreakIntent {
-    static var openAppWhenRun: Bool = false
 }

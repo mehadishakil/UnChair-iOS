@@ -148,47 +148,17 @@ struct AnalyticScreen: View {
     var body: some View {
         ScrollView{
             VStack{
-                // Water Chart
-                if subscriptionChecker.isPremium {
-                    WaterBarChartView()
-                        .padding(.horizontal)
-                } else {
-                    PremiumFeatureCard(
-                        title: "Water",
-                        icon: "drop.fill",
-                        description: "Track your daily hydration",
-                        onTap: { showPaywall = true }
-                    )
+                // Water Chart - FREE
+                WaterBarChartView()
                     .padding(.horizontal)
-                }
-                
-                // Steps Chart
-                if subscriptionChecker.isPremium {
-                    StepsLineChartView()
-                        .padding()
-                } else {
-                    PremiumFeatureCard(
-                        title: "Steps",
-                        icon: "figure.walk",
-                        description: "Monitor your daily activity",
-                        onTap: { showPaywall = true }
-                    )
+
+                // Steps Chart - FREE
+                StepsLineChartView()
+                    .padding()
+
+                // Sleep Chart - FREE
+                SleepCapsuleChartView()
                     .padding(.horizontal)
-                }
-                
-                // Sleep Chart
-                if subscriptionChecker.isPremium {
-                    SleepCapsuleChartView()
-                        .padding(.horizontal)
-                } else {
-                    PremiumFeatureCard(
-                        title: "Sleep",
-                        icon: "moon.fill",
-                        description: "Analyze your sleep patterns",
-                        onTap: { showPaywall = true }
-                    )
-                    .padding(.horizontal)
-                }
                 
                 // Exercise Chart
                 if subscriptionChecker.isPremium {

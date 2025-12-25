@@ -9,6 +9,7 @@ import Foundation
 import ActivityKit
 import SwiftUI
 import Combine
+import UserNotifications
 
 @available(iOS 16.1, *)
 class LiveActivityManager: ObservableObject {
@@ -237,6 +238,123 @@ class LiveActivityManager: ObservableObject {
             print("Live Activity reset after break")
         }
     }
+
+    /// Start a break with specified duration
+    func startBreak(durationMinutes: Int) {
+        guard let activity = currentActivity else {
+            print("⚠️ No active Live Activity to start break")
+            return
+        }
+        guard activity.activityState == .active else { return }
+
+        Task {
+            let now = Date()
+            let storage = AppGroupStorage.shared
+            let breakDuration = TimeInterval(durationMinutes * 60)
+            let breakEndTime = now.addingTimeInterval(breakDuration)
+
+            // Update last break time in storage
+            storage.lastBreakTime = now.timeIntervalSince1970
+
+            // Create new state for break mode
+            let newState = SedentaryActivityAttributes.ContentState(
+                sessionStartTime: now,
+                breakIntervalSeconds: TimeInterval(storage.breakIntervalMins * 60),
+                isOnBreak: true,
+                breakDurationSeconds: breakDuration,
+                breakEndTime: breakEndTime
+            )
+
+            await activity.update(
+                ActivityContent(
+                    state: newState,
+                    staleDate: nil
+                )
+            )
+
+            print("✅ Live Activity switched to break mode - \(durationMinutes) minutes")
+
+            // Schedule notification for when break ends
+            scheduleBreakEndNotification(endTime: breakEndTime)
+
+            // Start timer to check when break ends
+            startBreakEndTimer(breakEndTime: breakEndTime)
+        }
+    }
+
+    /// End break and switch back to work mode
+    func endBreak() {
+        guard let activity = currentActivity else { return }
+        guard activity.activityState == .active else { return }
+
+        Task {
+            let now = Date()
+            let storage = AppGroupStorage.shared
+
+            // Update last break time to now (starting fresh work session)
+            storage.lastBreakTime = now.timeIntervalSince1970
+
+            // Create new state for work mode
+            let newState = SedentaryActivityAttributes.ContentState(
+                sessionStartTime: now,
+                breakIntervalSeconds: TimeInterval(storage.breakIntervalMins * 60),
+                isOnBreak: false,
+                breakDurationSeconds: 0,
+                breakEndTime: nil
+            )
+
+            await activity.update(
+                ActivityContent(
+                    state: newState,
+                    staleDate: nil
+                )
+            )
+
+            lastColorState = newState.colorState
+            print("✅ Live Activity switched to work mode")
+        }
+    }
+
+    /// Schedule notification for when break ends
+    private func scheduleBreakEndNotification(endTime: Date) {
+        let content = UNMutableNotificationContent()
+        content.title = "Break Time Over!"
+        content.body = "Time to get back to work. Stay active!"
+        content.sound = .default
+
+        let timeInterval = endTime.timeIntervalSinceNow
+        guard timeInterval > 0 else { return }
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+        let request = UNNotificationRequest(identifier: "breakEnd", content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("❌ Error scheduling break end notification: \(error)")
+            } else {
+                print("✅ Break end notification scheduled")
+            }
+        }
+    }
+
+    /// Start timer to auto-switch to work mode when break ends
+    private func startBreakEndTimer(breakEndTime: Date) {
+        // Cancel any existing timer
+        breakEndTimer?.invalidate()
+
+        // Create timer to fire when break ends
+        let timeInterval = breakEndTime.timeIntervalSinceNow
+        guard timeInterval > 0 else {
+            endBreak()
+            return
+        }
+
+        breakEndTimer = Timer.scheduledTimer(withTimeInterval: timeInterval, repeats: false) { [weak self] _ in
+            self?.endBreak()
+        }
+    }
+
+    private var breakEndTimer: Timer?
 
     /// End the current Live Activity
     func endActivity() {

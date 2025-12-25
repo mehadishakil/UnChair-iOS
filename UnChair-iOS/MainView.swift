@@ -214,8 +214,6 @@ struct MainView: View {
             } else {
                 ContentView()
                     .transition(.opacity)
-                    .presentPaywallIfNeeded(
-                        requiredEntitlementIdentifier: premiumEntitlementID)
             }
         }
         .animation(.easeInOut, value: isSubscriptionActive)

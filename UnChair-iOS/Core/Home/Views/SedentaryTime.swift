@@ -200,6 +200,11 @@ struct SedentaryTime: View {
     @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     let onTakeBreak: () -> Void
 
+    // Break mode state
+    @State private var isOnBreak: Bool = false
+    @State private var breakEndTime: Date?
+    @State private var breakTimeRemaining: Int = 0
+
     // Active hours from AppStorage
     @AppStorage("workStartHour") private var workStartHour: Int = 9
     @AppStorage("workStartMinute") private var workStartMinute: Int = 0
@@ -218,47 +223,90 @@ struct SedentaryTime: View {
 
     var body: some View {
         ZStack {
-            HStack {
-                Image(systemName: "hourglass.tophalf.filled")
-                    .resizable()
-                    .frame(width: 90)
-                    .foregroundColor(.primary.opacity(0.9))
-                    .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
-                    .padding(.leading)
-
-                Spacer()
-
-                VStack {
-                    Text("Sedentary Time")
-                        .font(.headline)
-                        .foregroundColor(.primary)
+            if isOnBreak {
+                // Break Mode UI
+                HStack {
+                    Image(systemName: "hourglass.tophalf.filled")
+                        .resizable()
+                        .frame(width: 90)
+                        .foregroundColor(.orange.opacity(0.8))
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                        .padding(.leading)
 
                     Spacer()
 
-                    Text(formattedTime(timeElapsed))
-                        .font(.largeTitle.bold())
-                        .foregroundColor(.primary)
+                    VStack {
+                        Text("Break Time")
+                            .font(.headline)
+                            .foregroundColor(.orange)
 
-                    Spacer()
+                        Spacer()
 
-                    HStack(spacing: 8) {
-                        Button(action: {
-                            onTakeBreak()
+                        Text(formattedTime(breakTimeRemaining))
+                            .font(.largeTitle.bold())
+                            .foregroundColor(.orange)
 
-                            // Update Live Activity
-                            if #available(iOS 16.1, *) {
-                                LiveActivityManager.shared.handleBreakTaken()
-                            }
-                        }) {
-                            Text("Unchair")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 16)
-                                .background(RoundedRectangle(cornerRadius: 12).fill(Color.blue))
-                                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                        Spacer()
+
+                        HStack {
+                            Image(systemName: "sparkles")
+                                .foregroundColor(.orange.opacity(0.8))
+                            Text("Enjoy your break!")
+                                .font(.subheadline)
+                                .foregroundColor(.orange)
                         }
-                        .buttonStyle(.plain)
+                    }
+
+                    Spacer()
+                }
+                .padding()
+            } else {
+                // Work Mode UI (Original)
+                HStack {
+                    Image(systemName: "hourglass.tophalf.filled")
+                        .resizable()
+                        .frame(width: 90)
+                        .foregroundColor(.primary.opacity(0.9))
+                        .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+                        .padding(.leading)
+
+                    Spacer()
+
+                    VStack {
+                        Text("Sedentary Time")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+
+                        Spacer()
+
+                        Text(formattedTime(timeElapsed))
+                            .font(.largeTitle.bold())
+                            .foregroundColor(.primary)
+
+                        Spacer()
+
+                        HStack(spacing: 8) {
+                            // Unchair button with break duration menu
+                            Menu {
+                                Button("5 minutes") {
+                                    startBreak(duration: 5)
+                                }
+                                Button("10 minutes") {
+                                    startBreak(duration: 10)
+                                }
+                                Button("20 minutes") {
+                                    startBreak(duration: 20)
+                                }
+                            } label: {
+                                Text("Unchair")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 16)
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.blue))
+                                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
+                            }
+                            .buttonStyle(.plain)
 
                         // Debug: Start/Stop Live Activity
                         if #available(iOS 16.1, *) {
@@ -300,29 +348,64 @@ struct SedentaryTime: View {
                 Spacer()
             }
             .padding()
-            .onAppear {
-                updateTimeElapsed()
-                NotificationCenter.default.addObserver(forName: .breakNotificationTapped, object: nil, queue: .main) { _ in
-                    updateTimeElapsed()
-                }
-                NotificationCenter.default.addObserver(forName: .breakSettingsChanged, object: nil, queue: .main) { _ in
-                    NotificationManager.shared.scheduleNextBreakNotification()
-                }
-            }
-            .onDisappear {
-                NotificationCenter.default.removeObserver(self)
-            }
-            .onReceive(timer) { _ in
-                updateTimeElapsed()
             }
         }
         .frame(height: 170)
         .background(
-            userTheme == .system ? (colorScheme == .light ? Color.white : Color(.darkGray))
-            : (userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
+            userTheme == .system
+            ? (colorScheme == .light ? Color.white : Color(.darkGray))
+                : (userTheme == .dark ? Color(.secondarySystemBackground) : Color(.systemBackground))
         )
         .cornerRadius(20)
         .shadow(color: userTheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.15), radius: 8)
+        .onAppear {
+            updateTimeElapsed()
+            NotificationCenter.default.addObserver(forName: .breakNotificationTapped, object: nil, queue: .main) { _ in
+                updateTimeElapsed()
+            }
+            NotificationCenter.default.addObserver(forName: .breakSettingsChanged, object: nil, queue: .main) { _ in
+                NotificationManager.shared.scheduleNextBreakNotification()
+            }
+        }
+        .onDisappear {
+            NotificationCenter.default.removeObserver(self)
+        }
+        .onReceive(timer) { _ in
+            if isOnBreak {
+                updateBreakTime()
+            } else {
+                updateTimeElapsed()
+            }
+        }
+    }
+
+    private func startBreak(duration: Int) {
+        // DON'T call onTakeBreak() to avoid scrolling to exercise section
+
+        // Ensure Live Activity is running before switching to break mode
+        if #available(iOS 16.1, *) {
+            let manager = LiveActivityManager.shared
+
+            // Check if Live Activity exists
+            if manager.currentActivity == nil {
+                print("🟡 No Live Activity running, starting one first...")
+                manager.startActivity()
+
+                // Give it a moment to start, then switch to break mode
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    print("🟢 Starting break mode: \(duration) minutes")
+                    manager.startBreak(durationMinutes: duration)
+                }
+            } else {
+                print("🟢 Live Activity exists, starting break: \(duration) minutes")
+                manager.startBreak(durationMinutes: duration)
+            }
+        }
+
+        // Set local state for card UI
+        isOnBreak = true
+        breakEndTime = Date().addingTimeInterval(TimeInterval(duration * 60))
+        breakTimeRemaining = duration * 60
     }
 
     private func updateTimeElapsed() {
@@ -391,6 +474,35 @@ struct SedentaryTime: View {
                 return (startDate, endDate)
             }
         }
+    }
+
+    private func updateBreakTime() {
+        guard let endTime = breakEndTime else { return }
+        let remaining = Int(endTime.timeIntervalSinceNow)
+
+        if remaining <= 0 {
+            // Break ended - switch back to work mode
+            endBreak()
+        } else {
+            breakTimeRemaining = remaining
+        }
+    }
+
+    private func endBreak() {
+        // Switch back to work mode
+        isOnBreak = false
+        breakEndTime = nil
+        breakTimeRemaining = 0
+
+        // Reset work tracking - start fresh session
+        let now = Date()
+        lastBreakTime = now.timeIntervalSince1970
+        AppGroupStorage.shared.lastBreakTime = now.timeIntervalSince1970
+
+        // Live Activity will auto-switch via LiveActivityManager.endBreak()
+        // (the timer in LiveActivityManager will handle this automatically)
+
+        print("✅ Break ended - switched back to work mode")
     }
 }
 
