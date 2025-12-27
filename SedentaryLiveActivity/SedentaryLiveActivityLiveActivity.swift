@@ -18,18 +18,16 @@ struct SedentaryLiveActivityLiveActivity: Widget {
                 .widgetURL(nil)
         } dynamicIsland: { context in
             // MARK: - Dynamic Island UI
-            DynamicIsland {
+            return DynamicIsland {
                 // MARK: Expanded State
                 DynamicIslandExpandedRegion(.leading) {
                     VStack {
-                        
-                        
                         HStack(spacing: 6) {
-                            Image(systemName: context.state.isOnBreak ? "cup.and.saucer.fill" : "figure.walk")
-                                .foregroundColor(context.state.isOnBreak ? .green : context.state.colorState.accentColor)
+                            Image(systemName: isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk")
+                                .foregroundColor(context.state.colorState.accentColor)
                                 .font(.title2)
-                            
-                            Text(context.state.isOnBreak ? "Break Time" : "Active Time")
+
+                            Text(isActuallyOnBreak(context) ? "Break Time" : "Active Time")
                                 .font(.caption)
                                 .foregroundColor(.primary)
                         }
@@ -38,8 +36,7 @@ struct SedentaryLiveActivityLiveActivity: Widget {
 
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 2) {
-                        // Auto-updating timer
-                        if context.state.isOnBreak, let breakEnd = context.state.breakEndTime {
+                        if isActuallyOnBreak(context), let breakEnd = context.state.breakEndTime {
                             Text("remaining")
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
@@ -47,7 +44,7 @@ struct SedentaryLiveActivityLiveActivity: Widget {
 
                             Text(timerInterval: Date()...breakEnd, countsDown: true)
                                 .font(.system(size: 20, weight: .bold, design: .rounded))
-                                .foregroundColor(.green)
+                                .foregroundColor(context.state.colorState.accentColor)
                                 .monospacedDigit()
                                 .multilineTextAlignment(.trailing)
                         } else {
@@ -71,29 +68,25 @@ struct SedentaryLiveActivityLiveActivity: Widget {
                 }
 
                 DynamicIslandExpandedRegion(.bottom) {
-                    // Centered status text for both modes
                     HStack {
                         Spacer()
-                        Text(context.state.isOnBreak ? "In Break" : "At Work")
+                        Text(isActuallyOnBreak(context) ? "In Break" : "At Work")
                             .font(.caption)
-                            .foregroundColor(context.state.isOnBreak ? .green : context.state.colorState.accentColor)
+                            .foregroundColor(context.state.colorState.accentColor)
                         Spacer()
                     }
                 }
 
             } compactLeading: {
-                // MARK: Compact Leading
-                Image(systemName: context.state.isOnBreak ? "cup.and.saucer.fill" : "figure.walk")
-                    .foregroundColor(context.state.isOnBreak ? .green : context.state.colorState.accentColor)
+                Image(systemName: isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk")
+                    .foregroundColor(context.state.colorState.accentColor)
                     .font(.system(size: 14))
 
             } compactTrailing: {
-                // MARK: Compact Trailing
-                // Auto-updating timer
-                if context.state.isOnBreak, let breakEnd = context.state.breakEndTime {
+                if isActuallyOnBreak(context), let breakEnd = context.state.breakEndTime {
                     Text(timerInterval: Date()...breakEnd, countsDown: true)
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.green)
+                        .foregroundColor(context.state.colorState.accentColor)
                         .monospacedDigit()
                 } else {
                     Text(context.state.sessionStartTime, style: .timer)
@@ -103,19 +96,25 @@ struct SedentaryLiveActivityLiveActivity: Widget {
                 }
 
             } minimal: {
-                // MARK: Minimal
                 ZStack {
                     Circle()
                         .fill(context.state.colorState.accentColor.opacity(0.3))
                         .frame(width: 24, height: 24)
 
-                    Image(systemName: "figure.walk")
+                    Image(systemName: isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk")
                         .font(.system(size: 12))
                         .foregroundColor(context.state.colorState.accentColor)
                 }
             }
             .keylineTint(context.state.colorState.accentColor)
         }
+    }
+
+    // Helper function to check if actually on break
+    private func isActuallyOnBreak(_ context: ActivityViewContext<SedentaryActivityAttributes>) -> Bool {
+        guard context.state.isOnBreak else { return false }
+        guard let breakEnd = context.state.breakEndTime else { return false }
+        return Date() < breakEnd
     }
 }
 
@@ -125,13 +124,19 @@ struct LockScreenLiveActivityView: View {
     let context: ActivityViewContext<SedentaryActivityAttributes>
 
     var body: some View {
-        if context.state.isOnBreak {
-            // Break Mode UI
+        // Check if actually on break (break might have ended even if state says true)
+        if isActuallyOnBreak(context) {
             BreakModeView(context: context)
         } else {
-            // Work Mode UI
-            WorkModeView(context: context)
+            WorkModeView(context: context, breakEndTime: context.state.breakEndTime)
         }
+    }
+    
+    // Helper function to check if actually on break
+    private func isActuallyOnBreak(_ context: ActivityViewContext<SedentaryActivityAttributes>) -> Bool {
+        guard context.state.isOnBreak else { return false }
+        guard let breakEnd = context.state.breakEndTime else { return false }
+        return Date() < breakEnd
     }
 }
 
@@ -139,6 +144,19 @@ struct LockScreenLiveActivityView: View {
 
 struct WorkModeView: View {
     let context: ActivityViewContext<SedentaryActivityAttributes>
+    let breakEndTime: Date?
+
+    // Calculate the correct session start time
+    private var sessionStartTime: Date {
+        // Check if we're transitioning from break to work (break just ended)
+        if let breakEnd = breakEndTime,
+           context.state.isOnBreak && Date() >= breakEnd {
+            // Break has ended, count from break end time
+            return breakEnd
+        }
+        // Otherwise use the session start from state
+        return context.state.sessionStartTime
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -156,8 +174,8 @@ struct WorkModeView: View {
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.primary)
 
-                // Auto-updating timer
-                Text(context.state.sessionStartTime, style: .timer)
+                // Auto-updating timer - now starts from correct time
+                Text(sessionStartTime, style: .timer)
                     .font(.system(size: 24, weight: .bold, design: .rounded))
                     .foregroundColor(context.state.colorState.accentColor)
                     .monospacedDigit()
@@ -185,7 +203,7 @@ struct WorkModeView: View {
             .buttonStyle(.plain)
         }
         .padding(16)
-        .activityBackgroundTint(context.state.colorState.backgroundColor)
+        .activityBackgroundTint(Color.black.opacity(0.01))
         .activitySystemActionForegroundColor(context.state.colorState.accentColor)
     }
 }
@@ -199,10 +217,10 @@ struct BreakModeView: View {
         HStack(spacing: 12) {
             // Icon
             Image(systemName: "cup.and.saucer.fill")
-                .foregroundColor(.green)
+                .foregroundColor(context.state.colorState.accentColor)
                 .font(.title)
                 .frame(width: 44, height: 44)
-                .background(Color.green.opacity(0.15))
+                .background(context.state.colorState.accentColor.opacity(0.15))
                 .clipShape(Circle())
 
             // Time and Info
@@ -215,12 +233,12 @@ struct BreakModeView: View {
                 if let breakEnd = context.state.breakEndTime {
                     Text(timerInterval: Date()...breakEnd, countsDown: true)
                         .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(.green)
+                        .foregroundColor(context.state.colorState.accentColor)
                         .monospacedDigit()
                 } else {
                     Text("00:00")
                         .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(.green)
+                        .foregroundColor(context.state.colorState.accentColor)
                         .monospacedDigit()
                 }
 
@@ -234,14 +252,14 @@ struct BreakModeView: View {
             // Icon indicator
             Image(systemName: "sparkles")
                 .font(.title)
-                .foregroundColor(.green)
+                .foregroundColor(context.state.colorState.accentColor)
                 .frame(width: 60, height: 60)
-                .background(Color.green.opacity(0.15))
+                .background(context.state.colorState.accentColor.opacity(0.15))
                 .clipShape(Circle())
         }
         .padding(16)
-        .activityBackgroundTint(Color.green.opacity(0.1))
-        .activitySystemActionForegroundColor(.green)
+        .activityBackgroundTint(Color.black.opacity(0.01))
+        .activitySystemActionForegroundColor(context.state.colorState.accentColor)
     }
 }
 

@@ -48,12 +48,19 @@ struct UnChair_iOSApp: App {
                                 // Small delay to ensure storage is ready
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     LiveActivityManager.shared.checkAndAutoStart()
+                                    // Immediately refresh Live Activity to update colors
+                                    LiveActivityManager.shared.refreshOnAppBecameActive()
                                 }
                             }
                         } else if newPhase == .background {
                             print("🔵 App going to background")
                             // Sync data to App Group when going to background
                             AppGroupStorage.shared.migrateFromStandardUserDefaults()
+
+                            // Update Live Activity one final time before going to background
+                            if #available(iOS 16.1, *) {
+                                LiveActivityManager.shared.refreshOnAppBecameActive()
+                            }
 
                             // Also sync break state
                             let storage = AppGroupStorage.shared

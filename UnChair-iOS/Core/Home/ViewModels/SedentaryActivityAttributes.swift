@@ -25,6 +25,30 @@ struct SedentaryActivityAttributes: ActivityAttributes {
             self.breakDurationSeconds = breakDurationSeconds
             self.breakEndTime = breakEndTime
         }
+        
+        /// Next update date for the Live Activity timeline
+        var nextUpdateDate: Date? {
+            if isOnBreak, let breakEnd = breakEndTime, Date() < breakEnd {
+                // Update when break ends
+                return breakEnd.addingTimeInterval(1) // 1 second after break ends
+            }
+            return nil
+        }
+        
+        /// Check if we should automatically show work mode even though isOnBreak is true
+        var shouldShowWorkMode: Bool {
+            guard isOnBreak else { return false }
+            guard let breakEnd = breakEndTime else { return false }
+            return Date() >= breakEnd
+        }
+
+        /// Get the effective session start time (accounts for break ending)
+        var effectiveSessionStartTime: Date {
+            if shouldShowWorkMode, let breakEnd = breakEndTime {
+                return breakEnd
+            }
+            return sessionStartTime
+        }
 
         // MARK: - Computed Properties
 
@@ -44,15 +68,13 @@ struct SedentaryActivityAttributes: ActivityAttributes {
             breakIntervalSeconds - elapsedTime
         }
 
-        /// Color state based on progress thresholds
+        /// Simple color state based on mode
+        /// Break mode: Orange, Work mode: Green
         var colorState: ColorState {
-            let percentage = progressPercentage
-            if percentage >= 1.0 {
-                return .red      // Over limit (100%+)
-            } else if percentage >= 0.8 {
-                return .orange   // Warning zone (80-100%)
+            if isOnBreak {
+                return .orange  // Break mode
             } else {
-                return .green    // Safe zone (0-80%)
+                return .green   // Work/Active mode
             }
         }
 
@@ -163,9 +185,9 @@ struct SedentaryActivityAttributes: ActivityAttributes {
                 case .green:
                     return "Active"
                 case .orange:
-                    return "Warning"
+                    return "On Break"
                 case .red:
-                    return "Over Limit"
+                    return "Active"
                 }
             }
         }

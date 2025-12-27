@@ -192,6 +192,7 @@
 
 import SwiftUI
 import Foundation
+import WidgetKit
 
 struct SedentaryTime: View {
     @Binding var notificationPermissionGranted: Bool
@@ -205,6 +206,7 @@ struct SedentaryTime: View {
     @State private var breakEndTime: Date?
     @State private var breakTimeRemaining: Int = 0
     @State private var showCancelBreakAlert: Bool = false
+    @State private var breakDurationMinutes: Int = 0  // Store break duration for color calculation
 
     // Active hours from AppStorage
     @AppStorage("workStartHour") private var workStartHour: Int = 9
@@ -212,6 +214,7 @@ struct SedentaryTime: View {
     @AppStorage("workEndHour") private var workEndHour: Int = 17
     @AppStorage("workEndMinute") private var workEndMinute: Int = 0
     @AppStorage("LastBreakTime") private var lastBreakTime: Double = 0
+    @AppStorage("breakIntervalMins") private var breakIntervalMins: Int = 60  // Focus time from settings
 
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @Environment(\.colorScheme) private var colorScheme
@@ -222,6 +225,15 @@ struct SedentaryTime: View {
         self.onTakeBreak = onTakeBreak
     }
 
+    // Simple color scheme: Orange for break time, Black for active time
+    private var breakColor: Color {
+        return .orange
+    }
+
+    private var activeTimeColor: Color {
+        return .primary  // Black in light mode, white in dark mode
+    }
+
     var body: some View {
         ZStack {
             if isOnBreak {
@@ -230,7 +242,7 @@ struct SedentaryTime: View {
                     Image(systemName: "hourglass.tophalf.filled")
                         .resizable()
                         .frame(width: 90)
-                        .foregroundColor(.orange.opacity(0.8))
+                        .foregroundColor(breakColor.opacity(0.8))
                         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
                         .padding(.leading)
 
@@ -239,22 +251,22 @@ struct SedentaryTime: View {
                     VStack {
                         Text("Break Time")
                             .font(.headline)
-                            .foregroundColor(.orange)
+                            .foregroundColor(breakColor)
 
                         Spacer()
 
                         Text(formattedTime(breakTimeRemaining))
                             .font(.largeTitle.bold())
-                            .foregroundColor(.orange)
+                            .foregroundColor(breakColor)
 
                         Spacer()
 
                         HStack {
                             Image(systemName: "sparkles")
-                                .foregroundColor(.orange.opacity(0.8))
+                                .foregroundColor(breakColor.opacity(0.8))
                             Text("Enjoy your break!")
                                 .font(.subheadline)
-                                .foregroundColor(.orange)
+                                .foregroundColor(breakColor)
                         }
                     }
 
@@ -279,7 +291,7 @@ struct SedentaryTime: View {
                     Image(systemName: "hourglass.tophalf.filled")
                         .resizable()
                         .frame(width: 90)
-                        .foregroundColor(.primary.opacity(0.9))
+                        .foregroundColor(activeTimeColor.opacity(0.9))
                         .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
                         .padding(.leading)
 
@@ -288,19 +300,22 @@ struct SedentaryTime: View {
                     VStack {
                         Text("Sedentary Time")
                             .font(.headline)
-                            .foregroundColor(.primary)
+                            .foregroundColor(activeTimeColor)
 
                         Spacer()
 
                         Text(formattedTime(timeElapsed))
                             .font(.largeTitle.bold())
-                            .foregroundColor(.primary)
+                            .foregroundColor(activeTimeColor)
 
                         Spacer()
 
                         HStack(spacing: 8) {
                             // Unchair button with break duration menu
                             Menu {
+                                Button("1 minutes") {
+                                    startBreak(duration: 1)
+                                }
                                 Button("5 minutes") {
                                     startBreak(duration: 5)
                                 }
@@ -316,7 +331,7 @@ struct SedentaryTime: View {
                                     .foregroundColor(.white)
                                     .padding(.vertical, 8)
                                     .padding(.horizontal, 16)
-                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.blue))
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.primary))
                                     .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
                             }
                             .buttonStyle(.plain)
@@ -329,6 +344,9 @@ struct SedentaryTime: View {
                                     let now = Date()
                                     lastBreakTime = now.timeIntervalSince1970
                                     AppGroupStorage.shared.lastBreakTime = now.timeIntervalSince1970
+
+                                    // Reload widget to reflect new time
+                                    WidgetCenter.shared.reloadAllTimelines()
 
                                     // Clean up and start fresh
                                     LiveActivityManager.shared.endAllActivities()
@@ -428,6 +446,9 @@ struct SedentaryTime: View {
 
         print("🔵 startBreak called - duration: \(duration) min, endTime: \(endTime)")
 
+        // Reload widget to show break mode
+        WidgetCenter.shared.reloadAllTimelines()
+
         // Ensure Live Activity is running before switching to break mode
         if #available(iOS 16.1, *) {
             let manager = LiveActivityManager.shared
@@ -454,6 +475,7 @@ struct SedentaryTime: View {
             isOnBreak = true
             breakEndTime = endTime
             breakTimeRemaining = duration * 60
+            breakDurationMinutes = duration  // Store for color calculation
         }
     }
 
@@ -466,14 +488,25 @@ struct SedentaryTime: View {
             return
         }
 
+        // SYNC: Use AppGroupStorage as source of truth (widget may have updated it)
+        let appGroupLastBreakTime = AppGroupStorage.shared.lastBreakTime
+
+        // If AppGroupStorage has a more recent value, use it (widget was updating while app was closed)
+        if appGroupLastBreakTime > lastBreakTime {
+            print("📱 App: Using widget's lastBreakTime: \(appGroupLastBreakTime) (was: \(lastBreakTime))")
+            lastBreakTime = appGroupLastBreakTime
+        } else if lastBreakTime > appGroupLastBreakTime {
+            // App has newer value, sync to AppGroupStorage
+            AppGroupStorage.shared.lastBreakTime = lastBreakTime
+        }
+
         // Determine baseline: max(lastBreakTime, start of period)
         let baselineTime = max(lastBreakTime, start.timeIntervalSince1970)
         let elapsed = Int(now.timeIntervalSince1970 - baselineTime)
         timeElapsed = max(elapsed, 0)
 
-        // Update App Group storage for widget
-        AppGroupStorage.shared.lastBreakTime = lastBreakTime
-        AppGroupStorage.shared.breakIntervalMins = selectedDuration.totalMinutes
+        // Sync other settings to App Group storage for widget
+        AppGroupStorage.shared.breakIntervalMins = breakIntervalMins
         AppGroupStorage.shared.workStartHour = workStartHour
         AppGroupStorage.shared.workStartMinute = workStartMinute
         AppGroupStorage.shared.workEndHour = workEndHour
@@ -485,7 +518,7 @@ struct SedentaryTime: View {
         }
 
         // Schedule notification if needed
-        if notificationPermissionGranted && timeElapsed >= (selectedDuration.totalMinutes * 60)
+        if notificationPermissionGranted && timeElapsed >= (breakIntervalMins * 60)
             && !NotificationManager.shared.hasScheduledNotification() {
             NotificationManager.shared.scheduleNextBreakNotification()
         }
@@ -544,11 +577,15 @@ struct SedentaryTime: View {
         storage.breakEndTime = 0
         storage.breakDurationMinutes = 0
 
+        // Reload widget to show active mode
+        WidgetCenter.shared.reloadAllTimelines()
+
         // Switch back to work mode with animation
         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
             isOnBreak = false
             breakEndTime = nil
             breakTimeRemaining = 0
+            breakDurationMinutes = 0
         }
 
         // Reset work tracking - start fresh session
@@ -588,6 +625,7 @@ struct SedentaryTime: View {
                 isOnBreak = true
                 breakEndTime = endTime
                 breakTimeRemaining = Int(endTime.timeIntervalSinceNow)
+                breakDurationMinutes = storage.breakDurationMinutes  // Restore duration for color calculation
                 print("✅ Restored break state - \(breakTimeRemaining)s remaining")
             } else {
                 // Break already ended, clean up

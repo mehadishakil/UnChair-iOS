@@ -10,15 +10,23 @@ import ActivityKit
 import SwiftUI
 import Combine
 import UserNotifications
+import BackgroundTasks
+import WidgetKit
 
 @available(iOS 16.1, *)
 class LiveActivityManager: ObservableObject {
     static let shared = LiveActivityManager()
 
-    @Published private(set) var currentActivity: Activity<SedentaryActivityAttributes>?
-    private var lastColorState: SedentaryActivityAttributes.ContentState.ColorState?
+    // Shared notification identifier for break end notifications
+    private static let breakEndNotificationIdentifier = "breakEnd"
 
-    private init() {}
+    @Published private(set) var currentActivity: Activity<SedentaryActivityAttributes>?
+    private var updateTimer: Timer?
+
+    private init() {
+        // Start periodic update timer
+        startPeriodicUpdates()
+    }
 
     // MARK: - Activity Lifecycle
 
@@ -40,7 +48,6 @@ class LiveActivityManager: ObservableObject {
 
             await MainActor.run {
                 currentActivity = nil
-                lastColorState = nil
             }
 
             print("✅ Cleanup complete")
@@ -149,7 +156,6 @@ class LiveActivityManager: ObservableObject {
                 pushType: nil
             )
 
-            lastColorState = initialState.colorState
             print("✅ Live Activity started successfully!")
             print("✅ Activity ID: \(currentActivity?.id ?? "none")")
             print("✅ Activity state: \(String(describing: currentActivity?.activityState))")
@@ -202,35 +208,58 @@ class LiveActivityManager: ObservableObject {
         Task {
             let storage = AppGroupStorage.shared
             let breakIntervalMins = storage.breakIntervalMins
-            let lastBreakTime = storage.lastBreakTime
 
-            // Determine session start time
-            let sessionStart: Date
-            if lastBreakTime > 0 {
-                sessionStart = Date(timeIntervalSince1970: lastBreakTime)
-            } else {
-                sessionStart = getActiveHourStartForToday()
-            }
+            // Check if on break
+            let newState: SedentaryActivityAttributes.ContentState
+            if storage.isOnBreak && storage.breakEndTime > 0 {
+                // Break mode - create state with break info
+                let breakEnd = Date(timeIntervalSince1970: storage.breakEndTime)
+                let now = Date()
 
-            // Create new state
-            let newState = SedentaryActivityAttributes.ContentState(
-                sessionStartTime: sessionStart,
-                breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
-                isOnBreak: false
-            )
+                if breakEnd > now {
+                    let remaining = breakEnd.timeIntervalSince(now)
+                    let totalDuration = TimeInterval(storage.breakDurationMinutes * 60)
 
-            // Only update if color state changed
-            if newState.colorState != lastColorState {
-                await activity.update(
-                    ActivityContent(
-                        state: newState,
-                        staleDate: nil
+                    newState = SedentaryActivityAttributes.ContentState(
+                        sessionStartTime: now,
+                        breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
+                        isOnBreak: true,
+                        breakDurationSeconds: totalDuration,
+                        breakEndTime: breakEnd
                     )
-                )
-                lastColorState = newState.colorState
-                print("Live Activity updated - color state: \(newState.colorState)")
+                } else {
+                    // Break ended, switch to work mode
+                    newState = createWorkModeState(storage: storage, breakIntervalMins: breakIntervalMins)
+                }
+            } else {
+                // Work mode
+                newState = createWorkModeState(storage: storage, breakIntervalMins: breakIntervalMins)
             }
+
+            // Update if needed (force update for now to ensure colors update)
+            await activity.update(
+                ActivityContent(
+                    state: newState,
+                    staleDate: nil
+                )
+            )
+            print("🔄 Live Activity updated - mode: \(newState.isOnBreak ? "BREAK" : "WORK")")
         }
+    }
+
+    private func createWorkModeState(storage: AppGroupStorage, breakIntervalMins: Int) -> SedentaryActivityAttributes.ContentState {
+        let sessionStart: Date
+        if storage.lastBreakTime > 0 {
+            sessionStart = Date(timeIntervalSince1970: storage.lastBreakTime)
+        } else {
+            sessionStart = getActiveHourStartForToday()
+        }
+
+        return SedentaryActivityAttributes.ContentState(
+            sessionStartTime: sessionStart,
+            breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
+            isOnBreak: false
+        )
     }
 
     /// Handle when user takes a break
@@ -259,7 +288,6 @@ class LiveActivityManager: ObservableObject {
                 )
             )
 
-            lastColorState = newState.colorState
             print("Live Activity reset after break")
         }
     }
@@ -308,10 +336,11 @@ class LiveActivityManager: ObservableObject {
 
             print("🔵 Updating Live Activity with isOnBreak=true, breakEndTime=\(breakEndTime)")
 
+            // Set staleDate to break end time so Live Activity knows when to update
             await activity.update(
                 ActivityContent(
                     state: newState,
-                    staleDate: nil
+                    staleDate: breakEndTime.addingTimeInterval(1) // 1 second after break ends
                 )
             )
 
@@ -331,6 +360,13 @@ class LiveActivityManager: ObservableObject {
         guard let activity = currentActivity else { return }
         guard activity.activityState == .active else { return }
 
+        // Cancel the break end timer if it's still running
+        breakEndTimer?.invalidate()
+        breakEndTimer = nil
+
+        // Cancel the break end notification
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [LiveActivityManager.breakEndNotificationIdentifier])
+
         Task {
             let now = Date()
             let storage = AppGroupStorage.shared
@@ -344,6 +380,9 @@ class LiveActivityManager: ObservableObject {
             storage.breakDurationMinutes = 0
 
             print("🔵 Cleared break state from storage")
+
+            // Reload widget to show active mode
+            WidgetCenter.shared.reloadAllTimelines()
 
             // Create new state for work mode
             let newState = SedentaryActivityAttributes.ContentState(
@@ -361,7 +400,6 @@ class LiveActivityManager: ObservableObject {
                 )
             )
 
-            lastColorState = newState.colorState
             print("✅ Live Activity switched to work mode")
         }
     }
@@ -372,18 +410,27 @@ class LiveActivityManager: ObservableObject {
         content.title = "Break Time Over!"
         content.body = "Time to get back to work. Stay active!"
         content.sound = .default
+        content.interruptionLevel = .timeSensitive // Make it more prominent
 
         let timeInterval = endTime.timeIntervalSinceNow
-        guard timeInterval > 0 else { return }
+        guard timeInterval > 0 else {
+            print("⚠️ Break end time is in the past, not scheduling notification")
+            return
+        }
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-        let request = UNNotificationRequest(identifier: "breakEnd", content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: LiveActivityManager.breakEndNotificationIdentifier, content: content, trigger: trigger)
+
+        // Cancel any existing break end notifications first
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [LiveActivityManager.breakEndNotificationIdentifier])
 
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("❌ Error scheduling break end notification: \(error)")
             } else {
-                print("✅ Break end notification scheduled")
+                let formatter = DateFormatter()
+                formatter.timeStyle = .medium
+                print("✅ Break end notification scheduled for \(formatter.string(from: endTime)) (in \(Int(timeInterval)) seconds)")
             }
         }
     }
@@ -422,7 +469,6 @@ class LiveActivityManager: ObservableObject {
 
             await MainActor.run {
                 currentActivity = nil
-                lastColorState = nil
             }
 
             print("Live Activity ended")
@@ -457,7 +503,7 @@ class LiveActivityManager: ObservableObject {
         if let tracked = currentActivity, tracked.activityState == .active {
             print("🟢 Already have active tracked activity")
 
-            // Check if we need to restore break state
+            // Check if we need to restore break state or end it if already finished
             if isOnBreak && breakEndTime > 0 {
                 let breakEnd = Date(timeIntervalSince1970: breakEndTime)
                 let now = Date()
@@ -475,9 +521,13 @@ class LiveActivityManager: ObservableObject {
                             breakEndTime: breakEnd
                         )
 
-                        await tracked.update(ActivityContent(state: newState, staleDate: nil))
+                        await tracked.update(ActivityContent(state: newState, staleDate: breakEnd.addingTimeInterval(1)))
                         print("✅ Break state restored in existing Live Activity")
                     }
+                } else {
+                    // Break has already ended, switch to work mode
+                    print("🟡 Break already ended, switching to work mode")
+                    endBreak()
                 }
             }
 
@@ -535,29 +585,10 @@ class LiveActivityManager: ObservableObject {
         print("📊 ==============================")
     }
 
-    /// Update activity based on elapsed time (check for threshold crossings)
+    /// Update activity based on elapsed time
     func checkAndUpdateForTimeElapsed(_ elapsedSeconds: Int) {
-        guard let activity = currentActivity else { return }
-        guard activity.activityState == .active else { return }
-
-        let storage = AppGroupStorage.shared
-        let breakIntervalSeconds = storage.breakIntervalMins * 60
-        let progressPercentage = Double(elapsedSeconds) / Double(breakIntervalSeconds)
-
-        // Determine current color state
-        let currentColorState: SedentaryActivityAttributes.ContentState.ColorState
-        if progressPercentage >= 1.0 {
-            currentColorState = .red
-        } else if progressPercentage >= 0.8 {
-            currentColorState = .orange
-        } else {
-            currentColorState = .green
-        }
-
-        // Update if color state changed
-        if currentColorState != lastColorState {
-            updateActivityState()
-        }
+        // No longer needed since we don't have dynamic color changes
+        // Live Activity will auto-update its timer display
     }
 
     // MARK: - Helper Methods
@@ -622,5 +653,124 @@ class LiveActivityManager: ObservableObject {
         }
 
         return endDate
+    }
+
+    // MARK: - Periodic Updates
+
+    /// Start periodic timer to update Live Activity colors when app is active
+    /// Note: This timer will pause when app goes to background (iOS limitation)
+    /// Live Activity will still show correct time via native timers, but colors won't update until app becomes active
+    private func startPeriodicUpdates() {
+        // Invalidate any existing timer
+        updateTimer?.invalidate()
+
+        // Create a timer that fires every 15 seconds when app is active
+        // This provides more frequent color updates
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 15.0, repeats: true) { [weak self] _ in
+            self?.periodicUpdate()
+        }
+
+        // Allow timer to run in common run loop modes
+        if let timer = updateTimer {
+            RunLoop.main.add(timer, forMode: .common)
+        }
+
+        print("✅ Started periodic Live Activity updates (every 15s when app active)")
+    }
+
+    /// Perform periodic update of Live Activity state
+    private func periodicUpdate() {
+        guard let activity = currentActivity else { return }
+        guard activity.activityState == .active else { return }
+
+        let storage = AppGroupStorage.shared
+
+        // Check if break has ended and we need to switch to work mode
+        if storage.isOnBreak && storage.breakEndTime > 0 {
+            let breakEnd = Date(timeIntervalSince1970: storage.breakEndTime)
+            let now = Date()
+
+            if breakEnd <= now {
+                print("🔄 Periodic update detected break has ended - switching to work mode")
+                endBreak()
+                return
+            }
+
+            // Break is still active, update state
+            updateActivityState()
+        }
+    }
+
+    /// Call this when app becomes active to immediately update Live Activity
+    func refreshOnAppBecameActive() {
+        print("📱 App became active - refreshing Live Activity state")
+
+        // Check if break has ended and switch to work mode
+        let storage = AppGroupStorage.shared
+        if storage.isOnBreak && storage.breakEndTime > 0 {
+            let breakEnd = Date(timeIntervalSince1970: storage.breakEndTime)
+            let now = Date()
+
+            if breakEnd <= now {
+                print("🟡 App became active - break has ended, switching to work mode")
+                endBreak()
+                return
+            }
+        }
+
+        periodicUpdate()
+    }
+
+    /// Update Live Activity from background task
+    /// This is called by BGTaskScheduler when the app is not running
+    func updateFromBackground() {
+        print("🌙 Background task updating Live Activity")
+
+        // Try to restore activity from system if we don't have it
+        if currentActivity == nil {
+            let existingActivities = Activity<SedentaryActivityAttributes>.activities
+            if let existing = existingActivities.first {
+                currentActivity = existing
+                print("🌙 Restored activity from system: \(existing.id)")
+            } else {
+                print("🌙 No active Live Activity found")
+                return
+            }
+        }
+
+        guard let activity = currentActivity else {
+            print("🌙 No current activity to update")
+            return
+        }
+        guard activity.activityState == .active else {
+            print("🌙 Activity not active: \(activity.activityState)")
+            return
+        }
+
+        let storage = AppGroupStorage.shared
+
+        Task {
+            // Check if break has ended and switch to work mode
+            if storage.isOnBreak && storage.breakEndTime > 0 {
+                let breakEnd = Date(timeIntervalSince1970: storage.breakEndTime)
+                let now = Date()
+
+                if breakEnd <= now {
+                    print("🌙 Background update - break has ended, switching to work mode")
+                    endBreak()
+                    return
+                }
+            }
+
+            // Update activity state to ensure break mode is synced
+            if storage.isOnBreak {
+                updateActivityState()
+            }
+            print("🌙 Background update completed")
+        }
+    }
+
+    deinit {
+        updateTimer?.invalidate()
     }
 }

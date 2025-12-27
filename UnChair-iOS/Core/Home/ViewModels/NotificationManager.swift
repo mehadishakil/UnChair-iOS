@@ -24,6 +24,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     private let breakReminderIdentifier = "break_reminder"
     private let breakReminderCategory = "BREAK_REMINDER"
     private let takeBreakActionIdentifier = "TAKE_BREAK"
+    private let breakEndIdentifier = "breakEnd" // Shared with LiveActivityManager
     
     // Keys for UserDefaults
     private let lastBreakTimeKey = "lastBreakTime"
@@ -129,7 +130,7 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let identifier = response.notification.request.identifier
-        
+
         // Only handle our break reminder notifications
         if identifier == breakReminderIdentifier {
             if response.actionIdentifier == takeBreakActionIdentifier {
@@ -141,7 +142,15 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
                 NotificationCenter.default.post(name: .breakNotificationTapped, object: nil)
             }
         }
-        
+
+        // Handle break end notification
+        if identifier == breakEndIdentifier {
+            print("📱 Break end notification received - updating Live Activity")
+            if #available(iOS 16.1, *) {
+                LiveActivityManager.shared.endBreak()
+            }
+        }
+
         completionHandler()
     }
     
@@ -151,6 +160,16 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
+        let identifier = notification.request.identifier
+
+        // Handle break end notification when presented in foreground
+        if identifier == breakEndIdentifier {
+            print("📱 Break end notification presented - updating Live Activity")
+            if #available(iOS 16.1, *) {
+                LiveActivityManager.shared.endBreak()
+            }
+        }
+
         // Show notification even if app is in foreground
         completionHandler([.banner, .sound, .badge])
     }
@@ -265,10 +284,15 @@ class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
     // Reset last break time if needed
     func checkAndResetLastBreakTimeIfNeeded() {
         if shouldResetLastBreakTime() {
+            print("🔄 Resetting last break time")
             UserDefaults.standard.removeObject(forKey: lastBreakTimeKey)
             UserDefaults.standard.removeObject(forKey: lastBreakDayKey)
             UserDefaults.standard.removeObject(forKey: lastBreakMonthKey)
             UserDefaults.standard.removeObject(forKey: lastBreakYearKey)
+
+            // IMPORTANT: Also reset in AppGroupStorage so widget stays in sync
+            AppGroupStorage.shared.lastBreakTime = 0
+            print("✅ Reset last break time in both UserDefaults and AppGroupStorage")
         }
     }
     
