@@ -118,13 +118,28 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func scheduleBackgroundLiveActivityRefresh() {
         let request = BGAppRefreshTaskRequest(identifier: AppDelegate.liveActivityRefreshTaskIdentifier)
 
-        // Try to run this task every 15 minutes
-        // Note: iOS will decide when to actually run it based on system conditions
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // 15 minutes
+        // OPTIMIZATION: Try to run more frequently (5 minutes)
+        // iOS will decide when to actually run it based on system conditions
+        // If there's an active break, schedule it to run around when break ends
+        let storage = AppGroupStorage.shared
+        var targetInterval: TimeInterval = 5 * 60 // Default: 5 minutes
+
+        if storage.isOnBreak && storage.breakEndTime > 0 {
+            let breakEnd = Date(timeIntervalSince1970: storage.breakEndTime)
+            let timeUntilBreakEnd = breakEnd.timeIntervalSinceNow
+
+            if timeUntilBreakEnd > 0 && timeUntilBreakEnd < 30 * 60 { // Within next 30 min
+                // Schedule to run shortly after break ends
+                targetInterval = timeUntilBreakEnd + 10 // 10 seconds after break ends
+                print("🎯 Scheduling background task for break end: \(Int(targetInterval))s from now")
+            }
+        }
+
+        request.earliestBeginDate = Date(timeIntervalSinceNow: targetInterval)
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            print("✅ Background Live Activity refresh scheduled for ~15 minutes")
+            print("✅ Background Live Activity refresh scheduled for ~\(Int(targetInterval/60)) minutes")
         } catch {
             print("❌ Could not schedule background task: \(error.localizedDescription)")
         }

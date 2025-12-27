@@ -143,10 +143,14 @@ class LiveActivityManager: ObservableObject {
                 print("🟢 Starting work mode - Elapsed: \(initialState.formattedElapsedTime)")
             }
 
+            // Set staleDate to work end time + 1 minute so iOS automatically removes Live Activity when work hours end
+            let workEndTime = getActiveHourEndForToday()
+            let staleDate = workEndTime.addingTimeInterval(60) // 1 minute after work ends
+
             // Create activity content
             let content = ActivityContent(
                 state: initialState,
-                staleDate: nil
+                staleDate: staleDate
             )
 
             // Request the activity
@@ -157,6 +161,7 @@ class LiveActivityManager: ObservableObject {
             )
 
             print("✅ Live Activity started successfully!")
+            print("✅ StaleDate set to: \(staleDate) (work ends at \(workEndTime))")
             print("✅ Activity ID: \(currentActivity?.id ?? "none")")
             print("✅ Activity state: \(String(describing: currentActivity?.activityState))")
             print("✅ Mode: \(initialState.isOnBreak ? "BREAK" : "WORK")")
@@ -298,6 +303,12 @@ class LiveActivityManager: ObservableObject {
         print("🔵 currentActivity: \(String(describing: currentActivity?.id))")
         print("🔵 activityState: \(String(describing: currentActivity?.activityState))")
 
+        // Prevent starting breaks outside work hours
+        guard isWithinActiveHours() else {
+            print("⚠️ Cannot start break outside work hours")
+            return
+        }
+
         guard let activity = currentActivity else {
             print("⚠️ No active Live Activity to start break")
             return
@@ -336,13 +347,21 @@ class LiveActivityManager: ObservableObject {
 
             print("🔵 Updating Live Activity with isOnBreak=true, breakEndTime=\(breakEndTime)")
 
-            // Set staleDate to break end time so Live Activity knows when to update
+            // Set staleDate to the earlier of: break end time or work end time
+            // This ensures Live Activity is removed when work hours end even if on break
+            let workEndTime = getActiveHourEndForToday()
+            let effectiveStaleDate = min(breakEndTime.addingTimeInterval(2), workEndTime.addingTimeInterval(60))
+
+            // iOS will re-render the Live Activity when staleDate is reached
             await activity.update(
                 ActivityContent(
                     state: newState,
-                    staleDate: breakEndTime.addingTimeInterval(1) // 1 second after break ends
-                )
+                    staleDate: effectiveStaleDate
+                ),
+                alertConfiguration: nil
             )
+
+            print("✅ StaleDate set to: \(effectiveStaleDate)")
 
             print("✅ Live Activity updated to break mode - \(durationMinutes) minutes")
             print("✅ Break end time: \(breakEndTime)")
@@ -350,8 +369,11 @@ class LiveActivityManager: ObservableObject {
             // Schedule notification for when break ends
             scheduleBreakEndNotification(endTime: breakEndTime)
 
-            // Start timer to check when break ends
+            // Start timer to check when break ends (only works when app is active)
             startBreakEndTimer(breakEndTime: breakEndTime)
+
+            // Note: Background task scheduling is done from the main app (SedentaryTime.swift)
+            // to avoid compilation issues with widget extension target
         }
     }
 
@@ -367,12 +389,28 @@ class LiveActivityManager: ObservableObject {
         // Cancel the break end notification
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [LiveActivityManager.breakEndNotificationIdentifier])
 
+        // CRITICAL: Capture break end time BEFORE async Task to avoid race condition
+        let storage = AppGroupStorage.shared
+        let breakEndTimeStored = storage.breakEndTime
+        let breakIntervalMins = storage.breakIntervalMins
+
         Task {
             let now = Date()
-            let storage = AppGroupStorage.shared
 
-            // Update last break time to now (starting fresh work session)
-            storage.lastBreakTime = now.timeIntervalSince1970
+            // CRITICAL: Use the break end time as the session start time
+            // This ensures the timer continues from when the break actually ended, not when endBreak() was called
+            let sessionStart: Date
+            if breakEndTimeStored > 0 {
+                sessionStart = Date(timeIntervalSince1970: breakEndTimeStored)
+                print("🔵 Using break end time as session start: \(sessionStart)")
+            } else {
+                // Fallback to now if break end time isn't available
+                sessionStart = now
+                print("⚠️ Break end time not available, using current time")
+            }
+
+            // Update last break time to the session start (when break actually ended)
+            storage.lastBreakTime = sessionStart.timeIntervalSince1970
 
             // CRITICAL: Clear break state from App Group storage
             storage.isOnBreak = false
@@ -386,21 +424,26 @@ class LiveActivityManager: ObservableObject {
 
             // Create new state for work mode
             let newState = SedentaryActivityAttributes.ContentState(
-                sessionStartTime: now,
-                breakIntervalSeconds: TimeInterval(storage.breakIntervalMins * 60),
+                sessionStartTime: sessionStart,  // Use break end time, not now
+                breakIntervalSeconds: TimeInterval(breakIntervalMins * 60),
                 isOnBreak: false,
                 breakDurationSeconds: 0,
                 breakEndTime: nil
             )
 
+            // Set staleDate to work end time so Live Activity is removed when work hours end
+            let workEndTime = getActiveHourEndForToday()
+            let staleDate = workEndTime.addingTimeInterval(60)
+
             await activity.update(
                 ActivityContent(
                     state: newState,
-                    staleDate: nil
+                    staleDate: staleDate
                 )
             )
 
-            print("✅ Live Activity switched to work mode")
+            print("✅ Live Activity switched to work mode, session start: \(sessionStart)")
+            print("✅ StaleDate set to: \(staleDate)")
         }
     }
 
@@ -411,6 +454,13 @@ class LiveActivityManager: ObservableObject {
         content.body = "Time to get back to work. Stay active!"
         content.sound = .default
         content.interruptionLevel = .timeSensitive // Make it more prominent
+
+        // Add userInfo to identify this notification
+        content.userInfo = ["type": "breakEnd", "endTime": endTime.timeIntervalSince1970]
+
+        // CRITICAL: Set this to try waking app in background
+        // Note: This only works if Background Modes > Remote notifications is enabled
+        content.categoryIdentifier = "BREAK_END_CATEGORY"
 
         let timeInterval = endTime.timeIntervalSinceNow
         guard timeInterval > 0 else {
@@ -534,14 +584,28 @@ class LiveActivityManager: ObservableObject {
             return
         }
 
-        // If there are other activities but we're not tracking them, clean up
+        // If there are other activities but we're not tracking them, restore the reference
         if !existingActivities.isEmpty && currentActivity == nil {
-            print("🟡 Found untracked activities, cleaning up")
-            endAllActivities()
-            // Give cleanup time to complete
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.startActivity()
+            print("🟡 Found untracked activities, restoring reference")
+            // Restore the reference to the existing activity instead of destroying it
+            currentActivity = existingActivities.first
+            print("✅ Restored currentActivity reference: \(currentActivity?.id ?? "none")")
+
+            // Now check if we need to update the break state
+            if isOnBreak && breakEndTime > 0 {
+                let breakEnd = Date(timeIntervalSince1970: breakEndTime)
+                let now = Date()
+
+                if breakEnd > now {
+                    print("🟢 Break is active in restored activity")
+                    // Break is still active, update will happen in refreshOnAppBecameActive()
+                } else {
+                    // Break has ended, switch to work mode
+                    print("🟡 Break already ended in restored activity, switching to work mode")
+                    endBreak()
+                }
             }
+
             return
         }
 
@@ -683,6 +747,13 @@ class LiveActivityManager: ObservableObject {
         guard let activity = currentActivity else { return }
         guard activity.activityState == .active else { return }
 
+        // Check if we're still within work hours - if not, end the Live Activity
+        guard isWithinActiveHours() else {
+            print("🔴 Work hours ended - ending Live Activity")
+            endActivity()
+            return
+        }
+
         let storage = AppGroupStorage.shared
 
         // Check if break has ended and we need to switch to work mode
@@ -705,6 +776,15 @@ class LiveActivityManager: ObservableObject {
     func refreshOnAppBecameActive() {
         print("📱 App became active - refreshing Live Activity state")
 
+        // Check if we're outside work hours - if so, end the Live Activity
+        guard isWithinActiveHours() else {
+            print("🔴 App became active outside work hours - ending Live Activity")
+            if currentActivity != nil {
+                endActivity()
+            }
+            return
+        }
+
         // Check if break has ended and switch to work mode
         let storage = AppGroupStorage.shared
         if storage.isOnBreak && storage.breakEndTime > 0 {
@@ -725,6 +805,13 @@ class LiveActivityManager: ObservableObject {
     /// This is called by BGTaskScheduler when the app is not running
     func updateFromBackground() {
         print("🌙 Background task updating Live Activity")
+
+        // Check if we're outside work hours - if so, end all activities
+        guard isWithinActiveHours() else {
+            print("🔴 Background update outside work hours - ending all Live Activities")
+            endAllActivities()
+            return
+        }
 
         // Try to restore activity from system if we don't have it
         if currentActivity == nil {

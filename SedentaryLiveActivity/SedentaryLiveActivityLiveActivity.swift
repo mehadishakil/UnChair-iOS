@@ -23,11 +23,11 @@ struct SedentaryLiveActivityLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.leading) {
                     VStack {
                         HStack(spacing: 6) {
-                            Image(systemName: isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk")
-                                .foregroundColor(context.state.colorState.accentColor)
+                            Image(systemName: !isWithinWorkHours() ? "moon.fill" : (isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk"))
+                                .foregroundColor(!isWithinWorkHours() ? .gray : context.state.colorState.accentColor)
                                 .font(.title2)
 
-                            Text(isActuallyOnBreak(context) ? "Break Time" : "Active Time")
+                            Text(!isWithinWorkHours() ? "Closed" : (isActuallyOnBreak(context) ? "Break Time" : "Active Time"))
                                 .font(.caption)
                                 .foregroundColor(.primary)
                         }
@@ -36,7 +36,19 @@ struct SedentaryLiveActivityLiveActivity: Widget {
 
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 2) {
-                        if isActuallyOnBreak(context), let breakEnd = context.state.breakEndTime {
+                        if !isWithinWorkHours() {
+                            // Outside work hours - show static 00:00
+                            Text("closed")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.trailing)
+
+                            Text("00:00")
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .foregroundColor(.gray)
+                                .monospacedDigit()
+                                .multilineTextAlignment(.trailing)
+                        } else if isActuallyOnBreak(context), let breakEnd = context.state.breakEndTime {
                             Text("remaining")
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
@@ -70,20 +82,26 @@ struct SedentaryLiveActivityLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.bottom) {
                     HStack {
                         Spacer()
-                        Text(isActuallyOnBreak(context) ? "In Break" : "At Work")
+                        Text(!isWithinWorkHours() ? "Outside Hours" : (isActuallyOnBreak(context) ? "In Break" : "At Work"))
                             .font(.caption)
-                            .foregroundColor(context.state.colorState.accentColor)
+                            .foregroundColor(!isWithinWorkHours() ? .gray : context.state.colorState.accentColor)
                         Spacer()
                     }
                 }
 
             } compactLeading: {
-                Image(systemName: isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk")
-                    .foregroundColor(context.state.colorState.accentColor)
+                Image(systemName: !isWithinWorkHours() ? "moon.fill" : (isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk"))
+                    .foregroundColor(!isWithinWorkHours() ? .gray : context.state.colorState.accentColor)
                     .font(.system(size: 14))
 
             } compactTrailing: {
-                if isActuallyOnBreak(context), let breakEnd = context.state.breakEndTime {
+                if !isWithinWorkHours() {
+                    // Outside work hours - show static 00:00
+                    Text("00:00")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.gray)
+                        .monospacedDigit()
+                } else if isActuallyOnBreak(context), let breakEnd = context.state.breakEndTime {
                     Text(timerInterval: Date()...breakEnd, countsDown: true)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(context.state.colorState.accentColor)
@@ -98,12 +116,12 @@ struct SedentaryLiveActivityLiveActivity: Widget {
             } minimal: {
                 ZStack {
                     Circle()
-                        .fill(context.state.colorState.accentColor.opacity(0.3))
+                        .fill((!isWithinWorkHours() ? Color.gray : context.state.colorState.accentColor).opacity(0.3))
                         .frame(width: 24, height: 24)
 
-                    Image(systemName: isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk")
+                    Image(systemName: !isWithinWorkHours() ? "moon.fill" : (isActuallyOnBreak(context) ? "cup.and.saucer.fill" : "figure.walk"))
                         .font(.system(size: 12))
-                        .foregroundColor(context.state.colorState.accentColor)
+                        .foregroundColor(!isWithinWorkHours() ? .gray : context.state.colorState.accentColor)
                 }
             }
             .keylineTint(context.state.colorState.accentColor)
@@ -115,6 +133,24 @@ struct SedentaryLiveActivityLiveActivity: Widget {
         guard context.state.isOnBreak else { return false }
         guard let breakEnd = context.state.breakEndTime else { return false }
         return Date() < breakEnd
+    }
+
+    // Helper function to check if within work hours
+    private func isWithinWorkHours() -> Bool {
+        let storage = AppGroupStorage.shared
+        let now = Date()
+        let calendar = Calendar.current
+        let nowComps = calendar.dateComponents([.hour, .minute, .second], from: now)
+        let currentSecs = (nowComps.hour! * 3600) + (nowComps.minute! * 60) + nowComps.second!
+
+        let startSecs = (storage.workStartHour * 3600) + (storage.workStartMinute * 60)
+        let endSecs = (storage.workEndHour * 3600) + (storage.workEndMinute * 60)
+
+        if startSecs <= endSecs {
+            return currentSecs >= startSecs && currentSecs <= endSecs
+        } else {
+            return currentSecs >= startSecs || currentSecs <= endSecs
+        }
     }
 }
 
@@ -158,53 +194,92 @@ struct WorkModeView: View {
         return context.state.sessionStartTime
     }
 
+    // Check if within work hours
+    private var isWithinWorkHours: Bool {
+        let storage = AppGroupStorage.shared
+        let now = Date()
+        let calendar = Calendar.current
+        let nowComps = calendar.dateComponents([.hour, .minute, .second], from: now)
+        let currentSecs = (nowComps.hour! * 3600) + (nowComps.minute! * 60) + nowComps.second!
+
+        let startSecs = (storage.workStartHour * 3600) + (storage.workStartMinute * 60)
+        let endSecs = (storage.workEndHour * 3600) + (storage.workEndMinute * 60)
+
+        if startSecs <= endSecs {
+            return currentSecs >= startSecs && currentSecs <= endSecs
+        } else {
+            return currentSecs >= startSecs || currentSecs <= endSecs
+        }
+    }
+
     var body: some View {
         HStack(spacing: 12) {
             // Icon
-            Image(systemName: "figure.walk")
-                .foregroundColor(context.state.colorState.accentColor)
+            Image(systemName: isWithinWorkHours ? "figure.walk" : "moon.fill")
+                .foregroundColor(isWithinWorkHours ? context.state.colorState.accentColor : .gray)
                 .font(.title)
                 .frame(width: 44, height: 44)
-                .background(context.state.colorState.accentColor.opacity(0.15))
+                .background((isWithinWorkHours ? context.state.colorState.accentColor : Color.gray).opacity(0.15))
                 .clipShape(Circle())
 
             // Time and Info
             VStack(alignment: .leading, spacing: 4) {
-                Text("Active Time")
+                Text(isWithinWorkHours ? "Active Time" : "Closed")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.primary)
 
-                // Auto-updating timer - now starts from correct time
-                Text(sessionStartTime, style: .timer)
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                    .foregroundColor(context.state.colorState.accentColor)
-                    .monospacedDigit()
+                // Show timer only if within work hours, otherwise show 00:00
+                if isWithinWorkHours {
+                    Text(sessionStartTime, style: .timer)
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(context.state.colorState.accentColor)
+                        .monospacedDigit()
+                } else {
+                    Text("00:00")
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundColor(.gray)
+                        .monospacedDigit()
+                }
 
-                Text(context.state.colorState.statusText)
+                Text(isWithinWorkHours ? context.state.colorState.statusText : "Outside Hours")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(.secondary)
             }
 
             Spacer()
 
-            // Take Break Button
-            Button(intent: TakeBreakIntent()) {
+            // Take Break Button - only if within work hours
+            if isWithinWorkHours {
+                Button(intent: TakeBreakIntent()) {
+                    VStack(spacing: 4) {
+                        Image(systemName: "figure.stand")
+                            .font(.system(size: 18, weight: .semibold))
+                        Text("Break")
+                            .font(.system(size: 11, weight: .bold))
+                    }
+                    .foregroundColor(.white)
+                    .frame(width: 60, height: 60)
+                    .background(context.state.colorState.accentColor)
+                    .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+            } else {
+                // Show disabled/grayed out button outside hours
                 VStack(spacing: 4) {
-                    Image(systemName: "figure.stand")
+                    Image(systemName: "moon.zzz")
                         .font(.system(size: 18, weight: .semibold))
-                    Text("Break")
+                    Text("Off")
                         .font(.system(size: 11, weight: .bold))
                 }
-                .foregroundColor(.white)
+                .foregroundColor(.gray)
                 .frame(width: 60, height: 60)
-                .background(context.state.colorState.accentColor)
+                .background(Color.gray.opacity(0.15))
                 .clipShape(Circle())
             }
-            .buttonStyle(.plain)
         }
         .padding(16)
         .activityBackgroundTint(Color.black.opacity(0.01))
-        .activitySystemActionForegroundColor(context.state.colorState.accentColor)
+        .activitySystemActionForegroundColor(isWithinWorkHours ? context.state.colorState.accentColor : .gray)
     }
 }
 
@@ -213,36 +288,61 @@ struct WorkModeView: View {
 struct BreakModeView: View {
     let context: ActivityViewContext<SedentaryActivityAttributes>
 
+    // Check if within work hours
+    private var isWithinWorkHours: Bool {
+        let storage = AppGroupStorage.shared
+        let now = Date()
+        let calendar = Calendar.current
+        let nowComps = calendar.dateComponents([.hour, .minute, .second], from: now)
+        let currentSecs = (nowComps.hour! * 3600) + (nowComps.minute! * 60) + nowComps.second!
+
+        let startSecs = (storage.workStartHour * 3600) + (storage.workStartMinute * 60)
+        let endSecs = (storage.workEndHour * 3600) + (storage.workEndMinute * 60)
+
+        if startSecs <= endSecs {
+            return currentSecs >= startSecs && currentSecs <= endSecs
+        } else {
+            return currentSecs >= startSecs || currentSecs <= endSecs
+        }
+    }
+
     var body: some View {
         HStack(spacing: 12) {
             // Icon
-            Image(systemName: "cup.and.saucer.fill")
-                .foregroundColor(context.state.colorState.accentColor)
+            Image(systemName: isWithinWorkHours ? "cup.and.saucer.fill" : "moon.fill")
+                .foregroundColor(isWithinWorkHours ? context.state.colorState.accentColor : .gray)
                 .font(.title)
                 .frame(width: 44, height: 44)
-                .background(context.state.colorState.accentColor.opacity(0.15))
+                .background((isWithinWorkHours ? context.state.colorState.accentColor : Color.gray).opacity(0.15))
                 .clipShape(Circle())
 
             // Time and Info
             VStack(alignment: .leading, spacing: 4) {
-                Text("Break Time")
+                Text(isWithinWorkHours ? "Break Time" : "Closed")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.primary)
 
-                // Auto-updating countdown timer
-                if let breakEnd = context.state.breakEndTime {
-                    Text(timerInterval: Date()...breakEnd, countsDown: true)
-                        .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(context.state.colorState.accentColor)
-                        .monospacedDigit()
+                // Auto-updating countdown timer - only if within work hours
+                if isWithinWorkHours {
+                    if let breakEnd = context.state.breakEndTime {
+                        Text(timerInterval: Date()...breakEnd, countsDown: true)
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .foregroundColor(context.state.colorState.accentColor)
+                            .monospacedDigit()
+                    } else {
+                        Text("00:00")
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .foregroundColor(context.state.colorState.accentColor)
+                            .monospacedDigit()
+                    }
                 } else {
                     Text("00:00")
                         .font(.system(size: 24, weight: .bold, design: .rounded))
-                        .foregroundColor(context.state.colorState.accentColor)
+                        .foregroundColor(.gray)
                         .monospacedDigit()
                 }
 
-                Text("Enjoy your break!")
+                Text(isWithinWorkHours ? "Enjoy your break!" : "Outside Hours")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(.secondary)
             }
@@ -250,16 +350,16 @@ struct BreakModeView: View {
             Spacer()
 
             // Icon indicator
-            Image(systemName: "sparkles")
+            Image(systemName: isWithinWorkHours ? "sparkles" : "moon.zzz")
                 .font(.title)
-                .foregroundColor(context.state.colorState.accentColor)
+                .foregroundColor(isWithinWorkHours ? context.state.colorState.accentColor : .gray)
                 .frame(width: 60, height: 60)
-                .background(context.state.colorState.accentColor.opacity(0.15))
+                .background((isWithinWorkHours ? context.state.colorState.accentColor : Color.gray).opacity(0.15))
                 .clipShape(Circle())
         }
         .padding(16)
         .activityBackgroundTint(Color.black.opacity(0.01))
-        .activitySystemActionForegroundColor(context.state.colorState.accentColor)
+        .activitySystemActionForegroundColor(isWithinWorkHours ? context.state.colorState.accentColor : .gray)
     }
 }
 

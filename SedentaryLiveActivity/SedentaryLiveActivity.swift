@@ -17,7 +17,8 @@ struct Provider: AppIntentTimelineProvider {
             timeElapsed: 0,
             breakTimeRemaining: 0,
             breakIntervalMins: 60,
-            breakDurationMins: 0
+            breakDurationMins: 0,
+            isWithinWorkHours: true
         )
     }
 
@@ -31,22 +32,40 @@ struct Provider: AppIntentTimelineProvider {
         let storage = AppGroupStorage.shared
         let currentDate = Date()
 
-        // Generate timeline entries every 1 minute for the next hour
-        // This allows the widget to update frequently and show color changes
-        for minuteOffset in 0 ..< 60 {
+        // Generate timeline entries every 1 minute for the next 15 minutes
+        // More frequent updates to catch work hour changes quickly
+        for minuteOffset in 0 ..< 15 {
             let entryDate = Calendar.current.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
             let entry = createEntry(date: entryDate, configuration: configuration, storage: storage)
             entries.append(entry)
         }
 
-        // Refresh timeline after 1 hour
+        // Refresh timeline after 15 minutes (more frequent than 1 hour)
+        // This ensures widget updates within 15 minutes of work hour changes
         return Timeline(entries: entries, policy: .atEnd)
     }
 
     private func createEntry(date: Date, configuration: ConfigurationAppIntent, storage: AppGroupStorage) -> SimpleEntry {
+        // Check if we're within work hours
+        let isWithinWorkHours = checkIsWithinWorkHours(date: date, storage: storage)
+
         var isOnBreak = storage.isOnBreak
         let breakIntervalMins = storage.breakIntervalMins
         var sessionStartForWidget: Date? = nil
+
+        // If outside work hours, force everything to inactive state
+        if !isWithinWorkHours {
+            return SimpleEntry(
+                date: date,
+                configuration: configuration,
+                isOnBreak: false,
+                timeElapsed: 0,
+                breakTimeRemaining: 0,
+                breakIntervalMins: breakIntervalMins,
+                breakDurationMins: 0,
+                isWithinWorkHours: false
+            )
+        }
 
         // Check if break has actually ended (important for when app is closed)
         if isOnBreak && storage.breakEndTime > 0 {
@@ -92,8 +111,30 @@ struct Provider: AppIntentTimelineProvider {
             timeElapsed: timeElapsed,
             breakTimeRemaining: breakTimeRemaining,
             breakIntervalMins: breakIntervalMins,
-            breakDurationMins: storage.breakDurationMinutes
+            breakDurationMins: storage.breakDurationMinutes,
+            isWithinWorkHours: true
         )
+    }
+
+    private func checkIsWithinWorkHours(date: Date, storage: AppGroupStorage) -> Bool {
+        let calendar = Calendar.current
+        let nowComps = calendar.dateComponents([.hour, .minute, .second], from: date)
+        let currentSecs = (nowComps.hour! * 3600) + (nowComps.minute! * 60) + nowComps.second!
+
+        let startSecs = (storage.workStartHour * 3600) + (storage.workStartMinute * 60)
+        let endSecs = (storage.workEndHour * 3600) + (storage.workEndMinute * 60)
+
+        let isWithin: Bool
+        if startSecs <= endSecs {
+            // No midnight wrap
+            isWithin = currentSecs >= startSecs && currentSecs <= endSecs
+        } else {
+            // Wraps past midnight
+            isWithin = currentSecs >= startSecs || currentSecs <= endSecs
+        }
+
+        print("📱 Widget work hours check: date=\(date), workHours=\(storage.workStartHour):\(storage.workStartMinute)-\(storage.workEndHour):\(storage.workEndMinute), isWithin=\(isWithin)")
+        return isWithin
     }
 
     private func getActiveHourStart(storage: AppGroupStorage) -> Date {
@@ -120,10 +161,13 @@ struct SimpleEntry: TimelineEntry {
     let breakTimeRemaining: Int
     let breakIntervalMins: Int
     let breakDurationMins: Int
+    let isWithinWorkHours: Bool
 
-    // Simple color scheme: Orange for break time, Green for active time
+    // Simple color scheme: Orange for break time, Green for active time, Gray for outside hours
     var color: Color {
-        if isOnBreak {
+        if !isWithinWorkHours {
+            return .gray
+        } else if isOnBreak {
             return .orange
         } else {
             return .green
@@ -131,6 +175,9 @@ struct SimpleEntry: TimelineEntry {
     }
 
     var formattedTime: String {
+        if !isWithinWorkHours {
+            return "00:00"
+        }
         let seconds = isOnBreak ? breakTimeRemaining : timeElapsed
         let hours = seconds / 3600
         let minutes = (seconds % 3600) / 60
@@ -138,7 +185,9 @@ struct SimpleEntry: TimelineEntry {
     }
 
     var statusText: String {
-        if isOnBreak {
+        if !isWithinWorkHours {
+            return "Outside Hours"
+        } else if isOnBreak {
             return "On Break"
         } else {
             return "Active"
@@ -159,37 +208,73 @@ struct SmallWidgetView: View {
     let entry: Provider.Entry
 
     var body: some View {
-        VStack(spacing: 8) {
-            // Icon and title
-            HStack(spacing: 6) {
-                Image(systemName: entry.isOnBreak ? "cup.and.saucer.fill" : "figure.walk")
-                    .foregroundColor(entry.color)
-                    .font(.title3)
+        if entry.isWithinWorkHours {
+            // Normal active/break mode
+            VStack(spacing: 8) {
+                // Icon and title
+                HStack(spacing: 6) {
+                    Image(systemName: entry.isOnBreak ? "cup.and.saucer.fill" : "figure.walk")
+                        .foregroundColor(entry.color)
+                        .font(.title3)
 
-                Text(entry.isOnBreak ? "Break" : "Active")
+                    Text(entry.isOnBreak ? "Break" : "Active")
+                        .font(.caption)
+                        .foregroundColor(.primary)
+
+                    Spacer()
+                }
+
+                Spacer()
+
+                // Timer
+                Text(entry.formattedTime)
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundColor(entry.color)
+                    .monospacedDigit()
+
+                // Status
+                Text(entry.statusText)
                     .font(.caption)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.secondary)
 
                 Spacer()
             }
+            .padding()
+            .containerBackground(entry.color.opacity(0.1), for: .widget)
+        } else {
+            // Outside work hours - different design
+            VStack(spacing: 8) {
+                // Moon icon indicating closed/inactive
+                HStack(spacing: 6) {
+                    Image(systemName: "moon.fill")
+                        .foregroundColor(.gray)
+                        .font(.title3)
 
-            Spacer()
+                    Text("Closed")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
 
-            // Timer
-            Text(entry.formattedTime)
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-                .foregroundColor(entry.color)
-                .monospacedDigit()
+                    Spacer()
+                }
 
-            // Status
-            Text(entry.statusText)
-                .font(.caption)
-                .foregroundColor(.secondary)
+                Spacer()
 
-            Spacer()
+                // Show 00:00
+                Text("00:00")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundColor(.gray)
+                    .monospacedDigit()
+
+                // Status
+                Text("Outside Hours")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Spacer()
+            }
+            .padding()
+            .containerBackground(Color.gray.opacity(0.1), for: .widget)
         }
-        .padding()
-        .containerBackground(entry.color.opacity(0.1), for: .widget)
     }
 }
 
@@ -218,7 +303,8 @@ struct SedentaryLiveActivity: Widget {
         timeElapsed: 1200,
         breakTimeRemaining: 0,
         breakIntervalMins: 60,
-        breakDurationMins: 0
+        breakDurationMins: 0,
+        isWithinWorkHours: true
     )
 }
 
@@ -232,7 +318,8 @@ struct SedentaryLiveActivity: Widget {
         timeElapsed: 3000,
         breakTimeRemaining: 0,
         breakIntervalMins: 60,
-        breakDurationMins: 0
+        breakDurationMins: 0,
+        isWithinWorkHours: true
     )
 }
 
@@ -246,6 +333,22 @@ struct SedentaryLiveActivity: Widget {
         timeElapsed: 0,
         breakTimeRemaining: 300,
         breakIntervalMins: 60,
-        breakDurationMins: 10
+        breakDurationMins: 10,
+        isWithinWorkHours: true
+    )
+}
+
+#Preview("Small - Outside Hours", as: .systemSmall) {
+    SedentaryLiveActivity()
+} timeline: {
+    SimpleEntry(
+        date: .now,
+        configuration: ConfigurationAppIntent(),
+        isOnBreak: false,
+        timeElapsed: 0,
+        breakTimeRemaining: 0,
+        breakIntervalMins: 60,
+        breakDurationMins: 0,
+        isWithinWorkHours: false
     )
 }

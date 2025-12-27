@@ -193,6 +193,7 @@
 import SwiftUI
 import Foundation
 import WidgetKit
+import UIKit
 
 struct SedentaryTime: View {
     @Binding var notificationPermissionGranted: Bool
@@ -218,6 +219,9 @@ struct SedentaryTime: View {
 
     @AppStorage("userTheme") private var userTheme: Theme = .system
     @Environment(\.colorScheme) private var colorScheme
+
+    // Track if we're within work hours
+    @State private var isWithinWorkHours: Bool = true
 
     init(notificationPermissionGranted: Binding<Bool>, selectedDuration: Binding<TimeDuration>, onTakeBreak: @escaping () -> Void) {
         self._notificationPermissionGranted = notificationPermissionGranted
@@ -304,14 +308,15 @@ struct SedentaryTime: View {
 
                         Spacer()
 
-                        Text(formattedTime(timeElapsed))
+                        // Show 00:00:00 when outside work hours
+                        Text(isWithinWorkHours ? formattedTime(timeElapsed) : "00:00:00")
                             .font(.largeTitle.bold())
                             .foregroundColor(activeTimeColor)
 
                         Spacer()
 
                         HStack(spacing: 8) {
-                            // Unchair button with break duration menu
+                            // Unchair button with break duration menu - disabled outside work hours
                             Menu {
                                 Button("1 minutes") {
                                     startBreak(duration: 1)
@@ -331,9 +336,10 @@ struct SedentaryTime: View {
                                     .foregroundColor(.white)
                                     .padding(.vertical, 8)
                                     .padding(.horizontal, 16)
-                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.primary))
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(isWithinWorkHours ? Color.primary : Color.gray))
                                     .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
                             }
+                            .disabled(!isWithinWorkHours)
                             .buttonStyle(.plain)
 
                         // Debug: Start/Stop Live Activity
@@ -424,6 +430,17 @@ struct SedentaryTime: View {
             NotificationCenter.default.removeObserver(self)
         }
         .onReceive(timer) { _ in
+            // Check if we're still within work hours
+            let withinHours = checkIsWithinWorkHours()
+            isWithinWorkHours = withinHours
+
+            // If we go outside work hours while on break, end the break
+            if !withinHours && isOnBreak {
+                print("⚠️ Work hours ended during break, ending break")
+                endBreak()
+                return
+            }
+
             if isOnBreak {
                 updateBreakTime()
             } else {
@@ -434,6 +451,12 @@ struct SedentaryTime: View {
 
     private func startBreak(duration: Int) {
         // DON'T call onTakeBreak() to avoid scrolling to exercise section
+
+        // Prevent starting breaks outside work hours
+        guard checkIsWithinWorkHours() else {
+            print("⚠️ Cannot start break outside work hours")
+            return
+        }
 
         // Calculate break end time
         let endTime = Date().addingTimeInterval(TimeInterval(duration * 60))
@@ -463,10 +486,16 @@ struct SedentaryTime: View {
                     print("🟢 Now starting break mode: \(duration) minutes")
                     print("🟢 Activity state: \(String(describing: manager.currentActivity?.activityState))")
                     manager.startBreak(durationMinutes: duration)
+
+                    // Schedule background task to update Live Activity when break ends
+                    scheduleBackgroundTaskForBreakEnd()
                 }
             } else {
                 print("🟢 Live Activity exists (state: \(String(describing: manager.currentActivity?.activityState))), starting break: \(duration) minutes")
                 manager.startBreak(durationMinutes: duration)
+
+                // Schedule background task to update Live Activity when break ends
+                scheduleBackgroundTaskForBreakEnd()
             }
         }
 
@@ -481,10 +510,16 @@ struct SedentaryTime: View {
 
     private func updateTimeElapsed() {
         let now = Date()
+
+        // Check if we're within work hours
+        let withinHours = checkIsWithinWorkHours()
+        isWithinWorkHours = withinHours
+
         let (start, end) = activePeriod(for: now)
 
         guard now >= start && now <= end else {
             timeElapsed = 0
+            isWithinWorkHours = false
             return
         }
 
@@ -571,8 +606,24 @@ struct SedentaryTime: View {
     }
 
     private func endBreak() {
-        // Clear persisted break state
+        // Capture the break end time before clearing (to use as new session start)
         let storage = AppGroupStorage.shared
+        let breakEndTimeValue = storage.breakEndTime
+
+        // End break through Live Activity manager FIRST (before clearing storage)
+        // This ensures the Live Activity can use breakEndTime to set correct sessionStartTime
+        if #available(iOS 16.1, *) {
+            LiveActivityManager.shared.endBreak()
+        }
+
+        // Set lastBreakTime to when the break actually ended (for local UI consistency)
+        if breakEndTimeValue > 0 {
+            let breakEndDate = Date(timeIntervalSince1970: breakEndTimeValue)
+            lastBreakTime = breakEndDate.timeIntervalSince1970
+            // Note: LiveActivityManager.endBreak() will also set this in storage asynchronously
+        }
+
+        // Clear persisted break state (LiveActivityManager also clears this, but we do it here for immediate UI update)
         storage.isOnBreak = false
         storage.breakEndTime = 0
         storage.breakDurationMinutes = 0
@@ -588,15 +639,7 @@ struct SedentaryTime: View {
             breakDurationMinutes = 0
         }
 
-        // Reset work tracking - start fresh session
-        let now = Date()
-        lastBreakTime = now.timeIntervalSince1970
-        storage.lastBreakTime = now.timeIntervalSince1970
-
-        // Live Activity will auto-switch via LiveActivityManager.endBreak()
-        // (the timer in LiveActivityManager will handle this automatically)
-
-        print("✅ Break ended - switched back to work mode")
+        print("✅ Break ended - switched back to work mode at \(Date(timeIntervalSince1970: lastBreakTime))")
     }
 
     private func cancelBreak() {
@@ -632,6 +675,33 @@ struct SedentaryTime: View {
                 endBreak()
                 print("🟡 Break already ended, cleaning up")
             }
+        }
+    }
+
+    /// Schedule background task to update Live Activity when break ends
+    private func scheduleBackgroundTaskForBreakEnd() {
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            appDelegate.scheduleBackgroundLiveActivityRefresh()
+            print("📅 Scheduled background task for break end")
+        }
+    }
+
+    /// Check if current time is within work hours
+    private func checkIsWithinWorkHours() -> Bool {
+        let now = Date()
+        let calendar = Calendar.current
+        let nowComps = calendar.dateComponents([.hour, .minute, .second], from: now)
+        let currentSecs = (nowComps.hour! * 3600) + (nowComps.minute! * 60) + nowComps.second!
+
+        let startSecs = (workStartHour * 3600) + (workStartMinute * 60)
+        let endSecs = (workEndHour * 3600) + (workEndMinute * 60)
+
+        if startSecs <= endSecs {
+            // No midnight wrap
+            return currentSecs >= startSecs && currentSecs <= endSecs
+        } else {
+            // Wraps past midnight
+            return currentSecs >= startSecs || currentSecs <= endSecs
         }
     }
 }

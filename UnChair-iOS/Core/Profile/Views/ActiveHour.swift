@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct ActiveHour: View {
     @AppStorage("workStartHour") private var workStartHour: Int = 9
@@ -77,7 +78,23 @@ struct ActiveHour: View {
                         workStartMinute = calendar.component(.minute, from: tempStartTime)
                         workEndHour = calendar.component(.hour, from: tempEndTime)
                         workEndMinute = calendar.component(.minute, from: tempEndTime)
-                        
+
+                        // Sync with AppGroupStorage for widgets and Live Activity
+                        let storage = AppGroupStorage.shared
+                        storage.workStartHour = workStartHour
+                        storage.workStartMinute = workStartMinute
+                        storage.workEndHour = workEndHour
+                        storage.workEndMinute = workEndMinute
+
+                        // CRITICAL: Reload widgets immediately when work hours change
+                        WidgetCenter.shared.reloadAllTimelines()
+                        print("✅ Work hours changed - reloaded all widgets")
+
+                        // Update Live Activity if it's running
+                        if #available(iOS 16.1, *) {
+                            LiveActivityManager.shared.refreshOnAppBecameActive()
+                        }
+
                         // Optionally sync with SettingsManager if still needed elsewhere
                         syncWithSettingsManager()
                     }
